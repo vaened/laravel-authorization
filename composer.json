@@ -1,0 +1,30 @@
+{
+  "name": "enea/laravel-authorization",
+  "description": "Package to manage the permissions in a laravel application",
+  "type": "package",
+  "authors": [
+    {
+      "name": "enea dhack",
+      "email": "enea.so@live.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "illuminate/support": "~5.4.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.7",
+    "orchestra/testbench": "~3.0",
+    "orchestra/database": "^3.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Enea\\Authorization\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Enea\\Authorization\\Test\\": "tests"
+    }
+  }
+}
