@@ -18,7 +18,7 @@ interface Permissible
     /**
      * Returns true in case of not being authorized.
      *
-     * @param string|Permission $permission
+     * @param string $permission
      * @return bool
      */
     public function cannot(string $permission): bool;

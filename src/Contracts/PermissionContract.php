@@ -5,6 +5,6 @@
 
 namespace Enea\Authorization\Contracts;
 
-interface Permission extends Grantable
+interface PermissionContract extends Grantable
 {
 }

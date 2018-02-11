@@ -5,26 +5,26 @@
 
 namespace Enea\Authorization\Contracts;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-interface Role extends Grantable, Permissible
+interface RoleContract extends Grantable, Permissible
 {
     /**
      * Attach a permission to grantable.
      *
-     * @param Permission $permission
+     * @param PermissionContract $permission
      * @return bool
      */
-    public function attach(Permission $permission): bool;
+    public function attach(PermissionContract $permission): bool;
 
     /**
      * Detach a permission to grantable.
      *
-     * @param Permission $permission
+     * @param PermissionContract $permission
      * @return bool
      */
-    public function detach(Permission $permission): bool;
+    public function detach(PermissionContract $permission): bool;
 
     /**
      * Attach one more permissions to grantable.
@@ -45,7 +45,7 @@ interface Role extends Grantable, Permissible
     /**
      * Returns the relation with all permissions.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function getPermissionsRelationship(): BelongsToMany;
 }
