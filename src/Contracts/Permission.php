@@ -7,5 +7,4 @@ namespace Enea\Authorization\Contracts;
 
 interface Permission extends Grantable
 {
-
 }
