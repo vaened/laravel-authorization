@@ -10,6 +10,8 @@ use Illuminate\Support\Collection;
 
 interface RoleContract extends Grantable, Permissible
 {
+    public static function locateByName(string $secretName): ? RoleContract;
+
     public function attach(PermissionContract $permission): bool;
 
     public function detach(PermissionContract $permission): bool;
