@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Class Revoker
+ * Class Revoker.
  *
  * @package Enea\Authorization\Facades
  * @author enea dhack <enea.so@live.com>

@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
- * Trait Authorizable
+ * Trait Authorizable.
  *
  * @package Enea\Authorization\Traits
  *

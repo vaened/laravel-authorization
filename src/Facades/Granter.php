@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Class Granter
+ * Class Granter.
  *
  * @package Enea\Authorization\Facades
  * @author enea dhack <enea.so@live.com>

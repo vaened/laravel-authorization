@@ -8,7 +8,7 @@ namespace Enea\Authorization\Traits;
 use Enea\Authorization\Contracts\Grantable as GrantableContract;
 
 /**
- * Trait Grantable
+ * Trait Grantable.
  *
  * @package Enea\Authorization\Traits
  *
