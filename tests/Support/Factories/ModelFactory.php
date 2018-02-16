@@ -2,7 +2,6 @@
 /**
  * Created by enea dhack - 30/07/17 02:53 PM.
  */
-
 use Enea\Authorization\Models\Permission;
 use Enea\Authorization\Models\Role;
 use Enea\Authorization\Test\Support\Models\User;
