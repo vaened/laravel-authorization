@@ -7,10 +7,5 @@ namespace Enea\Authorization\Contracts;
 
 interface Grantable
 {
-    /**
-     * Return the secret name of grantable.
-     *
-     * @return string
-     */
     public function getSecretName(): string;
 }
