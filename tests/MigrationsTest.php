@@ -15,6 +15,7 @@ class MigrationsTest extends TestCase
         $this->assertTrue(Schema::hasTable('roles'), 'The roles table was not found');
         $this->assertTrue(Schema::hasTable('permissions'), 'The permissions table was not found');
         $this->assertTrue(Schema::hasTable('role_permissions'), 'The role_permissions table was not found');
-        $this->assertTrue(Schema::hasTable('authorizations'), 'The authorizations table was not found');
+        $this->assertTrue(Schema::hasTable('user_permissions'), 'The user_permissions table was not found');
+        $this->assertTrue(Schema::hasTable('user_roles'), 'The user_roles table was not found');
     }
 }
