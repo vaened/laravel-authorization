@@ -10,23 +10,10 @@ class CreateLaravelAuthorizationTables extends Migration
     {
         $tables = config('authorization.tables');
 
-        Schema::create($tables['authorizations'], function (Blueprint $table) {
-            $table->increments('id');
-
-            $table->unsignedInteger('authorized_id');
-            $table->string('authorized_type', 100);
-            $table->index(['authorized_id', 'authorized_type']);
-
-            $table->unsignedInteger('grantable_id');
-            $table->string('grantable_type', 25);
-            $table->index(['grantable_id', 'authorizable_type']);
-
-            $table->timestamps();
-        });
-
-        Schema::create($tables['role'], $this->getAuthorizableStructure());
-
-        Schema::create($tables['permission'], $this->getAuthorizableStructure());
+        Schema::create($tables['role'], $this->getGrantableStructure());
+        Schema::create($tables['permission'], $this->getGrantableStructure());
+        Schema::create($tables['user_roles'], $this->getAuthorizationsStructure(str_singular($tables['role'])));
+        Schema::create($tables['user_permissions'], $this->getAuthorizationsStructure(str_singular($tables['permission'])));
 
         Schema::create($tables['role_has_many_permissions'], function (Blueprint $table) use ($tables) {
             $table->unsignedInteger('role_id');
@@ -51,13 +38,29 @@ class CreateLaravelAuthorizationTables extends Migration
         Schema::dropIfExists($tables['authorizable_group']);
     }
 
-    private function getAuthorizableStructure()
+    private function getGrantableStructure()
     {
         return function (Blueprint $table) {
             $table->increments('id');
             $table->string('secret_name', 60)->unique();
             $table->string('display_name', 60);
             $table->string('description')->nullable();
+            $table->timestamps();
+        };
+    }
+
+    private function getAuthorizationsStructure($tableName)
+    {
+        return function (Blueprint $table) use ($tableName) {
+            $table->increments('id');
+
+            $table->unsignedInteger('authorizable_id');
+            $table->string('authorizable_type', 100);
+            $table->index(['authorizable_id', 'authorizable_type']);
+
+            $table->unsignedInteger("{$tableName}_id");
+            $table->foreign("{$tableName}_id")->references('id')->on(str_plural($tableName));
+
             $table->timestamps();
         };
     }

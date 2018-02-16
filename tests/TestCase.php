@@ -52,8 +52,10 @@ class TestCase extends BaseTestCase
             'permission' => 'permissions',
             /// Table containing the roles that belong to a role.
             'role_has_many_permissions' => 'role_permissions',
-            /// Table that stores all permissions and roles per authorized user.
-            'authorizations' => 'authorizations',
+            /// Table that stores all roles per authorized user.
+            'user_roles' => 'user_roles',
+            /// Table that stores all permissions per authorized user.
+            'user_permissions' => 'user_permissions',
         ]);
     }
 
