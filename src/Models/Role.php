@@ -5,8 +5,12 @@
 
 namespace Enea\Authorization\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Enea\Authorization\Contracts\RoleContract;
+use Enea\Authorization\Traits\HasRole;
 
-class Role extends Model
+class Role extends Grantable implements RoleContract
 {
+    use HasRole;
+
+    protected $configTableKeyName = 'roles';
 }

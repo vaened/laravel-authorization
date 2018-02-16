@@ -5,25 +5,12 @@
 
 namespace Enea\Authorization\Models;
 
-use Enea\Authorization\Contracts\Permission as PermissionContract;
-use Illuminate\Database\Eloquent\Model;
+use Enea\Authorization\Contracts\PermissionContract;
+use Enea\Authorization\Traits\HasPermission;
 
-/**
- * Class Permission
- *
- * @package Enea\Authorization\Models
- * @author enea dhack <enea.so@live.com>
- *
- * @property int id
- * @property string secret_name
- */
-class Permission extends Model implements PermissionContract
+class Permission extends Grantable implements PermissionContract
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getSecretName(): string
-    {
-        return $this->secret_name;
-    }
+    use HasPermission;
+
+    protected $configTableKeyName = 'permission';
 }
