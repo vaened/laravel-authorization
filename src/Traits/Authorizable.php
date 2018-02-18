@@ -12,7 +12,6 @@ use Enea\Authorization\Facades\Revoker;
 use Enea\Authorization\Tables;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * Trait Authorizable.
