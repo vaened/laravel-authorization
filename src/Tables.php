@@ -12,12 +12,12 @@ class Tables
 {
     public static function userPermissionModel(): string
     {
-        return config('authorization.tables.user_permissions');
+        return config('authorization.tables.user_permissions', 'user_permissions');
     }
 
     public static function userRoleModel(): string
     {
-        return config('authorization.tables.user_roles');
+        return config('authorization.tables.user_roles', 'user_roles');
     }
 
     public static function permissionModel(): string
