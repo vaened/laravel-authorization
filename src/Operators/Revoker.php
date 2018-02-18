@@ -15,7 +15,7 @@ class Revoker extends Modifier
 {
     public function revoke(GrantableOwner $authorizationRepository, Grantable $grantable): bool
     {
-        $authorizations = $this->resolveAuthorizationsRelation($authorizationRepository, $grantable);
+        $authorizations = $this->resolveAuthorizationRepository($authorizationRepository, $grantable);
         return $this->removeFrom($authorizations)($grantable);
     }
 
