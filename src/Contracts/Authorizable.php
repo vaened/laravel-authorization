@@ -7,7 +7,7 @@ namespace Enea\Authorization\Contracts;
 
 use Enea\Authorization\AuthorizationWrapper;
 
-interface Authorizable extends RoleAndPermissionOwner
+interface Authorizable extends RolesOwner, PermissionsOwner
 {
     public function grant(Grantable $grantable): bool;
 
