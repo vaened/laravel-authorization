@@ -5,13 +5,11 @@
 
 namespace Enea\Authorization\Traits;
 
-use Closure;
 use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
-use Enea\Authorization\Exceptions\GrantableIsNotValidModelException;
 use Enea\Authorization\Facades\Granter;
+use Enea\Authorization\Facades\Revoker;
 use Enea\Authorization\Tables;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
@@ -29,46 +27,28 @@ trait HasRole
         return true;
     }
 
-    public function attach(PermissionContract $permission): bool
+    public function grant(PermissionContract $permission): bool
     {
         return Granter::grant($this, $permission);
     }
 
-    public function syncAttach(Collection $permissions): void
+    public function syncGrant(Collection $permissions): void
     {
-        $this->permissions()->saveMany($permissions);
+        Granter::syncGrant($this, $permissions);
     }
 
-    public function detach(PermissionContract $permission): bool
+    public function revoke(PermissionContract $permission): bool
     {
-        $this->syncDetach(Collection::make([$permission]));
-        return $this->cannot($permission->getSecretName());
+        return Revoker::revoke($this, $permission);
     }
 
-    public function syncDetach(Collection $permissions): void
+    public function syncRevoke(Collection $permissions): void
     {
-        $keys = $permissions->map($this->extractPermissionKeys())->toArray();
-        $this->permissions()->detach($keys);
+        Revoker::syncRevoke($this, $permissions);
     }
 
     public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(Tables::permissionModel(), Tables::rolePermissionName(), 'permission_id', 'role_id');
-    }
-
-    private function extractPermissionKeys(): Closure
-    {
-        return function (PermissionContract $permission) {
-            if (! $permission instanceof Model) {
-                $this->throwInvalidPermissionError($permission);
-            }
-
-            return $permission->getKey();
-        };
-    }
-
-    private function throwInvalidPermissionError(PermissionContract $permission): void
-    {
-        throw GrantableIsNotValidModelException::make($permission);
     }
 }
