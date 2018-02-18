@@ -5,8 +5,8 @@
 
 namespace Enea\Authorization\Facades;
 
-use Enea\Authorization\Contracts\Authorizable;
 use Enea\Authorization\Contracts\Grantable;
+use Enea\Authorization\Contracts\GrantableOwner;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Facade;
  * @package Enea\Authorization\Facades
  * @author enea dhack <enea.so@live.com>
  *
- * @method static bool grant(Authorizable $user, Grantable $grantable)
- * @method static void syncGrant(Authorizable $user, Collection $grantableCollection)
+ * @method static bool grant(GrantableOwner $authorizationRepository, Grantable $grantable)
+ * @method static void syncGrant(GrantableOwner $authorizationRepository, Collection $grantableCollection)
  */
 class Granter extends Facade
 {

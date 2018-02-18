@@ -5,10 +5,9 @@
 
 namespace Enea\Authorization\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
-interface RoleContract extends Grantable, Permissible
+interface RoleContract extends Grantable, Permissible, PermissionOwner
 {
     public static function locateByName(string $secretName): ? RoleContract;
 
@@ -19,6 +18,4 @@ interface RoleContract extends Grantable, Permissible
     public function syncAttach(Collection $permissions): void;
 
     public function syncDetach(Collection $permissions): void;
-
-    public function getPermissionsRelationship(): BelongsToMany;
 }

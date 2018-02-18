@@ -6,9 +6,8 @@
 namespace Enea\Authorization\Contracts;
 
 use Enea\Authorization\AuthorizationWrapper;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
-interface Authorizable
+interface Authorizable extends RoleAndPermissionOwner
 {
     public function grant(Grantable $grantable): bool;
 
@@ -17,10 +16,6 @@ interface Authorizable
     public function revoke(Grantable $grantable): bool;
 
     public function syncRevoke(array $grantables): void;
-
-    public function permissions(): MorphToMany;
-
-    public function roles(): MorphToMany;
 
     public function getAuthorizationWrapper(): AuthorizationWrapper;
 }

@@ -6,27 +6,27 @@
 namespace Enea\Authorization\Operators;
 
 use Closure;
-use Enea\Authorization\Contracts\Authorizable;
 use Enea\Authorization\Contracts\Grantable;
+use Enea\Authorization\Contracts\GrantableOwner;
 use Illuminate\Support\Collection;
 
 class Granter extends Modifier
 {
-    public function grant(Authorizable $user, Grantable $grantable): bool
+    public function grant(GrantableOwner $authorizationRepository, Grantable $grantable): bool
     {
-        $authorizations = $this->resolveAuthorizationsRelation($user, $grantable);
+        $authorizations = $this->resolveAuthorizationRepository($authorizationRepository, $grantable);
         return ! is_null($authorizations->save($this->castToModel($grantable)));
     }
 
-    public function syncGrant(Authorizable $user, Collection $grantableCollection): void
+    public function syncGrant(GrantableOwner $authorizationRepository, Collection $grantableCollection): void
     {
-        $grantableCollection->each($this->grantTo($user));
+        $grantableCollection->each($this->grantTo($authorizationRepository));
     }
 
-    private function grantTo(Authorizable $user): Closure
+    private function grantTo(GrantableOwner $authorizationRepository): Closure
     {
-        return function (Grantable $grantable) use ($user) {
-            return $this->grant($user, $grantable);
+        return function (Grantable $grantable) use ($authorizationRepository) {
+            return $this->grant($authorizationRepository, $grantable);
         };
     }
 }

@@ -9,6 +9,7 @@ use Closure;
 use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Exceptions\GrantableIsNotValidModelException;
+use Enea\Authorization\Facades\Granter;
 use Enea\Authorization\Tables;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -30,13 +31,12 @@ trait HasRole
 
     public function attach(PermissionContract $permission): bool
     {
-        $this->syncAttach(Collection::make([$permission]));
-        return $this->can($permission->getSecretName());
+        return Granter::grant($this, $permission);
     }
 
     public function syncAttach(Collection $permissions): void
     {
-        $this->getPermissionsRelationship()->saveMany($permissions);
+        $this->permissions()->saveMany($permissions);
     }
 
     public function detach(PermissionContract $permission): bool
@@ -48,12 +48,12 @@ trait HasRole
     public function syncDetach(Collection $permissions): void
     {
         $keys = $permissions->map($this->extractPermissionKeys())->toArray();
-        $this->getPermissionsRelationship()->detach($keys);
+        $this->permissions()->detach($keys);
     }
 
-    public function getPermissionsRelationship(): BelongsToMany
+    public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Tables::permissionModel(), Tables::permissionName(), 'permission_id', 'id');
+        return $this->belongsToMany(Tables::permissionModel(), Tables::rolePermissionName(), 'permission_id', 'role_id');
     }
 
     private function extractPermissionKeys(): Closure
