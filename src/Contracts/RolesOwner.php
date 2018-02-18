@@ -7,7 +7,7 @@ namespace Enea\Authorization\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-interface RoleAndPermissionOwner extends PermissionOwner
+interface RolesOwner extends GrantableOwner
 {
     public function roles(): BelongsToMany;
 }
