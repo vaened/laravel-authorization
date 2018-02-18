@@ -20,7 +20,7 @@ abstract class Modifier
         $this->resolver = $resolver;
     }
 
-    protected function resolveAuthorizationsRelation(GrantableOwner $repository, Grantable $grantable): BelongsToMany
+    protected function resolveAuthorizationRepository(GrantableOwner $repository, Grantable $grantable): BelongsToMany
     {
         return $this->resolver->resolve($repository, $grantable);
     }
