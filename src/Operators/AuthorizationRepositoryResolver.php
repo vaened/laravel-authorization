@@ -7,9 +7,10 @@ namespace Enea\Authorization\Operators;
 
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\GrantableOwner;
-use Enea\Authorization\Contracts\PermissionOwner;
-use Enea\Authorization\Contracts\RoleAndPermissionOwner;
+use Enea\Authorization\Contracts\PermissionContract;
+use Enea\Authorization\Contracts\PermissionsOwner;
 use Enea\Authorization\Contracts\RoleContract;
+use Enea\Authorization\Contracts\RolesOwner;
 use Enea\Authorization\Exceptions\NonAssignableGrantableModelException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -17,11 +18,11 @@ class AuthorizationRepositoryResolver
 {
     public function resolve(GrantableOwner $repository, Grantable $grantable): BelongsToMany
     {
-        if ($this->needResolveForRole($grantable)) {
-            return $this->resolveForRole($repository, $grantable);
+        if ($this->needResolveForRole($grantable) && $repository instanceof RolesOwner) {
+            return $repository->roles();
         }
 
-        if ($repository instanceof PermissionOwner) {
+        if ($this->needResolveForPermission($grantable) && $repository instanceof PermissionsOwner) {
             return $repository->permissions();
         }
 
@@ -33,12 +34,8 @@ class AuthorizationRepositoryResolver
         return $grantable instanceof RoleContract;
     }
 
-    private function resolveForRole(GrantableOwner $repository, Grantable $grantable): BelongsToMany
+    private function needResolveForPermission(Grantable $grantable): bool
     {
-        if ($repository instanceof RoleAndPermissionOwner) {
-            return $repository->roles();
-        }
-
-        throw new NonAssignableGrantableModelException($repository, $grantable);
+        return $grantable instanceof PermissionContract;
     }
 }
