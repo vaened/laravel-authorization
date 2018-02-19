@@ -8,15 +8,19 @@ namespace Enea\Authorization\Operators;
 use Closure;
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\GrantableOwner;
+use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
 class Revoker extends Modifier
 {
-    public function revoke(GrantableOwner $authorizationRepository, Grantable $grantable): bool
+    public function revoke(GrantableOwner $authorizationRepository, Grantable $grantable): void
     {
         $authorizations = $this->resolveAuthorizationRepository($authorizationRepository, $grantable);
-        return $this->removeFrom($authorizations)($grantable);
+
+        if (! $this->removeFrom($authorizations)($grantable)) {
+            throw new AuthorizationNotGrantedException($grantable);
+        }
     }
 
     public function syncRevoke(GrantableOwner $authorizationRepository, Collection $grantableCollection): void
@@ -26,8 +30,8 @@ class Revoker extends Modifier
 
     private function revokeTo(GrantableOwner $authorizationRepository): Closure
     {
-        return function (Grantable $grantable) use ($authorizationRepository) {
-            return $this->revoke($authorizationRepository, $grantable);
+        return function (Grantable $grantable) use ($authorizationRepository): void {
+            $this->revoke($authorizationRepository, $grantable);
         };
     }
 

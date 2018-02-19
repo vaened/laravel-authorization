@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Facade;
  * @package Enea\Authorization\Facades
  * @author enea dhack <enea.so@live.com>
  *
- * @method static bool revoke(GrantableOwner $authorizationRepository, Grantable $grantable)
+ * @method static void revoke(GrantableOwner $authorizationRepository, Grantable $grantable)
  * @method static void syncRevoke(GrantableOwner $authorizationRepository, Collection $grantableCollection)
  */
 class Revoker extends Facade

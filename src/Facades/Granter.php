@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Facade;
  * @package Enea\Authorization\Facades
  * @author enea dhack <enea.so@live.com>
  *
- * @method static bool grant(GrantableOwner $authorizationRepository, Grantable $grantable)
+ * @method static void grant(GrantableOwner $authorizationRepository, Grantable $grantable)
  * @method static void syncGrant(GrantableOwner $authorizationRepository, Collection $grantableCollection)
  */
 class Granter extends Facade
