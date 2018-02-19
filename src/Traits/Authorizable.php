@@ -11,7 +11,7 @@ use Enea\Authorization\Facades\Granter;
 use Enea\Authorization\Facades\Revoker;
 use Enea\Authorization\Tables;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Trait Authorizable.
@@ -43,12 +43,12 @@ trait Authorizable
         Revoker::syncRevoke($this, collect($grantables));
     }
 
-    public function permissions(): MorphToMany
+    public function permissions(): BelongsToMany
     {
         return $this->morphToMany(Tables::permissionModel(), 'authorizable', Tables::userPermissionModel());
     }
 
-    public function roles(): MorphToMany
+    public function roles(): BelongsToMany
     {
         return $this->morphToMany(Tables::roleModel(), 'authorizable', Tables::userRoleModel());
     }

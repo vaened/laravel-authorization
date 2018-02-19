@@ -6,32 +6,32 @@
 namespace Enea\Authorization\Operators;
 
 use Closure;
-use Enea\Authorization\Contracts\Authorizable;
 use Enea\Authorization\Contracts\Grantable;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Enea\Authorization\Contracts\GrantableOwner;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
 class Revoker extends Modifier
 {
-    public function revoke(Authorizable $user, Grantable $grantable): bool
+    public function revoke(GrantableOwner $authorizationRepository, Grantable $grantable): bool
     {
-        $authorizations = $this->resolveAuthorizationsRelation($user, $grantable);
+        $authorizations = $this->resolveAuthorizationRepository($authorizationRepository, $grantable);
         return $this->removeFrom($authorizations)($grantable);
     }
 
-    public function syncRevoke(Authorizable $user, Collection $grantableCollection): void
+    public function syncRevoke(GrantableOwner $authorizationRepository, Collection $grantableCollection): void
     {
-        $grantableCollection->each($this->revokeTo($user));
+        $grantableCollection->each($this->revokeTo($authorizationRepository));
     }
 
-    private function revokeTo(Authorizable $user): Closure
+    private function revokeTo(GrantableOwner $authorizationRepository): Closure
     {
-        return function (Grantable $grantable) use ($user) {
-            return $this->revoke($user, $grantable);
+        return function (Grantable $grantable) use ($authorizationRepository) {
+            return $this->revoke($authorizationRepository, $grantable);
         };
     }
 
-    private function removeFrom(MorphToMany $authorizations): Closure
+    private function removeFrom(BelongsToMany $authorizations): Closure
     {
         return function (Grantable $grantable) use ($authorizations): bool {
             return $this->isSuccessful($authorizations->detach($this->castToModel($grantable)));

@@ -5,20 +5,15 @@
 
 namespace Enea\Authorization\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
-interface RoleContract extends Grantable, Permissible
+interface RoleContract extends Grantable, Permissible, PermissionsOwner
 {
-    public static function locateByName(string $secretName): ? RoleContract;
+    public function grant(PermissionContract $permission): bool;
 
-    public function attach(PermissionContract $permission): bool;
+    public function revoke(PermissionContract $permission): bool;
 
-    public function detach(PermissionContract $permission): bool;
+    public function syncGrant(Collection $permissions): void;
 
-    public function syncAttach(Collection $permissions): void;
-
-    public function syncDetach(Collection $permissions): void;
-
-    public function getPermissionsRelationship(): BelongsToMany;
+    public function syncRevoke(Collection $permissions): void;
 }
