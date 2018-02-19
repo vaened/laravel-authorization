@@ -9,6 +9,7 @@ use Closure;
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\GrantableOwner;
 use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
 class Granter extends Modifier
@@ -16,9 +17,8 @@ class Granter extends Modifier
     public function grant(GrantableOwner $authorizationRepository, Grantable $grantable): void
     {
         $authorizations = $this->resolveAuthorizationRepository($authorizationRepository, $grantable);
-        $granted = $authorizations->save($this->castToModel($grantable));
 
-        if (is_null($granted)) {
+        if (! $this->saveFor($authorizations)($grantable)) {
             throw new AuthorizationNotGrantedException($grantable);
         }
     }
@@ -32,6 +32,13 @@ class Granter extends Modifier
     {
         return function (Grantable $grantable) use ($authorizationRepository): void {
             $this->grant($authorizationRepository, $grantable);
+        };
+    }
+
+    protected function saveFor(BelongsToMany $authorizations): Closure
+    {
+        return function (Grantable $grantable) use ($authorizations): bool {
+            return ! is_null($authorizations->save($this->castToModel($grantable)));
         };
     }
 }
