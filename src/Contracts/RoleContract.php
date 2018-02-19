@@ -9,9 +9,9 @@ use Illuminate\Support\Collection;
 
 interface RoleContract extends Grantable, Permissible, PermissionsOwner
 {
-    public function grant(PermissionContract $permission): bool;
+    public function grant(PermissionContract $permission): void;
 
-    public function revoke(PermissionContract $permission): bool;
+    public function revoke(PermissionContract $permission): void;
 
     public function syncGrant(Collection $permissions): void;
 

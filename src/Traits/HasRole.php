@@ -27,9 +27,9 @@ trait HasRole
         return true;
     }
 
-    public function grant(PermissionContract $permission): bool
+    public function grant(PermissionContract $permission): void
     {
-        return Granter::grant($this, $permission);
+        Granter::grant($this, $permission);
     }
 
     public function syncGrant(Collection $permissions): void
@@ -37,9 +37,9 @@ trait HasRole
         Granter::syncGrant($this, $permissions);
     }
 
-    public function revoke(PermissionContract $permission): bool
+    public function revoke(PermissionContract $permission): void
     {
-        return Revoker::revoke($this, $permission);
+        Revoker::revoke($this, $permission);
     }
 
     public function syncRevoke(Collection $permissions): void

@@ -9,11 +9,11 @@ use Enea\Authorization\AuthorizationWrapper;
 
 interface Authorizable extends RolesOwner, PermissionsOwner
 {
-    public function grant(Grantable $grantable): bool;
+    public function grant(Grantable $grantable): void;
 
     public function syncGrant(array $grantables): void;
 
-    public function revoke(Grantable $grantable): bool;
+    public function revoke(Grantable $grantable): void;
 
     public function syncRevoke(array $grantables): void;
 

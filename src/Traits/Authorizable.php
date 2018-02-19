@@ -23,9 +23,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 trait Authorizable
 {
-    public function grant(Grantable $grantable): bool
+    public function grant(Grantable $grantable): void
     {
-        return Granter::grant($this, $grantable);
+        Granter::grant($this, $grantable);
     }
 
     public function syncGrant(array $grantables): void
@@ -33,9 +33,9 @@ trait Authorizable
         Granter::syncGrant($this, collect($grantables));
     }
 
-    public function revoke(Grantable $grantable): bool
+    public function revoke(Grantable $grantable): void
     {
-        return Revoker::revoke($this, $grantable);
+        Revoker::revoke($this, $grantable);
     }
 
     public function syncRevoke(array $grantables): void
