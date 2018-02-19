@@ -16,4 +16,9 @@ abstract class Grantable extends Model
         $this->setTable(config("authorization.tables.{$this->configTableKeyName}"));
         parent::__construct($attributes);
     }
+
+    public function __toString()
+    {
+        return $this->getAttribute('secret_name');
+    }
 }
