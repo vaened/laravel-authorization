@@ -57,4 +57,14 @@ trait Authorizable
     {
         return AuthorizationWrapper::fill($this->roles, $this->permissions);
     }
+
+    public function getPermissionModels(): EloquentCollection
+    {
+        return $this->permissions;
+    }
+
+    public function getRoleModels(): EloquentCollection
+    {
+        return $this->roles;
+    }
 }
