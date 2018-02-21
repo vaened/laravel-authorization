@@ -5,6 +5,8 @@
 
 namespace Enea\Authorization;
 
+use Enea\Authorization\Support\IsJsonable;
+use Enea\Authorization\Support\Serializable;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection as SupportCollection;
 

@@ -9,7 +9,7 @@ use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Facades\Granter;
 use Enea\Authorization\Facades\Revoker;
-use Enea\Authorization\Tables;
+use Enea\Authorization\Support\Tables;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;

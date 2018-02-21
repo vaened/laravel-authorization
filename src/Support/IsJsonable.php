@@ -3,7 +3,7 @@
  * Created on 14/02/18 by enea dhack.
  */
 
-namespace Enea\Authorization;
+namespace Enea\Authorization\Support;
 
 trait IsJsonable
 {
