@@ -12,7 +12,6 @@ use Enea\Authorization\Facades\Revoker;
 use Enea\Authorization\Support\Tables;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Collection;
 
 /**
  * Trait HasRole.
@@ -37,22 +36,22 @@ trait HasRole
 
     public function grant(PermissionContract $permission): void
     {
-        Granter::grant($this, $permission);
+        $this->syncGrant([$permission]);
     }
 
-    public function syncGrant(Collection $permissions): void
+    public function syncGrant(array $permissions): void
     {
-        Granter::syncGrant($this, $permissions);
+        Granter::permissions($this, collect($permissions));
     }
 
     public function revoke(PermissionContract $permission): void
     {
-        Revoker::revoke($this, $permission);
+        $this->syncRevoke([$permission]);
     }
 
-    public function syncRevoke(Collection $permissions): void
+    public function syncRevoke(array $permissions): void
     {
-        Revoker::syncRevoke($this, $permissions);
+        Revoker::permissions($this, collect($permissions));
     }
 
     public function permissions(): BelongsToMany
