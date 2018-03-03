@@ -7,38 +7,29 @@ namespace Enea\Authorization\Operators;
 
 use Closure;
 use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Contracts\GrantableOwner;
-use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
+use Enea\Authorization\Contracts\PermissionContract;
+use Enea\Authorization\Contracts\PermissionsOwner;
+use Enea\Authorization\Contracts\RoleContract;
+use Enea\Authorization\Contracts\RolesOwner;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Collection;
 
 class Granter extends Modifier
 {
-    public function grant(GrantableOwner $authorizationRepository, Grantable $grantable): void
+    public function permission(PermissionsOwner $owner, PermissionContract $permission): void
     {
-        $authorizations = $this->resolveAuthorizationRepository($authorizationRepository, $grantable);
-
-        if (! $this->saveFor($authorizations)($grantable)) {
-            throw new AuthorizationNotGrantedException($grantable);
-        }
+        $this->grantOn($owner->permissions())($permission);
     }
 
-    public function syncGrant(GrantableOwner $authorizationRepository, Collection $grantableCollection): void
+    public function role(RolesOwner $owner, RoleContract $role): void
     {
-        $grantableCollection->each($this->grantTo($authorizationRepository));
+        $this->grantOn($owner->roles())($role);
     }
 
-    private function grantTo(GrantableOwner $authorizationRepository): Closure
+    protected function grantOn(BelongsToMany $authorizations): Closure
     {
-        return function (Grantable $grantable) use ($authorizationRepository): void {
-            $this->grant($authorizationRepository, $grantable);
-        };
-    }
-
-    protected function saveFor(BelongsToMany $authorizations): Closure
-    {
-        return function (Grantable $grantable) use ($authorizations): bool {
-            return ! is_null($authorizations->save($this->castToModel($grantable)));
+        return function (Grantable $grantable) use ($authorizations): void {
+            $saved = ! is_null($authorizations->save($this->castToModel($grantable)));
+            $this->throwErrorIfNotSaved($saved, $grantable);
         };
     }
 }

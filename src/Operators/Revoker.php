@@ -7,38 +7,29 @@ namespace Enea\Authorization\Operators;
 
 use Closure;
 use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Contracts\GrantableOwner;
-use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
+use Enea\Authorization\Contracts\PermissionContract;
+use Enea\Authorization\Contracts\PermissionsOwner;
+use Enea\Authorization\Contracts\RoleContract;
+use Enea\Authorization\Contracts\RolesOwner;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Collection;
 
 class Revoker extends Modifier
 {
-    public function revoke(GrantableOwner $authorizationRepository, Grantable $grantable): void
+    public function permission(PermissionsOwner $owner, PermissionContract $permission): void
     {
-        $authorizations = $this->resolveAuthorizationRepository($authorizationRepository, $grantable);
-
-        if (! $this->removeFrom($authorizations)($grantable)) {
-            throw new AuthorizationNotGrantedException($grantable);
-        }
+        $this->revokeOn($owner->permissions())($permission);
     }
 
-    public function syncRevoke(GrantableOwner $authorizationRepository, Collection $grantableCollection): void
+    public function role(RolesOwner $owner, RoleContract $role): void
     {
-        $grantableCollection->each($this->revokeTo($authorizationRepository));
+        $this->revokeOn($owner->roles())($role);
     }
 
-    private function revokeTo(GrantableOwner $authorizationRepository): Closure
-    {
-        return function (Grantable $grantable) use ($authorizationRepository): void {
-            $this->revoke($authorizationRepository, $grantable);
-        };
-    }
-
-    private function removeFrom(BelongsToMany $authorizations): Closure
+    private function revokeOn(BelongsToMany $authorizations): Closure
     {
         return function (Grantable $grantable) use ($authorizations): bool {
-            return $this->isSuccessful($authorizations->detach($this->castToModel($grantable)));
+            $saved = $this->isSuccessful($authorizations->detach($this->castToModel($grantable)));
+            $this->throwErrorIfNotSaved($saved, $grantable);
         };
     }
 
