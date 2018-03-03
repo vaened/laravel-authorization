@@ -5,13 +5,15 @@
 
 namespace Enea\Authorization\Traits;
 
-use Enea\Authorization\AuthorizationWrapper;
 use Enea\Authorization\Contracts\Grantable;
+use Enea\Authorization\Contracts\PermissionContract;
+use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Facades\Granter;
 use Enea\Authorization\Facades\Revoker;
 use Enea\Authorization\Support\Tables;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 
 /**
  * Trait Authorizable.
@@ -25,22 +27,24 @@ trait Authorizable
 {
     public function grant(Grantable $grantable): void
     {
-        Granter::grant($this, $grantable);
+        $this->syncGrant([$grantable]);
     }
 
     public function syncGrant(array $grantables): void
     {
-        Granter::syncGrant($this, collect($grantables));
+        Granter::permissions($this, $this->filterPermissions($grantables));
+        Granter::roles($this, $this->filterRoles($grantables));
     }
 
     public function revoke(Grantable $grantable): void
     {
-        Revoker::revoke($this, $grantable);
+        $this->syncRevoke([$grantable]);
     }
 
     public function syncRevoke(array $grantables): void
     {
-        Revoker::syncRevoke($this, collect($grantables));
+        Revoker::permissions($this, $this->filterPermissions($grantables));
+        Revoker::roles($this, $this->filterRoles($grantables));
     }
 
     public function permissions(): BelongsToMany
@@ -53,11 +57,6 @@ trait Authorizable
         return $this->morphToMany(Tables::roleModel(), 'authorizable', Tables::userRoleModel());
     }
 
-    public function getAuthorizationWrapper(): AuthorizationWrapper
-    {
-        return AuthorizationWrapper::fill($this->roles, $this->permissions);
-    }
-
     public function getPermissionModels(): EloquentCollection
     {
         return $this->permissions;
@@ -66,5 +65,19 @@ trait Authorizable
     public function getRoleModels(): EloquentCollection
     {
         return $this->roles;
+    }
+
+    private function filterPermissions(array $grantables): Collection
+    {
+        return collect($grantables)->filter(function (Grantable $grantable) {
+            return $grantable instanceof PermissionContract;
+        });
+    }
+
+    private function filterRoles(array $grantables): Collection
+    {
+        return collect($grantables)->filter(function (Grantable $grantable) {
+            return $grantable instanceof RoleContract;
+        });
     }
 }

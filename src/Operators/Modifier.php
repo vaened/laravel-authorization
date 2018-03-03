@@ -6,23 +6,47 @@
 namespace Enea\Authorization\Operators;
 
 use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Contracts\GrantableOwner;
+use Enea\Authorization\Contracts\PermissionContract;
+use Enea\Authorization\Contracts\PermissionsOwner;
+use Enea\Authorization\Contracts\RoleContract;
+use Enea\Authorization\Contracts\RolesOwner;
+use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
 use Enea\Authorization\Exceptions\GrantableIsNotValidModelException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 
 abstract class Modifier
 {
-    private $resolver;
+    /**
+     * Modify the permission repository.
+     *
+     * @param PermissionsOwner $owner
+     * @param PermissionContract $permission
+     * @return void
+     */
+    public abstract function permission(PermissionsOwner $owner, PermissionContract $permission): void;
 
-    public function __construct(AuthorizationRepositoryResolver $resolver)
+    /**
+     * Modify the role repository.
+     *
+     * @param RolesOwner $owner
+     * @param RoleContract $role
+     * @return void
+     */
+    public abstract function role(RolesOwner $owner, RoleContract $role): void;
+
+    public function permissions(PermissionsOwner $owner, Collection $permissions): void
     {
-        $this->resolver = $resolver;
+        $permissions->each(function (PermissionContract $permission) use ($owner) {
+            $this->permission($owner, $permission);
+        });
     }
 
-    protected function resolveAuthorizationRepository(GrantableOwner $repository, Grantable $grantable): BelongsToMany
+    public function roles(RolesOwner $owner, Collection $roles): void
     {
-        return $this->resolver->resolve($repository, $grantable);
+        $roles->each(function (RoleContract $role) use ($owner) {
+            $this->role($owner, $role);
+        });
     }
 
     protected function castToModel(Grantable $grantable): Model
@@ -32,5 +56,12 @@ abstract class Modifier
         }
 
         return $grantable;
+    }
+
+    protected function throwErrorIfNotSaved(bool $saved, Grantable $grantable)
+    {
+        if (! $saved) {
+            throw new AuthorizationNotGrantedException($grantable);
+        }
     }
 }
