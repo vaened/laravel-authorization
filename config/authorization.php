@@ -1,6 +1,18 @@
 <?php
 
 return [
+    /*
+      |--------------------------------------------------------------------------
+      | Default Driver
+      |--------------------------------------------------------------------------
+      |
+      | This option controls the default "driver" that will be used to
+      | access the authorization repository, by default the "database" driver is used.
+      |
+      | Supported: "database"
+      */
+    'driver' => 'database',
+
     'models' => [
         /*
           |--------------------------------------------------------------------------
@@ -45,12 +57,4 @@ return [
         /// Table that stores all permissions per authorized user.
         'user_permissions' => 'user_permissions',
     ],
-
-    'cache' => [
-        /// Prefix for key name of all permissions in cache.
-        'prefix_key' => 'enea-laravel-authorization',
-
-        /// Time in minutes to allow cached permissions.
-        'expiration_time' => 60 * 24
-    ]
 ];
