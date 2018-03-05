@@ -38,6 +38,8 @@ class AuthorizationServiceProvider extends ServiceProvider
      */
     protected function registerBindings()
     {
+        $this->configDriver();
+
         $config = $this->app->make('config')->get('authorization.models');
         $this->app->bind(PermissionContract::class, $config['permission']);
         $this->app->bind(RoleContract::class, $config['role']);
@@ -46,5 +48,10 @@ class AuthorizationServiceProvider extends ServiceProvider
             'permission' => $config['permission'],
             'role' => $config['role'],
         ]);
+    }
+
+    private function configDriver(): void
+    {
+        (new DriversResolver($this->app))->make();
     }
 }
