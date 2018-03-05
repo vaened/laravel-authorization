@@ -13,7 +13,7 @@ use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Contracts\RolesOwner;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Granter extends Modifier
+class Granter extends Operator
 {
     public function permission(PermissionsOwner $owner, PermissionContract $permission): void
     {

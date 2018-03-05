@@ -15,7 +15,7 @@ use Enea\Authorization\Exceptions\GrantableIsNotValidModelException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-abstract class Modifier
+abstract class Operator
 {
     /**
      * Modify the permission repository.
