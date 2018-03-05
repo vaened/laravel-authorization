@@ -29,11 +29,6 @@ trait HasRole
         return static::grantableBySecretName($secretName);
     }
 
-    public function getIdentificationKey(): string
-    {
-        return $this->getKey();
-    }
-
     public function can(string $permission): bool
     {
         return true;

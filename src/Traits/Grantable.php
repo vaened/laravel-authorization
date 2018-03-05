@@ -25,6 +25,11 @@ trait Grantable
         return $this->secret_name;
     }
 
+    public function getIdentificationKey(): string
+    {
+        return $this->getKey();
+    }
+
     protected static function grantableBySecretName(string $secretName): ?GrantableContract
     {
         return static::query()->where('secret_name', $secretName)->first();
