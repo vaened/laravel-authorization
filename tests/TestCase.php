@@ -40,6 +40,9 @@ class TestCase extends BaseTestCase
             'prefix' => '',
         ]);
 
+
+        $app['config']->set('authorization.driver', 'database');
+
         $app['config']->set('authorization.models', [
             'permission' => Permission::class,
             'role' => Role::class,
