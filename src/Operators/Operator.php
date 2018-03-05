@@ -17,22 +17,8 @@ use Illuminate\Support\Collection;
 
 abstract class Operator
 {
-    /**
-     * Modify the permission repository.
-     *
-     * @param PermissionsOwner $owner
-     * @param PermissionContract $permission
-     * @return void
-     */
     public abstract function permission(PermissionsOwner $owner, PermissionContract $permission): void;
 
-    /**
-     * Modify the role repository.
-     *
-     * @param RolesOwner $owner
-     * @param RoleContract $role
-     * @return void
-     */
     public abstract function role(RolesOwner $owner, RoleContract $role): void;
 
     public function permissions(PermissionsOwner $owner, Collection $permissions): void
