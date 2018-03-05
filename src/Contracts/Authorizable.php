@@ -5,8 +5,6 @@
 
 namespace Enea\Authorization\Contracts;
 
-use Enea\Authorization\AuthorizationWrapper;
-
 interface Authorizable extends RolesOwner, PermissionsOwner
 {
     public function grant(Grantable $grantable): void;
@@ -16,6 +14,4 @@ interface Authorizable extends RolesOwner, PermissionsOwner
     public function revoke(Grantable $grantable): void;
 
     public function syncRevoke(array $grantables): void;
-
-    public function getAuthorizationWrapper(): AuthorizationWrapper;
 }
