@@ -13,19 +13,19 @@ use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Contracts\RolesOwner;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Revoker extends Modifier
+class Revoker extends Operator
 {
     public function permission(PermissionsOwner $owner, PermissionContract $permission): void
     {
-        $this->revokeOn($owner->permissions())($permission);
+        $this->revokeTo($owner->permissions())($permission);
     }
 
     public function role(RolesOwner $owner, RoleContract $role): void
     {
-        $this->revokeOn($owner->roles())($role);
+        $this->revokeTo($owner->roles())($role);
     }
 
-    private function revokeOn(BelongsToMany $authorizations): Closure
+    private function revokeTo(BelongsToMany $authorizations): Closure
     {
         return function (Grantable $grantable) use ($authorizations): bool {
             $saved = $this->isSuccessful($authorizations->detach($this->castToModel($grantable)));

@@ -13,19 +13,19 @@ use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Contracts\RolesOwner;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Granter extends Modifier
+class Granter extends Operator
 {
     public function permission(PermissionsOwner $owner, PermissionContract $permission): void
     {
-        $this->grantOn($owner->permissions())($permission);
+        $this->grantTo($owner->permissions())($permission);
     }
 
     public function role(RolesOwner $owner, RoleContract $role): void
     {
-        $this->grantOn($owner->roles())($role);
+        $this->grantTo($owner->roles())($role);
     }
 
-    protected function grantOn(BelongsToMany $authorizations): Closure
+    protected function grantTo(BelongsToMany $authorizations): Closure
     {
         return function (Grantable $grantable) use ($authorizations): void {
             $saved = ! is_null($authorizations->save($this->castToModel($grantable)));
