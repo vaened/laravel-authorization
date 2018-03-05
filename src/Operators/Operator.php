@@ -17,9 +17,9 @@ use Illuminate\Support\Collection;
 
 abstract class Operator
 {
-    public abstract function permission(PermissionsOwner $owner, PermissionContract $permission): void;
+    abstract public function permission(PermissionsOwner $owner, PermissionContract $permission): void;
 
-    public abstract function role(RolesOwner $owner, RoleContract $role): void;
+    abstract public function role(RolesOwner $owner, RoleContract $role): void;
 
     public function permissions(PermissionsOwner $owner, Collection $permissions): void
     {
