@@ -15,4 +15,9 @@ trait HasPermission
     {
         return static::grantableBySecretName($secretName);
     }
+
+    public function getIdentificationKey(): string
+    {
+        return $this->getKey();
+    }
 }

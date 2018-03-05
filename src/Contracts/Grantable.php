@@ -5,7 +5,7 @@
 
 namespace Enea\Authorization\Contracts;
 
-interface Grantable
+interface Grantable extends Identifiable
 {
     public function getSecretName(): string;
 }
