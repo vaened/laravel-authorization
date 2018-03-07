@@ -5,18 +5,25 @@
 
 namespace Enea\Authorization\Operators;
 
-use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Contracts\PermissionContract;
-use Enea\Authorization\Contracts\PermissionsOwner;
-use Enea\Authorization\Contracts\RoleContract;
-use Enea\Authorization\Contracts\RolesOwner;
-use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
-use Enea\Authorization\Exceptions\GrantableIsNotValidModelException;
+use Enea\Authorization\Contracts\{
+    Grantable, GrantableOwner, PermissionContract, PermissionsOwner, RoleContract, RolesOwner
+};
+use Enea\Authorization\Exceptions\{
+    AuthorizationNotGrantedException, GrantableIsNotValidModelException
+};
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 abstract class Operator
 {
+    private $event;
+
+    public function __construct(Dispatcher $event)
+    {
+        $this->event = $event;
+    }
+
     abstract public function permission(PermissionsOwner $owner, PermissionContract $permission): void;
 
     abstract public function role(RolesOwner $owner, RoleContract $role): void;
@@ -44,10 +51,15 @@ abstract class Operator
         return $grantable;
     }
 
-    protected function throwErrorIfNotSaved(bool $saved, Grantable $grantable)
+    protected function throwErrorIfNotSaved(bool $saved, Grantable $grantable): void
     {
         if (! $saved) {
             throw new AuthorizationNotGrantedException($grantable);
         }
+    }
+
+    protected function dispatchEvent(string $event, GrantableOwner $owner, Grantable $grantable)
+    {
+        $this->event->dispatch($event, [$owner, $grantable]);
     }
 }
