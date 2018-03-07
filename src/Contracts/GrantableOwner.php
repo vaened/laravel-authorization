@@ -5,6 +5,6 @@
 
 namespace Enea\Authorization\Contracts;
 
-interface GrantableOwner
+interface GrantableOwner extends Identifiable
 {
 }
