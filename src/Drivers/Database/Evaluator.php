@@ -18,19 +18,9 @@ class Evaluator implements Authorizer
         return $this->has($owner->permissions())($permission);
     }
 
-    public function cannot(PermissionsOwner $owner, string $permission): bool
-    {
-        return ! $this->can($owner, $permission);
-    }
-
-    public function memberOf(RolesOwner $owner, string $role): bool
+    public function is(RolesOwner $owner, string $role): bool
     {
         return $this->has($owner->roles())($role);
-    }
-
-    public function notIsMemberOf(RolesOwner $owner, string $role): bool
-    {
-        return ! $this->memberOf($owner, $role);
     }
 
     private function has(BelongsToMany $repository): Closure
