@@ -6,7 +6,7 @@
 namespace Enea\Authorization;
 
 use Enea\Authorization\Authorizer as AuthorizerContract;
-use Enea\Authorization\Drivers\Database\Evaluator as DatabaseAuthorizer;
+use Enea\Authorization\Drivers\Database\Authorizer as DatabaseAuthorizer;
 use Enea\Authorization\Exceptions\UnsupportedDriverException;
 use Enea\Authorization\Support\Config;
 use Illuminate\Contracts\Foundation\Application;
