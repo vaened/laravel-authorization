@@ -56,7 +56,7 @@ trait HasRole
 
     public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Tables::permissionModel(), Tables::rolePermissionName(), 'permission_id', 'role_id');
+        return $this->belongsToMany(Tables::permissionModel(), Tables::rolePermissionName(), 'role_id', 'permission_id');
     }
 
     public function getPermissionModels(): EloquentCollection
