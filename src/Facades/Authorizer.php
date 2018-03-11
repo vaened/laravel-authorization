@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Facade;
  * @author enea dhack <enea.so@live.com>
  *
  * @method static bool can(PermissionsOwner $owner, string $permission)
+ * @method static bool syncCan(PermissionsOwner $owner, array $permissions)
  * @method static bool is(RolesOwner $owner, string $role)
+ * @method static bool syncIs(RolesOwner $owner, array $roles)
  */
 class Authorizer extends Facade
 {

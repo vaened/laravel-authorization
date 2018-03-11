@@ -11,6 +11,11 @@ class RoleEvaluator extends Evaluator
 {
     public function evaluate(RolesOwner $owner, string $role): bool
     {
-        return $this->has($owner->roles()->getQuery())($role);
+        return $this->syncEvaluate($owner, [$role]);
+    }
+
+    public function syncEvaluate(RolesOwner $owner, array $roles): bool
+    {
+        return $this->has($owner->roles()->getQuery())($roles);
     }
 }

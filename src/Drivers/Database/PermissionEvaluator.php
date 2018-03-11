@@ -12,13 +12,18 @@ class PermissionEvaluator extends Evaluator
 {
     public function evaluate(PermissionsOwner $owner, string $permission): bool
     {
-        return $this->searchOnRoles($owner, $permission) || $this->has($owner->permissions()->getQuery())($permission);
+        return $this->syncEvaluate($owner, [$permission]);
     }
 
-    private function searchOnRoles(PermissionsOwner $owner, string $permission): bool
+    public function syncEvaluate(PermissionsOwner $owner, array $permissions): bool
+    {
+        return $this->searchOnRoles($owner, $permissions) || $this->has($owner->permissions()->getQuery())($permissions);
+    }
+
+    private function searchOnRoles(PermissionsOwner $owner, array $permission): bool
     {
         if ($owner instanceof RolesOwner) {
-            return $owner->roles()->limit(1)->whereHas('permissions', $this->equals($permission))->exists();
+            return $owner->roles()->limit(1)->whereHas('permissions', $this->same([$permission]))->exists();
         }
 
         return false;

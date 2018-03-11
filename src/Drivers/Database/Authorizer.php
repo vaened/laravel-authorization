@@ -27,8 +27,18 @@ class Authorizer implements AuthorizerContract
         return $this->permission->evaluate($owner, $permission);
     }
 
+    public function syncCan(PermissionsOwner $owner, array $permissions): bool
+    {
+        return $this->permission->syncEvaluate($owner, $permissions);
+    }
+
     public function is(RolesOwner $owner, string $role): bool
     {
         return $this->role->evaluate($owner, $role);
+    }
+
+    public function syncIs(RolesOwner $owner, array $roles): bool
+    {
+        return $this->role->syncEvaluate($owner, $roles);
     }
 }

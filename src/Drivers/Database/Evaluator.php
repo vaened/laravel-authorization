@@ -12,15 +12,15 @@ abstract class Evaluator
 {
     protected function has(Builder $repository): Closure
     {
-        return function (string $grantableName) use ($repository): bool {
-            return ($this->equals($grantableName)($repository))->exists();
+        return function (array $grantableNames) use ($repository): bool {
+            return ($this->same($grantableNames)($repository))->exists();
         };
     }
 
-    protected function equals(string $grantableName): Closure
+    protected function same(array $grantableNames): Closure
     {
-        return function (Builder $repository) use ($grantableName): Builder {
-            return $repository->limit(1)->where('secret_name', $grantableName);
+        return function (Builder $repository) use ($grantableNames): Builder {
+            return $repository->limit(1)->whereIn('secret_name', $grantableNames);
         };
     }
 }
