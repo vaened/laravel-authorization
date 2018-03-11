@@ -6,12 +6,9 @@
 namespace Enea\Authorization\Operators;
 
 use Closure;
-use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Contracts\GrantableOwner;
-use Enea\Authorization\Contracts\PermissionContract;
-use Enea\Authorization\Contracts\PermissionsOwner;
-use Enea\Authorization\Contracts\RoleContract;
-use Enea\Authorization\Contracts\RolesOwner;
+use Enea\Authorization\Contracts\{
+    Grantable, GrantableOwner, PermissionContract, PermissionsOwner, RoleContract, RolesOwner
+};
 use Enea\Authorization\Events\Granted;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
