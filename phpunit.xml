@@ -5,4 +5,8 @@
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
+
+    <php>
+        <env name="DB_CONNECTION" value="sqlite"/>
+    </php>
 </phpunit>
