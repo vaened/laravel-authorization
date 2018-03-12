@@ -58,8 +58,8 @@ abstract class Operator
         }
     }
 
-    protected function dispatchEvent(string $event, GrantableOwner $owner, Grantable $grantable)
+    protected function dispatchEvent(string $event, GrantableOwner $owner, Grantable $grantable): void
     {
-        $this->event->dispatch($event, [$owner, $grantable]);
+        $this->event->dispatch(new $event($owner, $grantable));
     }
 }
