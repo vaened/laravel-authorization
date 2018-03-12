@@ -20,10 +20,10 @@ class PermissionEvaluator extends Evaluator
         return $this->searchOnRoles($owner, $permissions) || $this->has($owner->permissions()->getQuery())($permissions);
     }
 
-    private function searchOnRoles(PermissionsOwner $owner, array $permission): bool
+    private function searchOnRoles(PermissionsOwner $owner, array $permissions): bool
     {
         if ($owner instanceof RolesOwner) {
-            return $owner->roles()->limit(1)->whereHas('permissions', $this->same([$permission]))->exists();
+            return $owner->roles()->limit(1)->whereHas('permissions', $this->same($permissions))->exists();
         }
 
         return false;
