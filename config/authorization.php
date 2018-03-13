@@ -57,4 +57,8 @@ return [
         /// Table that stores all permissions per authorized user.
         'user_permissions' => 'user_permissions',
     ],
+    'listeners' => [
+        // write in the log every time access to a protected route is denied with the authorization middleware.
+        'unauthorized-owner-logger' => true,
+    ],
 ];
