@@ -41,6 +41,6 @@ class Revoker extends Operator
 
     private function dispatchRevokedEvent(GrantableOwner $owner, Grantable $permission): void
     {
-        $this->dispatchEvent(Revoked::class, $owner, $permission);
+        $this->dispatchEvent(new Revoked($owner, $permission));
     }
 }

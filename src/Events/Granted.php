@@ -9,7 +9,7 @@ use Enea\Authorization\Contracts\{
     Grantable, GrantableOwner
 };
 
-class Granted
+class Granted implements Operation
 {
     private $grantable;
 

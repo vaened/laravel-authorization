@@ -36,6 +36,6 @@ class Granter extends Operator
 
     private function dispatchGrantedEvent(GrantableOwner $owner, Grantable $permission): void
     {
-        $this->dispatchEvent(Granted::class, $owner, $permission);
+        $this->dispatchEvent(new Granted($owner, $permission));
     }
 }

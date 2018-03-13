@@ -6,8 +6,9 @@
 namespace Enea\Authorization\Operators;
 
 use Enea\Authorization\Contracts\{
-    Grantable, GrantableOwner, PermissionContract, PermissionsOwner, RoleContract, RolesOwner
+    Grantable, PermissionContract, PermissionsOwner, RoleContract, RolesOwner
 };
+use Enea\Authorization\Events\Operation;
 use Enea\Authorization\Exceptions\{
     AuthorizationNotGrantedException, GrantableIsNotValidModelException
 };
@@ -58,8 +59,8 @@ abstract class Operator
         }
     }
 
-    protected function dispatchEvent(string $event, GrantableOwner $owner, Grantable $grantable): void
+    protected function dispatchEvent(Operation $operation): void
     {
-        $this->event->dispatch(new $event($owner, $grantable));
+        $this->event->dispatch($operation);
     }
 }

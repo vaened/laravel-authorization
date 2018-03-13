@@ -8,7 +8,7 @@ namespace Enea\Authorization\Events;
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\GrantableOwner;
 
-class Revoked
+class Revoked implements Operation
 {
     private $grantable;
 
