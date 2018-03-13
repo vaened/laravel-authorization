@@ -34,6 +34,7 @@ abstract class AuthorizerMiddleware
         }
 
         $this->event->dispatch(new UnauthorizedOwner($request->user(), $grantables));
+
         throw new UnauthorizedOwnerException(403, $grantables);
     }
 
