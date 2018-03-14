@@ -43,7 +43,7 @@ return [
 
     'tables' => [
         /// Table containing the roles.
-        'role' => 'role',
+        'role' => 'roles',
 
         /// Table containing the permissions.
         'permission' => 'permissions',
