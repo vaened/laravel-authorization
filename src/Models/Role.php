@@ -12,5 +12,8 @@ class Role extends Grantable implements RoleContract
 {
     use HasRole;
 
-    protected $configTableKeyName = 'roles';
+    protected function getConfigTableKeyName(): string
+    {
+        return 'role';
+    }
 }

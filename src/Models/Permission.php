@@ -12,5 +12,8 @@ class Permission extends Grantable implements PermissionContract
 {
     use HasPermission;
 
-    protected $configTableKeyName = 'permission';
+    protected function getConfigTableKeyName(): string
+    {
+        return 'permission';
+    }
 }

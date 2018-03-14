@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class Grantable extends Model
 {
-    protected $configTableKeyName;
-
     public function __construct(array $attributes = [])
     {
-        $this->setTable(config("authorization.tables.{$this->configTableKeyName}"));
+        $this->setTable(config("authorization.tables.{$this->getConfigTableKeyName()}"));
         parent::__construct($attributes);
     }
+
+    abstract protected function getConfigTableKeyName(): string;
 
     public function __toString()
     {
