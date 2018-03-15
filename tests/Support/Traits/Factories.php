@@ -8,6 +8,7 @@ namespace Enea\Authorization\Test\Support\Traits;
 use Enea\Authorization\Models\Permission;
 use Enea\Authorization\Models\Role;
 use Enea\Authorization\Test\Support\Models\User;
+use Illuminate\Support\Collection;
 
 trait Factories
 {
@@ -16,9 +17,19 @@ trait Factories
         return factory(Permission::class)->create($customAttributes);
     }
 
+    protected function permissions(int $amount = 1): Collection
+    {
+        return factory(Permission::class, $amount)->create();
+    }
+
     protected function role(array $customAttributes = array()): Role
     {
         return factory(Role::class)->create($customAttributes);
+    }
+
+    protected function roles(int $amount = 1): Collection
+    {
+        return factory(Role::class, $amount)->create();
     }
 
     protected function user(): User
