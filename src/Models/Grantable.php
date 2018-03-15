@@ -11,11 +11,11 @@ abstract class Grantable extends Model
 {
     public function __construct(array $attributes = [])
     {
-        $this->setTable(config("authorization.tables.{$this->getConfigTableKeyName()}"));
+        $this->setTable($this->getConfigTableName());
         parent::__construct($attributes);
     }
 
-    abstract protected function getConfigTableKeyName(): string;
+    abstract protected function getConfigTableName(): string;
 
     public function __toString()
     {

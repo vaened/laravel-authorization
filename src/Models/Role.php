@@ -6,14 +6,15 @@
 namespace Enea\Authorization\Models;
 
 use Enea\Authorization\Contracts\RoleContract;
+use Enea\Authorization\Support\Config;
 use Enea\Authorization\Traits\HasRole;
 
 class Role extends Grantable implements RoleContract
 {
     use HasRole;
 
-    protected function getConfigTableKeyName(): string
+    protected function getConfigTableName(): string
     {
-        return 'role';
+        return Config::roleTableName();
     }
 }

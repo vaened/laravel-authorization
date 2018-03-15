@@ -6,14 +6,15 @@
 namespace Enea\Authorization\Models;
 
 use Enea\Authorization\Contracts\PermissionContract;
+use Enea\Authorization\Support\Config;
 use Enea\Authorization\Traits\HasPermission;
 
 class Permission extends Grantable implements PermissionContract
 {
     use HasPermission;
 
-    protected function getConfigTableKeyName(): string
+    protected function getConfigTableName(): string
     {
-        return 'permission';
+        return Config::permissionTableName();
     }
 }
