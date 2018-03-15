@@ -10,7 +10,7 @@ use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Facades\Granter;
 use Enea\Authorization\Facades\Revoker;
-use Enea\Authorization\Support\Tables;
+use Enea\Authorization\Support\Config;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
@@ -49,12 +49,12 @@ trait Authorizable
 
     public function permissions(): BelongsToMany
     {
-        return $this->morphToMany(Tables::permissionModel(), 'authorizable', Tables::userPermissionModel());
+        return $this->morphToMany(Config::permissionModel(), 'authorizable', Config::userPermissionTableName());
     }
 
     public function roles(): BelongsToMany
     {
-        return $this->morphToMany(Tables::roleModel(), 'authorizable', Tables::userRoleModel());
+        return $this->morphToMany(Config::roleModel(), 'authorizable', Config::userRoleTableName());
     }
 
     public function getPermissionModels(): EloquentCollection

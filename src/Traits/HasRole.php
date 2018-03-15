@@ -9,7 +9,7 @@ use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Facades\Granter;
 use Enea\Authorization\Facades\Revoker;
-use Enea\Authorization\Support\Tables;
+use Enea\Authorization\Support\Config;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -56,7 +56,7 @@ trait HasRole
 
     public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Tables::permissionModel(), Tables::rolePermissionName(), 'role_id', 'permission_id');
+        return $this->belongsToMany(Config::permissionModel(), Config::rolePermissionTableName(), 'role_id', 'permission_id');
     }
 
     public function getPermissionModels(): EloquentCollection
