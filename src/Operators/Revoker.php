@@ -28,7 +28,7 @@ class Revoker extends Operator
 
     private function revokeTo(BelongsToMany $authorizations): Closure
     {
-        return function (Grantable $grantable) use ($authorizations): bool {
+        return function (Grantable $grantable) use ($authorizations): void {
             $saved = $this->isSuccessful($authorizations->detach($this->castToModel($grantable)));
             $this->throwErrorIfNotSaved($saved, $grantable);
         };
