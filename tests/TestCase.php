@@ -39,22 +39,6 @@ class TestCase extends BaseTestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
-
-        $config->set('authorization', [
-            'driver' => 'database',
-            'tables' => [
-                /// Table containing the roles.
-                'role' => 'roles',
-                /// Table containing the permissions.
-                'permission' => 'permissions',
-                /// Table containing the roles that belong to a role.
-                'role_has_many_permissions' => 'role_permissions',
-                /// Table that stores all roles per authorized user.
-                'user_roles' => 'user_roles',
-                /// Table that stores all permissions per authorized user.
-                'user_permissions' => 'user_permissions',
-            ],
-        ]);
     }
 
     protected function registerModelFactories(): void
