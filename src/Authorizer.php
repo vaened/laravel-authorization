@@ -13,9 +13,9 @@ interface Authorizer
 {
     public function can(PermissionsOwner $owner, string $permission): bool;
 
-    public function syncCan(PermissionsOwner $owner, array $permissions): bool;
+    public function canAny(PermissionsOwner $owner, array $permissions): bool;
 
     public function is(RolesOwner $owner, string $role): bool;
 
-    public function syncIs(RolesOwner $owner, array $roles): bool;
+    public function isAny(RolesOwner $owner, array $roles): bool;
 }
