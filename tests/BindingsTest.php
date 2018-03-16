@@ -5,11 +5,11 @@
 
 namespace Enea\Authorization\Test\Drivers;
 
-use Enea\Authorization\Contracts\PermissionContract;
-use Enea\Authorization\Contracts\RoleContract;
+use Enea\Authorization\Contracts\{
+    PermissionContract, RoleContract
+};
 use Enea\Authorization\DriversResolver;
 use Enea\Authorization\Exceptions\UnsupportedDriverException;
-use Enea\Authorization\Support\Config;
 use Enea\Authorization\Test\TestCase;
 
 class BindingsTest extends TestCase
@@ -22,13 +22,13 @@ class BindingsTest extends TestCase
         $resolver->make();
     }
 
-    public function test_the_configured_permission_model_is_a_contract(): void
+    public function test_the_permission_contract_has_a_bound_model(): void
     {
-        $this->assertInstanceOf(PermissionContract::class, $this->app->make(Config::permissionModel()));
+        $this->assertNotNull($this->app->make(PermissionContract::class));
     }
 
-    public function test_the_configured_role_model_is_a_contract(): void
+    public function test_the_role_contract_has_a_bound_model(): void
     {
-        $this->assertInstanceOf(RoleContract::class, $this->app->make(Config::roleModel()));
+        $this->assertNotNull($this->app->make(RoleContract::class));
     }
 }
