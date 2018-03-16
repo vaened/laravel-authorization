@@ -13,7 +13,7 @@ class PermissionAuthorizerMiddleware extends AuthorizerMiddleware
     protected function authorized(GrantableOwner $owner, array $grantables): bool
     {
         if ($owner instanceof PermissionsOwner) {
-            return $this->authorizer->syncCan($owner, $grantables);
+            return $this->authorizer->canAny($owner, $grantables);
         }
 
         return false;

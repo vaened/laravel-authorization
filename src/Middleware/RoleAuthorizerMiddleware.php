@@ -13,7 +13,7 @@ class RoleAuthorizerMiddleware extends AuthorizerMiddleware
     protected function authorized(GrantableOwner $owner, array $grantables): bool
     {
         if ($owner instanceof RolesOwner) {
-            return $this->authorizer->syncIs($owner, $grantables);
+            return $this->authorizer->isAny($owner, $grantables);
         }
 
         return false;
