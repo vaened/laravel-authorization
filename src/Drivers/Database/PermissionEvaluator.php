@@ -10,12 +10,7 @@ use Enea\Authorization\Contracts\RolesOwner;
 
 class PermissionEvaluator extends Evaluator
 {
-    public function evaluate(PermissionsOwner $owner, string $permission): bool
-    {
-        return $this->syncEvaluate($owner, [$permission]);
-    }
-
-    public function syncEvaluate(PermissionsOwner $owner, array $permissions): bool
+    public function evaluate(PermissionsOwner $owner, array $permissions): bool
     {
         return $this->searchOnRoles($owner, $permissions) || $this->has($owner->permissions()->getQuery())($permissions);
     }

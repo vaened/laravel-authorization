@@ -24,21 +24,21 @@ class Authorizer implements AuthorizerContract
 
     public function can(PermissionsOwner $owner, string $permission): bool
     {
-        return $this->permission->evaluate($owner, $permission);
+        return $this->canAny($owner, [$permission]);
     }
 
     public function canAny(PermissionsOwner $owner, array $permissions): bool
     {
-        return $this->permission->syncEvaluate($owner, $permissions);
+        return $this->permission->evaluate($owner, $permissions);
     }
 
     public function is(RolesOwner $owner, string $role): bool
     {
-        return $this->role->evaluate($owner, $role);
+        return $this->isAny($owner, [$role]);
     }
 
     public function isAny(RolesOwner $owner, array $roles): bool
     {
-        return $this->role->syncEvaluate($owner, $roles);
+        return $this->role->evaluate($owner, $roles);
     }
 }

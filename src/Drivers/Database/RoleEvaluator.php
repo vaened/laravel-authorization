@@ -9,12 +9,7 @@ use Enea\Authorization\Contracts\RolesOwner;
 
 class RoleEvaluator extends Evaluator
 {
-    public function evaluate(RolesOwner $owner, string $role): bool
-    {
-        return $this->syncEvaluate($owner, [$role]);
-    }
-
-    public function syncEvaluate(RolesOwner $owner, array $roles): bool
+    public function evaluate(RolesOwner $owner, array $roles): bool
     {
         return $this->has($owner->roles()->getQuery())($roles);
     }
