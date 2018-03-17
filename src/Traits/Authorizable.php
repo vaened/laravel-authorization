@@ -8,6 +8,7 @@ namespace Enea\Authorization\Traits;
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
+use Enea\Authorization\Facades\Authorizer;
 use Enea\Authorization\Facades\Granter;
 use Enea\Authorization\Facades\Revoker;
 use Enea\Authorization\Support\Config;
@@ -45,6 +46,26 @@ trait Authorizable
     {
         Revoker::permissions($this, $this->filterPermissions($grantables));
         Revoker::roles($this, $this->filterRoles($grantables));
+    }
+
+    public function can(string $permission): bool
+    {
+        return Authorizer::can($this, $permission);
+    }
+
+    public function cannot(string $permission): bool
+    {
+        return ! $this->can($permission);
+    }
+
+    public function isMemberOf(string $role): bool
+    {
+        return Authorizer::is($this, $role);
+    }
+
+    public function isntMemberOf(string $role): bool
+    {
+        return ! $this->isMemberOf($role);
     }
 
     public function permissions(): BelongsToMany

@@ -5,7 +5,7 @@
 
 namespace Enea\Authorization\Contracts;
 
-interface Authorizable extends RolesOwner, PermissionsOwner
+interface Authorizable extends RolesOwner, PermissionsOwner, Integrable, Permissible
 {
     public function grant(Grantable $grantable): void;
 
