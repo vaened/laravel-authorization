@@ -7,7 +7,7 @@ namespace Enea\Authorization;
 
 use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
-use Illuminate\Database\Eloquent\Relations\Relation;
+use Enea\Authorization\Support\Config;
 use Illuminate\Support\ServiceProvider;
 
 class AuthorizationServiceProvider extends ServiceProvider
@@ -40,15 +40,8 @@ class AuthorizationServiceProvider extends ServiceProvider
     protected function registerBindings()
     {
         $this->configDriver();
-
-        $config = $this->app->make('config')->get('authorization.models');
-        $this->app->bind(PermissionContract::class, $config['permission']);
-        $this->app->bind(RoleContract::class, $config['role']);
-
-        Relation::morphMap([
-            'permission' => $config['permission'],
-            'role' => $config['role'],
-        ]);
+        $this->app->bind(PermissionContract::class, Config::permissionModel());
+        $this->app->bind(RoleContract::class, Config::roleModel());
     }
 
     private function configDriver(): void

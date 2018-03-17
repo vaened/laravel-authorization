@@ -6,10 +6,6 @@
 namespace Enea\Authorization\Test;
 
 use Enea\Authorization\AuthorizationServiceProvider;
-use Enea\Authorization\Contracts\{
-    PermissionContract, RoleContract
-};
-use Enea\Authorization\Support\Config;
 use Enea\Authorization\Test\Support\Models\User;
 use Enea\Authorization\Test\Support\Traits\Factories;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -21,7 +17,6 @@ class TestCase extends BaseTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->bindClasses();
         $this->registerModelFactories();
         $this->setUpDatabase();
     }
@@ -49,12 +44,6 @@ class TestCase extends BaseTestCase
     protected function registerModelFactories(): void
     {
         $this->withFactories(__DIR__ . '/Support/Factories');
-    }
-
-    protected function bindClasses(): void
-    {
-        $this->app->bind(PermissionContract::class, Config::permissionModel());
-        $this->app->bind(RoleContract::class, Config::roleModel());
     }
 
     protected function setUpDatabase(): void
