@@ -9,13 +9,13 @@ use Enea\Authorization\Authorizer as AuthorizerContract;
 use Enea\Authorization\Drivers\Database\Authorizer as DatabaseAuthorizer;
 use Enea\Authorization\Exceptions\UnsupportedDriverException;
 use Enea\Authorization\Support\Config;
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Container\Container;
 
 class DriversResolver
 {
     private $app;
 
-    public function __construct(Application $app)
+    public function __construct(Container $app)
     {
         $this->app = $app;
     }
