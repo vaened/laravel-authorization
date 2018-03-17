@@ -7,6 +7,7 @@ namespace Enea\Authorization\Traits;
 
 use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
+use Enea\Authorization\Facades\Authorizer;
 use Enea\Authorization\Facades\Granter;
 use Enea\Authorization\Facades\Revoker;
 use Enea\Authorization\Support\Config;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 trait HasRole
 {
-    use Grantable, CanRefusePermission;
+    use Grantable;
 
     public static function locateByName(string $secretName): ? RoleContract
     {
@@ -31,7 +32,12 @@ trait HasRole
 
     public function can(string $permission): bool
     {
-        return true;
+        return Authorizer::can($this, $permission);
+    }
+
+    public function cannot(string $permission): bool
+    {
+        return ! $this->can($permission);
     }
 
     public function grant(PermissionContract $permission): void
