@@ -5,14 +5,15 @@
 
 namespace Enea\Authorization\Test\Support\Models;
 
+use Enea\Authorization\Contracts\Authorizable as AuthorizedUserContract;
+use Enea\Authorization\Traits\Authorizable;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property int $id
- */
-class User extends Model
+class User extends Model implements AuthorizedUserContract, AuthenticatableContract
 {
+    use Authorizable, Authenticatable;
+
     public $timestamps = false;
 }
