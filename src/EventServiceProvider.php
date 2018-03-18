@@ -24,10 +24,12 @@ class EventServiceProvider extends BaseEventServiceProvider
 
     private function getUnauthorizedOwnerListeners(): array
     {
+        $listeners = array();
+
         if (Config::listenUnauthorizedOwnerEventForLogger()) {
             $listeners[] = WriteUnauthorizedLog::class;
         }
 
-        return $listeners ?? [];
+        return $listeners;
     }
 }
