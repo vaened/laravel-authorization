@@ -3,11 +3,11 @@
  * Created by enea dhack - 01/08/17 12:43 AM.
  */
 
-namespace Enea\Authorization\Test\Support\Traits;
+namespace Enea\Authorization\Tests\Support\Traits;
 
 use Enea\Authorization\Models\Permission;
 use Enea\Authorization\Models\Role;
-use Enea\Authorization\Test\Support\Models\User;
+use Enea\Authorization\Tests\Support\Models\User;
 use Illuminate\Support\Collection;
 
 trait Factories

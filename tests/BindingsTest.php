@@ -3,14 +3,14 @@
  * Created on 14/03/18 by enea dhack.
  */
 
-namespace Enea\Authorization\Test\Drivers;
+namespace Enea\Authorization\Tests\Drivers;
 
 use Enea\Authorization\Contracts\{
     PermissionContract, RoleContract
 };
 use Enea\Authorization\DriversResolver;
 use Enea\Authorization\Exceptions\UnsupportedDriverException;
-use Enea\Authorization\Test\TestCase;
+use Enea\Authorization\Tests\TestCase;
 
 class BindingsTest extends TestCase
 {

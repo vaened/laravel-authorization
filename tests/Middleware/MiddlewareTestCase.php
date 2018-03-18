@@ -3,10 +3,10 @@
  * Created on 17/03/18 by enea dhack.
  */
 
-namespace Enea\Authorization\Test\Middleware;
+namespace Enea\Authorization\Tests\Middleware;
 
-use Enea\Authorization\Test\Support\Models\User;
-use Enea\Authorization\Test\TestCase;
+use Enea\Authorization\Tests\Support\Models\User;
+use Enea\Authorization\Tests\TestCase;
 use Illuminate\Routing\Router;
 
 abstract class MiddlewareTestCase extends TestCase

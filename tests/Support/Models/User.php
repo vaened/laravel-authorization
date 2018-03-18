@@ -3,7 +3,7 @@
  * Created by enea dhack - 30/07/17 02:54 PM.
  */
 
-namespace Enea\Authorization\Test\Support\Models;
+namespace Enea\Authorization\Tests\Support\Models;
 
 use Enea\Authorization\Contracts\Authorizable as AuthorizedUserContract;
 use Enea\Authorization\Traits\Authorizable;

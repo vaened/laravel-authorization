@@ -3,7 +3,7 @@
  * Created by enea dhack - 31/07/17 10:00 PM.
  */
 
-namespace Enea\Authorization\Test;
+namespace Enea\Authorization\Tests;
 
 use Illuminate\Support\Facades\Schema;
 

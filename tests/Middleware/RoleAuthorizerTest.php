@@ -3,7 +3,7 @@
  * Created on 17/03/18 by enea dhack.
  */
 
-namespace Enea\Authorization\Test\Middleware;
+namespace Enea\Authorization\Tests\Middleware;
 
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Middleware\RoleAuthorizerMiddleware;

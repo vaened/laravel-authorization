@@ -28,7 +28,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Enea\\Authorization\\Test\\": "tests"
+      "Enea\\Authorization\\Tests\\": "tests"
     }
   }
 }

@@ -3,7 +3,7 @@
  * Created on 15/03/18 by enea dhack.
  */
 
-namespace Enea\Authorization\Test;
+namespace Enea\Authorization\Tests;
 
 use Enea\Authorization\Models\{
     Permission, Role

@@ -4,7 +4,7 @@
  */
 use Enea\Authorization\Models\Permission;
 use Enea\Authorization\Models\Role;
-use Enea\Authorization\Test\Support\Models\User;
+use Enea\Authorization\Tests\Support\Models\User;
 use Faker\Generator;
 
 $factory->define(Permission::class, function (Generator $faker): array {

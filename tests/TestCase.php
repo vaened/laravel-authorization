@@ -3,11 +3,11 @@
  * Created by enea dhack - 29/07/17 11:09 PM.
  */
 
-namespace Enea\Authorization\Test;
+namespace Enea\Authorization\Tests;
 
 use Enea\Authorization\AuthorizationServiceProvider;
-use Enea\Authorization\Test\Support\Models\User;
-use Enea\Authorization\Test\Support\Traits\Factories;
+use Enea\Authorization\Tests\Support\Models\User;
+use Enea\Authorization\Tests\Support\Traits\Factories;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
