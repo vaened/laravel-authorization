@@ -8,6 +8,13 @@ namespace Enea\Authorization\Support;
 trait IsJsonable
 {
     /**
+     * Get the instance as an array.
+     *
+     * @return array
+     */
+    abstract public function toArray();
+
+    /**
      * {@inheritdoc}
      */
     public function toJson($options = 0)
