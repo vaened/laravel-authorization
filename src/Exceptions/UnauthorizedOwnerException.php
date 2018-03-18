@@ -7,9 +7,9 @@ namespace Enea\Authorization\Exceptions;
 
 class UnauthorizedOwnerException extends UnauthorizedException
 {
-    public function __construct(int $statusCode, array $grantables, array $headers = array())
+    public function __construct(array $grantables, array $headers = array())
     {
-        parent::__construct($statusCode, $this->makeMessage($grantables), $headers);
+        parent::__construct($this->makeMessage($grantables), $headers);
     }
 
     private function makeMessage(array $grantables): string

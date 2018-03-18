@@ -5,34 +5,12 @@
 
 namespace Enea\Authorization\Exceptions;
 
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class UnauthorizedException extends AuthorizationException implements HttpExceptionInterface
+class UnauthorizedException extends AuthorizationException
 {
-    private $statusCode;
-
-    private $headers;
-
-    public function __construct(int $statusCode, ?string $message = null, array $headers = array())
+    public function __construct(?string $message = null, array $headers = array())
     {
-        parent::__construct($message);
-        $this->statusCode = $statusCode;
-        $this->headers = $headers;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getStatusCode()
-    {
-        return $this->statusCode;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
+        throw new AccessDeniedHttpException($message);
     }
 }

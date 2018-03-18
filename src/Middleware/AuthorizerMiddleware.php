@@ -27,7 +27,7 @@ abstract class AuthorizerMiddleware
 
     abstract protected function authorized(GrantableOwner $owner, array $grantables): bool;
 
-    public function handle(Request $request, Closure $next, string ...$grantables): mixed
+    public function handle(Request $request, Closure $next, string ...$grantables)
     {
         if ($this->isAuthorizedRequestFor($request)($grantables)) {
             return $next($request);
@@ -35,7 +35,7 @@ abstract class AuthorizerMiddleware
 
         $this->event->dispatch(new UnauthorizedOwner($request->user(), $grantables));
 
-        throw new UnauthorizedOwnerException(403, $grantables);
+        throw new UnauthorizedOwnerException($grantables);
     }
 
     private function isAuthorizedRequestFor(Request $request): Closure
