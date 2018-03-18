@@ -5,15 +5,17 @@
 
 namespace Enea\Authorization\Exceptions;
 
+use Illuminate\Database\Eloquent\Model;
+
 class UnauthorizedOwnerException extends UnauthorizedException
 {
-    public function __construct(array $grantables, array $headers = array())
+    public function __construct(Model $model, array $headers = array())
     {
-        parent::__construct($this->makeMessage($grantables), $headers);
+        parent::__construct($this->makeMessage($model), $headers);
     }
 
-    private function makeMessage(array $grantables): string
+    private function makeMessage(Model $model): string
     {
-        return 'owner unauthorized';
+        return "{$model->getMorphClass()} with key {$model->getKey()} is not authorized";
     }
 }
