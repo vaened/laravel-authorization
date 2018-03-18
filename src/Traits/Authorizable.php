@@ -27,6 +27,11 @@ use Illuminate\Support\Collection;
  */
 trait Authorizable
 {
+    public function getIdentificationKey(): string
+    {
+        return $this->getKey();
+    }
+
     public function grant(Grantable $grantable): void
     {
         $this->syncGrant([$grantable]);
