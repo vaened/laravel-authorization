@@ -27,6 +27,8 @@ use Illuminate\Support\Collection;
  */
 trait Authorizable
 {
+    use Model;
+
     public function getIdentificationKey(): string
     {
         return $this->getKey();
