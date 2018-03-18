@@ -11,7 +11,7 @@ use Illuminate\Routing\Router;
 
 abstract class MiddlewareTestCase extends TestCase
 {
-    protected abstract function registerMiddleware(Router $router): void;
+    abstract protected function registerMiddleware(Router $router): void;
 
     public function getEnvironmentSetUp($app)
     {
