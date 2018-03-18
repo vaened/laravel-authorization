@@ -5,6 +5,7 @@
 
 namespace Enea\Authorization\Traits;
 
+use Closure;
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
@@ -90,15 +91,20 @@ trait Authorizable
 
     private function filterPermissions(array $grantables): Collection
     {
-        return collect($grantables)->filter(function (Grantable $grantable) {
-            return $grantable instanceof PermissionContract;
-        });
+        return $this->filterOnly(PermissionContract::class)($grantables);
     }
 
     private function filterRoles(array $grantables): Collection
     {
-        return collect($grantables)->filter(function (Grantable $grantable) {
-            return $grantable instanceof RoleContract;
-        });
+        return $this->filterOnly(RoleContract::class)($grantables);
+    }
+
+    private function filterOnly(string $abstract): Closure
+    {
+        return function (array $grantables) use ($abstract): Collection {
+            return collect($grantables)->filter(function (Grantable $grantable) use ($abstract) {
+                return $grantable instanceof $abstract;
+            });
+        };
     }
 }
