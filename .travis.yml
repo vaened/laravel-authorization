@@ -6,20 +6,12 @@ matrix:
   include:
     - php: 7.1
       env:
-        - LARAVEL_VERSION=5.4.*
-        - PHPUNIT_VERSION=^6.5
-    - php: 7.1
-      env:
         - LARAVEL_VERSION=5.5.*
         - PHPUNIT_VERSION=^6.5
     - php: 7.1
       env:
         - LARAVEL_VERSION=5.6.*
         - PHPUNIT_VERSION=^7.0
-    - php: 7.2
-      env:
-        - LARAVEL_VERSION=5.4.*
-        - PHPUNIT_VERSION=^6.5
     - php: 7.2
       env:
         - LARAVEL_VERSION=5.5.*
