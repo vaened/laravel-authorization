@@ -5,8 +5,6 @@
 
 namespace Enea\Authorization\Traits;
 
-use Enea\Authorization\Contracts\Grantable as GrantableContract;
-
 /**
  * Trait Grantable.
  *
@@ -17,9 +15,8 @@ use Enea\Authorization\Contracts\Grantable as GrantableContract;
  */
 trait Grantable
 {
-    /**
-     * {@inheritdoc}
-     */
+    use Model;
+
     public function getSecretName(): string
     {
         return $this->secret_name;
@@ -28,10 +25,5 @@ trait Grantable
     public function getIdentificationKey(): string
     {
         return $this->getKey();
-    }
-
-    protected static function grantableBySecretName(string $secretName): ?GrantableContract
-    {
-        return static::query()->where('secret_name', $secretName)->first();
     }
 }

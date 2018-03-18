@@ -25,9 +25,10 @@ trait HasRole
 {
     use Grantable;
 
-    public static function locateByName(string $secretName): ? RoleContract
+    public static function locateByName(string $secretName): ?RoleContract
     {
-        return static::grantableBySecretName($secretName);
+        $role = static::query()->where('secret_name', $secretName)->first();
+        return $role instanceof RoleContract ? $role : null;
     }
 
     public function can(string $permission): bool

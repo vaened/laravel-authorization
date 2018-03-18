@@ -11,8 +11,9 @@ trait HasPermission
 {
     use Grantable;
 
-    public static function locateByName(string $secretName): ? PermissionContract
+    public static function locateByName(string $secretName): ?PermissionContract
     {
-        return static::grantableBySecretName($secretName);
+        $permission = static::query()->where('secret_name', $secretName)->first();
+        return $permission instanceof PermissionContract ? $permission : null;
     }
 }
