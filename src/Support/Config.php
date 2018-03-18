@@ -50,11 +50,6 @@ class Config
         return self::get('driver', 'database');
     }
 
-    public static function listenUnauthorizedOwnerEventForLogger(): bool
-    {
-        return self::get('listeners.unauthorized-owner-logger', true);
-    }
-
     private static function get(string $key, string $default = null): string
     {
         return config("authorization.{$key}", $default);
