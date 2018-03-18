@@ -8,6 +8,8 @@ namespace Enea\Authorization\Facades;
 use Enea\Authorization\Contracts\{
     PermissionsOwner, RolesOwner
 };
+use Enea\Authorization\Traits\Authorizable;
+use Enea\Authorization\Traits\HasRole;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -16,10 +18,10 @@ use Illuminate\Support\Facades\Facade;
  * @package Enea\Authorization\Facades
  * @author enea dhack <enea.so@live.com>
  *
- * @method static bool can(PermissionsOwner $owner, string $permission)
- * @method static bool canAny(PermissionsOwner $owner, array $permissions)
- * @method static bool is(RolesOwner $owner, string $role)
- * @method static bool isAny(RolesOwner $owner, array $roles)
+ * @method static bool can(PermissionsOwner | Authorizable | HasRole $owner, string $permission)
+ * @method static bool canAny(PermissionsOwner | Authorizable | HasRole $owner, array $permissions)
+ * @method static bool is(RolesOwner | Authorizable $owner, string $role)
+ * @method static bool isAny(RolesOwner | Authorizable $owner, array $roles)
  */
 class Authorizer extends Facade
 {
