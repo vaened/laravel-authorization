@@ -10,6 +10,7 @@ use Enea\Authorization\Authorizer;
 use Enea\Authorization\Contracts\GrantableOwner;
 use Enea\Authorization\Events\UnauthorizedOwner;
 use Enea\Authorization\Exceptions\UnauthorizedOwnerException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 
@@ -29,20 +30,21 @@ abstract class AuthorizerMiddleware
 
     public function handle(Request $request, Closure $next, string ...$grantables)
     {
-        if ($this->isAuthorizedRequestFor($request)($grantables)) {
+        $authenticated = $request->user();
+
+        if ($this->isAuthorizedRequestFor($authenticated)($grantables)) {
             return $next($request);
         }
 
-        $this->event->dispatch(new UnauthorizedOwner($request->user(), $grantables));
+        $this->event->dispatch(new UnauthorizedOwner($authenticated, $grantables));
 
-        throw new UnauthorizedOwnerException($grantables);
+        throw new UnauthorizedOwnerException($authenticated);
     }
 
-    private function isAuthorizedRequestFor(Request $request): Closure
+    private function isAuthorizedRequestFor(Model $authenticated): Closure
     {
-        return function (array $grantables) use ($request): bool {
-            $user = $request->user();
-            return $user instanceof GrantableOwner && $this->authorized($user, $grantables);
+        return function (array $grantables) use ($authenticated): bool {
+            return $authenticated instanceof GrantableOwner && $this->authorized($authenticated, $grantables);
         };
     }
 }
