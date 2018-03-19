@@ -7,26 +7,34 @@ namespace Enea\Authorization\Operators;
 
 use Closure;
 use Enea\Authorization\Contracts\{
-    Grantable, GrantableOwner, PermissionContract, PermissionsOwner, RoleContract, RolesOwner
+    Grantable, GrantableOwner, PermissionsOwner, RolesOwner
 };
 use Enea\Authorization\Events\Revoked;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 
 class Revoker extends Operator
 {
-    public function permission(PermissionsOwner $owner, PermissionContract $permission): void
+    public function permissions(PermissionsOwner $owner, Collection $permissions): void
     {
-        $this->revokeTo($owner->permissions())($permission);
-        $this->dispatchRevokedEvent($owner, $permission);
+        $this->revokeTo($owner->permissions())($permissions);
+        $this->dispatchRevokedEvent($owner, $permissions);
     }
 
-    public function role(RolesOwner $owner, RoleContract $role): void
+    public function roles(RolesOwner $owner, Collection $roles): void
     {
-        $this->revokeTo($owner->roles())($role);
-        $this->dispatchRevokedEvent($owner, $role);
+        $this->revokeTo($owner->roles())($roles);
+        $this->dispatchRevokedEvent($owner, $roles);
     }
 
-    private function revokeTo(BelongsToMany $authorizations): Closure
+    private function revokeTo(BelongsToMany $repository): Closure
+    {
+        return function (Collection $grantableCollection) use ($repository): void {
+            $grantableCollection->each($this->removeFrom($repository));
+        };
+    }
+
+    private function removeFrom(BelongsToMany $authorizations): Closure
     {
         return function (Grantable $grantable) use ($authorizations): void {
             $saved = $this->isSuccessful($authorizations->detach($this->castToModel($grantable)));
@@ -39,8 +47,8 @@ class Revoker extends Operator
         return $results > 0;
     }
 
-    private function dispatchRevokedEvent(GrantableOwner $owner, Grantable $permission): void
+    private function dispatchRevokedEvent(GrantableOwner $owner, Collection $grantableCollection): void
     {
-        $this->dispatchEvent(new Revoked($owner, $permission));
+        $this->dispatchEvent(new Revoked($owner, $grantableCollection));
     }
 }

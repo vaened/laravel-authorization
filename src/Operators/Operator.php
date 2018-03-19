@@ -6,7 +6,7 @@
 namespace Enea\Authorization\Operators;
 
 use Enea\Authorization\Contracts\{
-    Grantable, PermissionContract, PermissionsOwner, RoleContract, RolesOwner
+    Grantable, PermissionsOwner, RolesOwner
 };
 use Enea\Authorization\Events\Operation;
 use Enea\Authorization\Exceptions\{
@@ -25,23 +25,9 @@ abstract class Operator
         $this->event = $event;
     }
 
-    abstract public function permission(PermissionsOwner $owner, PermissionContract $permission): void;
+    abstract public function permissions(PermissionsOwner $owner, Collection $permissions): void;
 
-    abstract public function role(RolesOwner $owner, RoleContract $role): void;
-
-    public function permissions(PermissionsOwner $owner, Collection $permissions): void
-    {
-        $permissions->each(function (PermissionContract $permission) use ($owner) {
-            $this->permission($owner, $permission);
-        });
-    }
-
-    public function roles(RolesOwner $owner, Collection $roles): void
-    {
-        $roles->each(function (RoleContract $role) use ($owner) {
-            $this->role($owner, $role);
-        });
-    }
+    abstract public function roles(RolesOwner $owner, Collection $roles): void;
 
     protected function castToModel(Grantable $grantable): Model
     {

@@ -18,9 +18,7 @@ use Illuminate\Support\Facades\Facade;
  * @package Enea\Authorization\Facades
  * @author enea dhack <enea.so@live.com>
  *
- * @method static void permission(PermissionsOwner $owner, PermissionContract $permission)
  * @method static void permissions(PermissionsOwner $owner, Collection $permissions)
- * @method static void role(RolesOwner $owner, RoleContract $role)
  * @method static void roles(RolesOwner $owner, Collection $roles)
  */
 class Granter extends Facade
