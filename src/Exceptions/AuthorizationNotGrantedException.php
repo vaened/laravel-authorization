@@ -5,12 +5,10 @@
 
 namespace Enea\Authorization\Exceptions;
 
-use Enea\Authorization\Contracts\Grantable;
-
-class AuthorizationNotGrantedException extends AuthorizationException
+class AuthorizationNotGrantedException extends UncompletedOperationException
 {
-    public function __construct(Grantable $grantable)
+    protected function getOperationName(): string
     {
-        parent::__construct("The authorization '{$grantable->getSecretName()}' could not be granted");
+        return 'granted';
     }
 }
