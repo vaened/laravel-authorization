@@ -10,6 +10,7 @@ use Enea\Authorization\Contracts\{
     Grantable, GrantableOwner, PermissionsOwner, RolesOwner
 };
 use Enea\Authorization\Events\Granted;
+use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
@@ -38,7 +39,10 @@ class Granter extends Operator
     {
         return function (Grantable $grantable) use ($authorizations): void {
             $saved = ! is_null($authorizations->save($this->castToModel($grantable)));
-            $this->throwErrorIfNotSaved($saved, $grantable);
+
+            if (! $saved) {
+                throw new AuthorizationNotGrantedException($grantable);
+            }
         };
     }
 

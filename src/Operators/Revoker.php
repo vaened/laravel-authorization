@@ -10,6 +10,7 @@ use Enea\Authorization\Contracts\{
     Grantable, GrantableOwner, PermissionsOwner, RolesOwner
 };
 use Enea\Authorization\Events\Revoked;
+use Enea\Authorization\Exceptions\AuthorizationNotRevokedException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
@@ -37,8 +38,11 @@ class Revoker extends Operator
     private function removeFrom(BelongsToMany $authorizations): Closure
     {
         return function (Grantable $grantable) use ($authorizations): void {
-            $saved = $this->isSuccessful($authorizations->detach($this->castToModel($grantable)));
-            $this->throwErrorIfNotSaved($saved, $grantable);
+            $result = $authorizations->detach($this->castToModel($grantable));
+
+            if (! $this->isSuccessful($result)) {
+                throw new AuthorizationNotRevokedException($grantable);
+            }
         };
     }
 

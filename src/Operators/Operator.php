@@ -10,7 +10,7 @@ use Enea\Authorization\Contracts\{
 };
 use Enea\Authorization\Events\Operation;
 use Enea\Authorization\Exceptions\{
-    AuthorizationNotGrantedException, GrantableIsNotValidModelException
+    GrantableIsNotValidModelException
 };
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\Model;
@@ -36,13 +36,6 @@ abstract class Operator
         }
 
         return $grantable;
-    }
-
-    protected function throwErrorIfNotSaved(bool $saved, Grantable $grantable): void
-    {
-        if (! $saved) {
-            throw new AuthorizationNotGrantedException($grantable);
-        }
     }
 
     protected function dispatchEvent(Operation $operation): void
