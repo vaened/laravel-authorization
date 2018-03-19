@@ -5,9 +5,7 @@
 
 namespace Enea\Authorization\Facades;
 
-use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\PermissionsOwner;
-use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Contracts\RolesOwner;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
