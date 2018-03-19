@@ -9,7 +9,7 @@ use Enea\Authorization\Models\{
     Permission, Role
 };
 use Enea\Authorization\Support\Config;
-use Enea\Authorization\Test\Support\Models\{
+use Enea\Authorization\Tests\Support\Models\{
     Permiso, Rol
 };
 
