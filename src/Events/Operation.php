@@ -5,12 +5,12 @@
 
 namespace Enea\Authorization\Events;
 
-use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\GrantableOwner;
+use Illuminate\Support\Collection;
 
 interface Operation
 {
-    public function getGrantable(): Grantable;
+    public function getGrantableCollection(): Collection;
 
     public function getOwner(): GrantableOwner;
 }

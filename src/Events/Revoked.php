@@ -5,24 +5,24 @@
 
 namespace Enea\Authorization\Events;
 
-use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\GrantableOwner;
+use Illuminate\Support\Collection;
 
 class Revoked implements Operation
 {
-    private $grantable;
+    private $grantableCollection;
 
     private $owner;
 
-    public function __construct(GrantableOwner $owner, Grantable $grantable)
+    public function __construct(GrantableOwner $owner, Collection $grantableCollection)
     {
         $this->owner = $owner;
-        $this->grantable = $grantable;
+        $this->grantableCollection = $grantableCollection;
     }
 
-    public function getGrantable(): Grantable
+    public function getGrantableCollection(): Collection
     {
-        return $this->grantable;
+        return $this->grantableCollection;
     }
 
     public function getOwner(): GrantableOwner
@@ -30,3 +30,4 @@ class Revoked implements Operation
         return $this->owner;
     }
 }
+
