@@ -30,4 +30,3 @@ class Revoked implements Operation
         return $this->owner;
     }
 }
-
