@@ -7,6 +7,8 @@ namespace Enea\Authorization\Contracts;
 
 interface RoleContract extends Grantable, Permissible, PermissionsOwner
 {
+    public static function locateByName(string $secretName): ?RoleContract;
+
     public function grant(PermissionContract $permission): void;
 
     public function revoke(PermissionContract $permission): void;

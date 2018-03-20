@@ -7,4 +7,5 @@ namespace Enea\Authorization\Contracts;
 
 interface PermissionContract extends Grantable
 {
+    public static function locateByName(string $secretName): ?PermissionContract;
 }
