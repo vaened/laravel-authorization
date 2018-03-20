@@ -5,12 +5,13 @@
 
 namespace Enea\Authorization\Tests\Models;
 
-use Closure;
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\PermissionContract;
 
 class RoleTest extends AuthorizationTestCase
 {
+    use PermissionOwnerTest;
+
     public function test_the_permissions_are_loaded_correctly(): void
     {
         $role = $this->role();
@@ -27,10 +28,7 @@ class RoleTest extends AuthorizationTestCase
         $role = $this->role();
         $permissions = $this->permissions(3);
         $role->syncGrant($permissions->all());
-
-        $permissions->each(function (PermissionContract $permission) use ($role): void {
-            $this->assertTrue($role->can($permission->getSecretName()));
-        });
+        $permissions->each($this->can($role));
     }
 
     public function test_a_role_can_have_a_permission(): void
@@ -38,7 +36,7 @@ class RoleTest extends AuthorizationTestCase
         $role = $this->role();
         $permission = $this->permission();
         $role->grant($permission);
-        $this->assertTrue($role->can($permission->getSecretName()));
+        $this->can($role)($permission);
     }
 
     public function test_you_can_remove_multiple_permissions_to_a_role(): void
@@ -47,10 +45,7 @@ class RoleTest extends AuthorizationTestCase
         $permissions = $this->permissions(3);
         $role->syncGrant($permissions->all());
         $role->syncRevoke($permissions->all());
-
-        $permissions->filter(function (PermissionContract $permission) use ($role): void {
-            $this->assertTrue($role->cannot($permission->getSecretName()));
-        });
+        $permissions->filter($this->cannot($role));
     }
 
     public function test_you_can_remove_single_permissions_to_a_role(): void
@@ -59,21 +54,11 @@ class RoleTest extends AuthorizationTestCase
         $permission = $this->permission();
         $role->grant($permission);
         $role->revoke($permission);
-        $this->assertTrue($role->cannot($permission->getSecretName()));
+        $this->cannot($role)($permission);
     }
 
     protected function authorization(string $name): Grantable
     {
         return $this->role(['secret_name' => $name]);
-    }
-
-    private function equalsAuthorization(PermissionContract $permission): Closure
-    {
-        return function (PermissionContract $granted) use ($permission) : bool {
-            return count(array_filter([
-                    (string) $granted->getIdentificationKey() === $permission->getIdentificationKey(),
-                    $granted->getSecretName() === $permission->getSecretName(),
-                ])) === 2;
-        };
     }
 }
