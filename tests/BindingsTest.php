@@ -11,6 +11,7 @@ use Enea\Authorization\Contracts\{
 use Enea\Authorization\DriversResolver;
 use Enea\Authorization\Exceptions\UnsupportedDriverException;
 use Enea\Authorization\Tests\TestCase;
+use Illuminate\Database\Eloquent\Model;
 
 class BindingsTest extends TestCase
 {
@@ -24,11 +25,11 @@ class BindingsTest extends TestCase
 
     public function test_the_permission_contract_has_a_bound_model(): void
     {
-        $this->assertNotNull($this->app->make(PermissionContract::class));
+        $this->assertInstanceOf(Model::class, $this->app->make(PermissionContract::class));
     }
 
     public function test_the_role_contract_has_a_bound_model(): void
     {
-        $this->assertNotNull($this->app->make(RoleContract::class));
+        $this->assertInstanceOf(Model::class, $this->app->make(RoleContract::class));
     }
 }
