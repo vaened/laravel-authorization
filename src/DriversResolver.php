@@ -9,6 +9,7 @@ use Enea\Authorization\Authorizer as AuthorizerContract;
 use Enea\Authorization\Drivers\Database\Authorizer as DatabaseAuthorizer;
 use Enea\Authorization\Exceptions\UnsupportedDriverException;
 use Enea\Authorization\Support\Config;
+use Enea\Authorization\Support\Drivers;
 use Illuminate\Contracts\Container\Container;
 
 class DriversResolver
@@ -23,7 +24,7 @@ class DriversResolver
     public function make(): void
     {
         switch (Config::getDriver()) {
-            case 'database':
+            case Drivers::DATABASE:
                 $this->prepareForDatabase();
                 break;
             default:
