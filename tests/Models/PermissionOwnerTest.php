@@ -11,15 +11,7 @@ use Enea\Authorization\Contracts\PermissionContract;
 
 trait PermissionOwnerTest
 {
-    protected function equalsAuthorization(PermissionContract $permission): Closure
-    {
-        return function (PermissionContract $granted) use ($permission) : bool {
-            return count(array_filter([
-                    (string) $granted->getIdentificationKey() === $permission->getIdentificationKey(),
-                    $granted->getSecretName() === $permission->getSecretName(),
-                ])) === 2;
-        };
-    }
+    use Assertable;
 
     protected function cannot(Permissible $owner): Closure
     {
