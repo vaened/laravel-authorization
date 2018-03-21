@@ -11,8 +11,6 @@ use Enea\Authorization\Contracts\PermissionContract;
 
 trait PermissionOwnerTest
 {
-    use Assertable;
-
     protected function cannot(Permissible $owner): Closure
     {
         return function (PermissionContract $permission) use ($owner): void {

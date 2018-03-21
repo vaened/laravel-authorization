@@ -11,8 +11,6 @@ use Enea\Authorization\Contracts\RoleContract;
 
 trait RoleOwnerTest
 {
-    use Assertable;
-
     protected function is(Integrable $owner): Closure
     {
         return function (RoleContract $role) use ($owner): void {

@@ -10,8 +10,6 @@ use Enea\Authorization\Contracts\Grantable;
 
 trait OwnerTest
 {
-    use Assertable;
-
     protected function equalsAuthorization(Grantable $grantable): Closure
     {
         return function (Grantable $granted) use ($grantable) : bool {
