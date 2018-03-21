@@ -10,7 +10,7 @@ use Enea\Authorization\Contracts\PermissionContract;
 
 class RoleTest extends AuthorizationTestCase
 {
-    use PermissionOwnerTest;
+    use PermissionOwnerTest, OwnerTest;
 
     public function test_the_permissions_are_loaded_correctly(): void
     {
