@@ -23,12 +23,17 @@ class DriversResolver
 
     public function make(): void
     {
-        switch (Config::getDriver()) {
+        $this->resolve(Config::getDriver());
+    }
+
+    protected function resolve(string $driver): void
+    {
+        switch ($driver) {
             case Drivers::DATABASE:
                 $this->prepareForDatabase();
                 break;
             default:
-                throw new UnsupportedDriverException(Config::getDriver());
+                throw new UnsupportedDriverException($driver);
         }
     }
 
