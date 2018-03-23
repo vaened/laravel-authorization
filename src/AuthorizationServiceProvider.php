@@ -17,9 +17,9 @@ class AuthorizationServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        $this->registerBindings();
+        $this->publish();
     }
 
     /**
@@ -27,33 +27,35 @@ class AuthorizationServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->register(EventServiceProvider::class);
-        $this->publish();
+        $this->registerBindings();
     }
 
     /**
-     * Bind contracts with concrete objects.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    protected function registerBindings()
+    public function provides()
     {
-        $this->configDriver();
-        $this->app->bind(PermissionContract::class, Config::permissionModel());
-        $this->app->bind(RoleContract::class, Config::roleModel());
+        return [
+            Authorizer::class,
+        ];
     }
 
     private function publish(): void
     {
-        $this->mergeConfigFrom($this->path('config/authorization.php'), 'authorization');
-        $this->publishes([$this->path('database/migrations/CreateLaravelAuthorizationTables.php') => database_path('migrations')]);
+        $this->publishes([
+            __DIR__ . "/../database/migrations" => database_path('migrations'),
+            __DIR__ . "/../config/authorization.php" => base_path('config/authorization.php')
+        ]);
     }
 
-    private function path(string $path): string
+    private function registerBindings(): void
     {
-        return __DIR__ . "/../{$path}";
+        $this->configDriver();
+        $this->app->bind(PermissionContract::class, Config::permissionModel());
+        $this->app->bind(RoleContract::class, Config::roleModel());
     }
 
     private function configDriver(): void
