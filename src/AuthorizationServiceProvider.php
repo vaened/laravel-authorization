@@ -30,6 +30,7 @@ class AuthorizationServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(EventServiceProvider::class);
+        $this->publish();
     }
 
     /**
@@ -42,6 +43,17 @@ class AuthorizationServiceProvider extends ServiceProvider
         $this->configDriver();
         $this->app->bind(PermissionContract::class, Config::permissionModel());
         $this->app->bind(RoleContract::class, Config::roleModel());
+    }
+
+    private function publish(): void
+    {
+        $this->mergeConfigFrom($this->path('config/authorization.php'), 'authorization');
+        $this->publishes([$this->path('database/migrations/CreateLaravelAuthorizationTables.php') => database_path('migrations')]);
+    }
+
+    private function path(string $path): string
+    {
+        return __DIR__ . "/../{$path}";
     }
 
     private function configDriver(): void
