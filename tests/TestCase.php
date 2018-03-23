@@ -48,7 +48,7 @@ class TestCase extends BaseTestCase
 
     protected function setUpDatabase(): void
     {
-        include_once __DIR__ . '/../database/migrations/create_laravel_authorization_tables.php';
+        include_once __DIR__ . '/../database/migrations/create_laravel_authorization_tables.stub';
         include_once __DIR__ . '/Support/Migrations/laravel_authorization_test_tables.php';
         (new \CreateLaravelAuthorizationTables())->up();
         (new \CreateLaravelAuthorizationTestTables())->up();
