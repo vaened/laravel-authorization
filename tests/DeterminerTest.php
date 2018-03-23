@@ -7,7 +7,7 @@ namespace Enea\Authorization\Tests;
 
 use Enea\Authorization\Support\Determiner;
 
-class ListenersTest extends TestCase
+class DeterminerTest extends TestCase
 {
     public function test_the_default_listeners_are_active(): void
     {
