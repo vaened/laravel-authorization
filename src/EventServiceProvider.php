@@ -7,7 +7,7 @@ namespace Enea\Authorization;
 
 use Enea\Authorization\Events\UnauthorizedOwner;
 use Enea\Authorization\Listeners\WriteUnauthorizedLog;
-use Enea\Authorization\Support\Listeners;
+use Enea\Authorization\Support\Determiner;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as BaseEventServiceProvider;
 
 class EventServiceProvider extends BaseEventServiceProvider
@@ -26,7 +26,7 @@ class EventServiceProvider extends BaseEventServiceProvider
     {
         $listeners = array();
 
-        if (Listeners::listenUnauthorizedOwnerEventForLogger()) {
+        if (Determiner::listenUnauthorizedOwnerEventForLogger()) {
             $listeners[] = WriteUnauthorizedLog::class;
         }
 

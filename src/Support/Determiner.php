@@ -5,7 +5,7 @@
 
 namespace Enea\Authorization\Support;
 
-class Listeners
+class Determiner
 {
     public static function listenUnauthorizedOwnerEventForLogger(): bool
     {

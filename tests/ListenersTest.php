@@ -5,20 +5,20 @@
 
 namespace Enea\Authorization\Tests;
 
-use Enea\Authorization\Support\Listeners;
+use Enea\Authorization\Support\Determiner;
 
 class ListenersTest extends TestCase
 {
     public function test_the_default_listeners_are_active(): void
     {
         $this->app->make('config')->set('authorization', null);
-        $this->assertEquals(Listeners::listenUnauthorizedOwnerEventForLogger(), true);
+        $this->assertEquals(Determiner::listenUnauthorizedOwnerEventForLogger(), true);
     }
 
     public function test_its_loading_custom_listeners(): void
     {
         $this->loadCustomListenerConfig();
-        $this->assertEquals(Listeners::listenUnauthorizedOwnerEventForLogger(), false);
+        $this->assertEquals(Determiner::listenUnauthorizedOwnerEventForLogger(), false);
     }
 
     private function loadCustomListenerConfig(): void
