@@ -21,8 +21,7 @@ return [
           |
           | This will be the model that will be used to represent the roles in the database,
           | if you want to have your own model to follow, you can extend this base model
-          | or implement the contracts 'AuthorizedContract', 'RoleContract',
-          | also use the traits 'Grantable' and 'HasPermission'
+          | or implement the contracts 'RoleContract', also use the traits 'HasPermission'
           |
           */
         'role' => \Enea\Authorization\Models\Role::class,
@@ -34,8 +33,7 @@ return [
           |
           | This will be the model that will be used to represent the permissions in the database,
           | if you want to have your own permissions model, you can extend this base model
-          | or implement the contracts 'AuthorizedContract', ' PermissionContract',
-          | also have to use the traits 'Grantable' and 'HasPermission'
+          | or implement the contracts 'PermissionContract', also have to use the trait 'HasPermission'
           |
           */
         'permission' => \Enea\Authorization\Models\Permission::class,
