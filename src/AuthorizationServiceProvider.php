@@ -5,6 +5,7 @@
 
 namespace Enea\Authorization;
 
+use Enea\Authorization\Commands\InstallCommand;
 use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Support\Config;
@@ -30,6 +31,11 @@ class AuthorizationServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(EventServiceProvider::class);
+
+        $this->commands([
+            InstallCommand::class
+        ]);
+
         $this->registerBindings();
     }
 
@@ -46,7 +52,6 @@ class AuthorizationServiceProvider extends ServiceProvider
     private function publish(): void
     {
         $this->publishes([
-            __DIR__ . '/../database/migrations' => database_path('migrations'),
             __DIR__ . '/../config/authorization.php' => base_path('config/authorization.php')
         ]);
     }
