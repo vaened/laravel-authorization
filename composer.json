@@ -30,5 +30,12 @@
     "psr-4": {
       "Enea\\Authorization\\Tests\\": "tests"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Enea\\Authorization\\AuthorizationServiceProvider"
+      ]
+    }
   }
 }
