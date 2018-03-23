@@ -7,7 +7,7 @@ namespace Enea\Authorization\Commands;
 
 use Enea\Authorization\AuthorizationServiceProvider;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\Artisan;
 
@@ -56,7 +56,7 @@ class InstallCommand extends Command
     {
         $this->info('Publishing the migration file');
         $source = __DIR__ . '/../../database/migrations/create_laravel_authorization_tables.stub';
-        $destination = $this->laravel->make('migration.creator')->create('create_laravel_authorization_tables', database_path('migration'));
+        $destination = $this->laravel->make('migration.creator')->create('create_laravel_authorization_tables', database_path('migrations'));
 
         $this->files->copy($source, $destination);
     }
