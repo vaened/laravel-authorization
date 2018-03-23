@@ -46,8 +46,8 @@ class AuthorizationServiceProvider extends ServiceProvider
     private function publish(): void
     {
         $this->publishes([
-            __DIR__ . "/../database/migrations" => database_path('migrations'),
-            __DIR__ . "/../config/authorization.php" => base_path('config/authorization.php')
+            __DIR__ . '/../database/migrations' => database_path('migrations'),
+            __DIR__ . '/../config/authorization.php' => base_path('config/authorization.php')
         ]);
     }
 
