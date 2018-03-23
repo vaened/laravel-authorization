@@ -12,7 +12,7 @@ class Listeners
         return self::get('listeners.unauthorized-owner-logger', true);
     }
 
-    private static function get(string $key, string $default = null): bool
+    private static function get(string $key, bool $default = false): bool
     {
         return (bool) config("authorization.{$key}", $default);
     }
