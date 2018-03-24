@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Created by enea dhack - 29/07/17 11:09 PM.
  */
