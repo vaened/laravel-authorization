@@ -28,4 +28,17 @@ abstract class AuthorizationTestCase extends TestCase
         $authorization = $this->authorization('Authorization');
         $this->assertSame((string) $authorization, 'authorization');
     }
+
+    public function test_the_secret_name_transforms_to_kebab_case(): void
+    {
+        $authorization = $this->authorization('Articles Creator');
+        $this->assertSame($authorization->getSecretName(), 'articles-creator');
+    }
+
+    public function test_the_secret_name_is_not_transformed(): void
+    {
+        $this->app->make('config')->set('authorization.authorizations.transform-secret-name-to-kebab-case', false);
+        $authorization = $this->authorization('Articles Creator');
+        $this->assertSame($authorization->getSecretName(), 'Articles Creator');
+    }
 }
