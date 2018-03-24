@@ -11,6 +11,14 @@ namespace Enea\Authorization\Traits;
 trait Model
 {
     /**
+     * Register observers with the model.
+     *
+     * @param  object|array|string $classes
+     * @return void
+     */
+    abstract public static function observe($classes);
+
+    /**
      * Get the value of the model's primary key.
      *
      * @return mixed

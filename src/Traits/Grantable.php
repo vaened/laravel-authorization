@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Traits;
 
+use Enea\Authorization\Observers\GrantableObserver;
+
 /**
  * Trait Grantable.
  *
@@ -28,5 +30,10 @@ trait Grantable
     public function getIdentificationKey(): string
     {
         return (string) $this->getKey();
+    }
+
+    public static function bootGrantable(): void
+    {
+        static::observe(GrantableObserver::class);
     }
 }
