@@ -13,20 +13,22 @@ class DeterminerTest extends TestCase
     {
         $this->app->make('config')->set('authorization', null);
         $this->assertTrue(Determiner::listenUnauthorizedOwnerEventForLogger());
-        $this->assertTrue(Determiner::applyFormatToSecretName());
+        $this->assertTrue(Determiner::transformSecretNameToKebabCase());
     }
 
     public function test_its_loading_custom_listeners(): void
     {
         $this->loadCustomListenerConfig();
         $this->assertFalse(Determiner::listenUnauthorizedOwnerEventForLogger());
-        $this->assertFalse(Determiner::applyFormatToSecretName());
+        $this->assertFalse(Determiner::transformSecretNameToKebabCase());
     }
 
     private function loadCustomListenerConfig(): void
     {
         $this->app->make('config')->set('authorization', [
-            'format-secret-name' => false,
+            'authorizations' => [
+                'transform-secret-name-to-kebab-case' => false,
+            ],
             'listeners' => [
                 'unauthorized-owner-logger' => false,
             ],

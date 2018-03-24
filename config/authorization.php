@@ -61,10 +61,8 @@ return [
         'unauthorized-owner-logger' => true,
     ],
 
-    /**
-     * Applies a format to the name of the authorization.
-     * example
-     * Articles Creator => articles.creator
-     */
-    'format-secret-name' => true,
+    'authorizations' => [
+        // apply a transformation to the secret name every time the name is updated.
+        'transform-secret-name-to-kebab-case' => true,
+    ]
 ];
