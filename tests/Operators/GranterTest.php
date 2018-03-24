@@ -11,19 +11,36 @@ namespace Enea\Authorization\Tests\Operators;
 use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Events\Granted;
+use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
 use Enea\Authorization\Facades\Authorizer;
 use Enea\Authorization\Facades\Granter;
+use Enea\Authorization\Models\Permission;
+use Enea\Authorization\Models\Role;
 use Enea\Authorization\Tests\TestCase;
 use Illuminate\Support\Facades\Event;
 
 class GranterTest extends TestCase
 {
-    public function test_an_event_is_dispatched_when_permission_is_granted()
+    public function test_an_event_is_dispatched_when_permission_is_granted(): void
     {
         Event::fake();
         $owner = $this->user();
         Granter::permissions($owner, $this->permissions());
         Event::assertDispatched(Granted::class);
+    }
+
+    public function test_when_an_role_can_not_be_granted_an_exception_is_thrown(): void
+    {
+        $role = new Role(['secret_name' => 'secret']);
+        $this->expectException(AuthorizationNotGrantedException::class);
+        Granter::roles($this->user(), collect([$role]));
+    }
+
+    public function test_when_an_permission_can_not_be_granted_an_exception_is_thrown()
+    {
+        $permission = new Permission(['secret_name' => 'secret']);
+        $this->expectException(AuthorizationNotGrantedException::class);
+        Granter::permissions($this->user(), collect([$permission]));
     }
 
     public function test_can_grant_permissions_to_a_owner(): void

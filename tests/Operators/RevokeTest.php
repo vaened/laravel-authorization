@@ -29,12 +29,18 @@ class RevokeTest extends TestCase
         Event::assertDispatched(Revoked::class);
     }
 
-    public function test_when_an_authorization_can_not_be_revoked_an_exception_is_thrown(): void
+    public function test_when_an_role_can_not_be_revoked_an_exception_is_thrown(): void
     {
         $user = $this->user();
         $this->expectException(AuthorizationNotRevokedException::class);
-        $role = $this->role('Articles Owner');
-        Revoker::roles($user, collect([$role]));
+        Revoker::roles($user, $this->roles());
+    }
+
+    public function test_when_an_permission_can_not_be_revoked_an_exception_is_thrown(): void
+    {
+        $user = $this->user();
+        $this->expectException(AuthorizationNotRevokedException::class);
+        Revoker::permissions($user, $this->permissions());
     }
 
     public function test_can_revoke_permissions_to_a_owner(): void
