@@ -10,7 +10,7 @@ namespace Enea\Authorization\Exceptions;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UnauthorizedOwnerException extends UnauthorizedException
+class UnauthorizedOwnerException extends UnauthorizedException implements AuthorizationException
 {
     public function __construct(Model $model, array $headers = array())
     {

@@ -8,8 +8,6 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Exceptions;
 
-use RuntimeException;
-
-abstract class AuthorizationException extends RuntimeException
+interface AuthorizationException
 {
 }

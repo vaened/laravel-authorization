@@ -9,8 +9,9 @@ declare(strict_types=1);
 namespace Enea\Authorization\Exceptions;
 
 use Enea\Authorization\Contracts\Grantable;
+use RuntimeException;
 
-class GrantableIsNotValidModelException extends AuthorizationException
+class GrantableIsNotValidModelException extends RuntimeException implements AuthorizationException
 {
     public function __construct(Grantable $grantable)
     {

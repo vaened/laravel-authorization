@@ -8,7 +8,9 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Exceptions;
 
-class UnsupportedDriverException extends AuthorizationException
+use RuntimeException;
+
+class UnsupportedDriverException extends RuntimeException implements AuthorizationException
 {
     public function __construct(string $driver)
     {

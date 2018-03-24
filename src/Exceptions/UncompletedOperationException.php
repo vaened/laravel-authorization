@@ -9,9 +9,10 @@ declare(strict_types=1);
 namespace Enea\Authorization\Exceptions;
 
 use Enea\Authorization\Contracts\Grantable;
+use RuntimeException;
 use Throwable;
 
-abstract class UncompletedOperationException extends AuthorizationException
+abstract class UncompletedOperationException extends RuntimeException implements AuthorizationException
 {
     private $grantable;
 
