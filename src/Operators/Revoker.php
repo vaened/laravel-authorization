@@ -41,7 +41,7 @@ class Revoker extends Operator
     private function removeFrom(BelongsToMany $authorizations): Closure
     {
         return function (Grantable $grantable) use ($authorizations): void {
-            $result = $authorizations->detach($this->castToModel($grantable));
+            $result = $authorizations->detach($grantable->getIdentificationKey());
 
             if (! $this->isSuccessful($result)) {
                 throw new AuthorizationNotRevokedException($grantable);

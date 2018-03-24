@@ -49,7 +49,7 @@ class Granter extends Operator
     private function saveIn(Grantable $grantable, BelongsToMany $authorizations): void
     {
         try {
-            $authorizations->save($this->castToModel($grantable));
+            $authorizations->save($grantable);
         } catch (Exception $exception) {
             throw new AuthorizationNotGrantedException($grantable, $exception);
         }

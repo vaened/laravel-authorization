@@ -9,14 +9,10 @@ declare(strict_types=1);
 namespace Enea\Authorization\Operators;
 
 use Enea\Authorization\Contracts\{
-    Grantable, PermissionsOwner, RolesOwner
+    PermissionsOwner, RolesOwner
 };
 use Enea\Authorization\Events\Operation;
-use Enea\Authorization\Exceptions\{
-    GrantableIsNotValidModelException
-};
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 abstract class Operator
@@ -31,15 +27,6 @@ abstract class Operator
     abstract public function permissions(PermissionsOwner $owner, Collection $permissions): void;
 
     abstract public function roles(RolesOwner $owner, Collection $roles): void;
-
-    protected function castToModel(Grantable $grantable): Model
-    {
-        if (! $grantable instanceof Model) {
-            throw GrantableIsNotValidModelException::make($grantable);
-        }
-
-        return $grantable;
-    }
 
     protected function dispatchEvent(Operation $operation): void
     {
