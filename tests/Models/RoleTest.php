@@ -59,6 +59,6 @@ class RoleTest extends AuthorizationTestCase
 
     protected function authorization(string $name): Grantable
     {
-        return $this->role(['secret_name' => $name]);
+        return $this->role(['display_name' => $name]);
     }
 }

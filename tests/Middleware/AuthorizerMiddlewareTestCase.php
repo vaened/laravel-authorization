@@ -38,17 +38,17 @@ abstract class AuthorizerMiddlewareTestCase extends MiddlewareTestCase
 
     public function test_the_route_are_protected_with_an_authorization(): void
     {
-        $this->getLoggedUser()->grant($this->getGrantableInstance('authorization.1'));
-        $this->applyMiddleware($this->getMiddlewareName(), 'authorization.1');
+        $this->getLoggedUser()->grant($this->getGrantableInstance('Authorization'));
+        $this->applyMiddleware($this->getMiddlewareName(), 'authorization');
         $this->makeRequest()->assertStatus(200)->assertSeeText(self::SUCCESS_TEXT);
     }
 
     public function test_the_route_is_protected_with_some_authorization(): void
     {
-        $authorization1 = $this->getGrantableInstance('authorization.1');
-        $authorization2 = $this->getGrantableInstance('authorization.2');
+        $authorization1 = $this->getGrantableInstance('First Authorization');
+        $authorization2 = $this->getGrantableInstance('Second Authorization');
         $this->getLoggedUser()->syncGrant([$authorization1, $authorization2]);
-        $this->applyMiddleware($this->getMiddlewareName(), 'non-existent', 'authorization.2');
+        $this->applyMiddleware($this->getMiddlewareName(), 'non-existent', 'second-authorization');
         $this->makeRequest()->assertStatus(200)->assertSeeText(self::SUCCESS_TEXT);
     }
 

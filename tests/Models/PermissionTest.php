@@ -11,6 +11,6 @@ class PermissionTest extends AuthorizationTestCase
 {
     protected function authorization(string $name): Grantable
     {
-        return $this->permission(['secret_name' => $name]);
+        return $this->permission(['display_name' => $name]);
     }
 }
