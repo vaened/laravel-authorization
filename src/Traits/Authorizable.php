@@ -33,7 +33,7 @@ trait Authorizable
 
     public function getIdentificationKey(): string
     {
-        return $this->getKey();
+        return (string) $this->getKey();
     }
 
     public function grant(Grantable $grantable): void

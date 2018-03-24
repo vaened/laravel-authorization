@@ -26,6 +26,6 @@ trait Grantable
 
     public function getIdentificationKey(): string
     {
-        return $this->getKey();
+        return (string) $this->getKey();
     }
 }
