@@ -12,6 +12,11 @@ class Determiner
         return self::get('listeners.unauthorized-owner-logger', true);
     }
 
+    public static function applyFormatToSecretName(): bool
+    {
+        return self::get('format-secret-name', true);
+    }
+
     private static function get(string $key, bool $default = false): bool
     {
         return (bool) config("authorization.{$key}", $default);
