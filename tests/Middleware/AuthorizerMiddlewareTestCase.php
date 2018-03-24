@@ -9,9 +9,9 @@ declare(strict_types=1);
 namespace Enea\Authorization\Tests\Middleware;
 
 use Enea\Authorization\Contracts\Grantable;
+use Enea\Authorization\Exceptions\UnauthorizedOwnerException;
 use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Routing\Route;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 abstract class AuthorizerMiddlewareTestCase extends MiddlewareTestCase
 {
@@ -28,7 +28,7 @@ abstract class AuthorizerMiddlewareTestCase extends MiddlewareTestCase
         $this->withoutExceptionHandling();
         $this->authenticate();
         $this->applyMiddleware($this->getMiddlewareName(), 'non-existent-authorization');
-        $this->expectException(AccessDeniedHttpException::class);
+        $this->expectException(UnauthorizedOwnerException::class);
         $this->makeRequest();
     }
 
