@@ -9,14 +9,15 @@ declare(strict_types=1);
 namespace Enea\Authorization\Exceptions;
 
 use Enea\Authorization\Contracts\Grantable;
+use Throwable;
 
 abstract class UncompletedOperationException extends AuthorizationException
 {
     private $grantable;
 
-    public function __construct(Grantable $grantable)
+    public function __construct(Grantable $grantable, Throwable $previous = null)
     {
-        parent::__construct($this->makeMessage($grantable));
+        parent::__construct($this->makeMessage($grantable), 0, $previous);
         $this->grantable = $grantable;
     }
 

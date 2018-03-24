@@ -14,6 +14,7 @@ use Enea\Authorization\Contracts\{
 };
 use Enea\Authorization\Events\Granted;
 use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
+use Exception;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
@@ -41,12 +42,17 @@ class Granter extends Operator
     protected function addTo(BelongsToMany $authorizations): Closure
     {
         return function (Grantable $grantable) use ($authorizations): void {
-            $saved = ! is_null($authorizations->save($this->castToModel($grantable)));
-
-            if (! $saved) {
-                throw new AuthorizationNotGrantedException($grantable);
-            }
+            $this->saveIn($grantable, $authorizations);
         };
+    }
+
+    private function saveIn(Grantable $grantable, BelongsToMany $authorizations): void
+    {
+        try {
+            $authorizations->save($this->castToModel($grantable));
+        } catch (Exception $exception) {
+            throw new AuthorizationNotGrantedException($grantable, $exception);
+        }
     }
 
     private function dispatchGrantedEvent(GrantableOwner $owner, Collection $grantableCollection): void
