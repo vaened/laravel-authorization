@@ -16,6 +16,12 @@ class AuthorizableTest extends TestCase
 {
     use PermissionOwnerTest, RoleOwnerTest, OwnerTest;
 
+    public function test_the_identifier_is_the_primary_key_of_the_model(): void
+    {
+        $user = $this->user();
+        $this->assertSame((string) $user->getKey(), $user->getIdentificationKey());
+    }
+
     public function test_the_permissions_are_loaded_correctly(): void
     {
         $user = $this->user();
