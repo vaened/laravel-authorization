@@ -12,9 +12,12 @@ use Illuminate\Support\Collection;
 
 trait Factories
 {
-    protected function permission(array $customAttributes = array()): Permission
+    protected function permission(string $name = null): Permission
     {
-        return factory(Permission::class)->create($customAttributes);
+        return factory(Permission::class)->create($name ? [
+            'secret_name' => $name,
+            'display_name' => $name,
+        ] : []);
     }
 
     protected function permissions(int $amount = 1): Collection
@@ -22,9 +25,12 @@ trait Factories
         return factory(Permission::class, $amount)->create();
     }
 
-    protected function role(array $customAttributes = array()): Role
+    protected function role(string $name = null): Role
     {
-        return factory(Role::class)->create($customAttributes);
+        return factory(Role::class)->create($name ? [
+            'secret_name' => $name,
+            'display_name' => $name,
+        ] : []);
     }
 
     protected function roles(int $amount = 1): Collection

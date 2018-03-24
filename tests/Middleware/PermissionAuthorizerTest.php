@@ -23,6 +23,6 @@ class PermissionAuthorizerTest extends AuthorizerMiddlewareTestCase
 
     protected function getGrantableInstance(string $name): Grantable
     {
-        return $this->permission(['display_name' => $name]);
+        return $this->permission($name);
     }
 }

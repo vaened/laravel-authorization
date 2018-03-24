@@ -13,7 +13,7 @@ class RoleAuthorizerTest extends AuthorizerMiddlewareTestCase
 {
     protected function getGrantableInstance(string $name): Grantable
     {
-        return $this->role(['display_name' => $name]);
+        return $this->role($name);
     }
 
     protected function getMiddlewareName(): string
