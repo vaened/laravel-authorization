@@ -8,15 +8,9 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Tests\Support\Models;
 
-use Enea\Authorization\Contracts\Authorizable as AuthorizedUserContract;
-use Enea\Authorization\Traits\Authorizable;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Database\Eloquent\Model;
+use Enea\Authorization\Models\User as Authorizable;
 
-class User extends Model implements AuthorizedUserContract, AuthenticatableContract
+class User extends Authorizable
 {
-    use Authorizable, Authenticatable;
-
     public $timestamps = false;
 }
