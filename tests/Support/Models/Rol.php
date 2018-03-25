@@ -9,18 +9,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Models;
+namespace Enea\Authorization\Tests\Support\Models;
 
 use Enea\Authorization\Contracts\RoleContract;
-use Enea\Authorization\Support\Config;
 use Enea\Authorization\Traits\IsRole;
+use Illuminate\Database\Eloquent\Model;
 
-class Role extends Grantable implements RoleContract
+class Rol extends Model implements RoleContract
 {
     use IsRole;
-
-    protected function getConfigTableName(): string
-    {
-        return Config::roleTableName();
-    }
 }

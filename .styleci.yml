@@ -7,6 +7,8 @@ disabled:
   - short_array_syntax
   - phpdoc_separation
   - blank_line_before_return
+  - self_accessor
+  - single_import_per_statement
 
 enabled:
   - concat_with_spaces

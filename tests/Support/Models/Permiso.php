@@ -9,18 +9,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Models;
+namespace Enea\Authorization\Tests\Support\Models;
 
 use Enea\Authorization\Contracts\PermissionContract;
-use Enea\Authorization\Support\Config;
 use Enea\Authorization\Traits\IsPermission;
+use Illuminate\Database\Eloquent\Model;
 
-class Permission extends Grantable implements PermissionContract
+class Permiso extends Model implements PermissionContract
 {
     use IsPermission;
-
-    protected function getConfigTableName(): string
-    {
-        return Config::permissionTableName();
-    }
 }
