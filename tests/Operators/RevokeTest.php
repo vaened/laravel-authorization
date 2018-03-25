@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 /**
- * Created on 18/03/18 by enea dhack.
+ * @author enea dhack <me@enea.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Enea\Authorization\Tests\Operators;
@@ -14,19 +17,28 @@ use Enea\Authorization\Events\Revoked;
 use Enea\Authorization\Exceptions\AuthorizationNotRevokedException;
 use Enea\Authorization\Facades\Authorizer;
 use Enea\Authorization\Facades\Revoker;
-use Enea\Authorization\Tests\TestCase;
 use Illuminate\Support\Facades\Event;
 
-class RevokeTest extends TestCase
+class RevokeTest extends OperatorTestCase
 {
-    public function test_an_event_is_dispatched_when_permission_is_granted()
+    public function test_an_event_is_dispatched_when_permission_is_revoked()
     {
         Event::fake();
         $owner = $this->user();
-        $permissions = $this->permissions();
-        $owner->syncGrant($permissions->all());
-        Revoker::permissions($owner, $permissions);
-        Event::assertDispatched(Revoked::class);
+        $permission = $this->permissions();
+        $owner->syncGrant($permission->all());
+        Revoker::permissions($owner, $permission);
+        $this->assertEvent($owner, $permission, PermissionContract::class);
+    }
+
+    public function test_an_event_is_dispatched_when_role_is_revoked(): void
+    {
+        Event::fake();
+        $owner = $this->user();
+        $roles = $this->roles();
+        $owner->syncGrant($roles->all());
+        Revoker::roles($owner, $roles);
+        $this->assertEvent($owner, $roles, RoleContract::class);
     }
 
     public function test_when_an_role_can_not_be_revoked_an_exception_is_thrown(): void
@@ -69,5 +81,10 @@ class RevokeTest extends TestCase
         });
 
         $this->assertSame($roles->count(), $operations->count());
+    }
+
+    protected function mainEventName(): string
+    {
+        return Revoked::class;
     }
 }
