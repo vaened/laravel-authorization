@@ -12,9 +12,9 @@ interface Authorizable extends RolesOwner, PermissionsOwner, Integrable, Permiss
 {
     public function grant(Grantable $grantable): void;
 
-    public function syncGrant(array $grantables): void;
+    public function grantMultiple(array $grantables): void;
 
     public function revoke(Grantable $grantable): void;
 
-    public function syncRevoke(array $grantables): void;
+    public function revokeMultiple(array $grantables): void;
 }

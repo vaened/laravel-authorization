@@ -26,7 +26,7 @@ class AuthorizableTest extends TestCase
     {
         $user = $this->user();
         $permissions = $this->permissions(3);
-        $user->syncGrant($permissions->all());
+        $user->grantMultiple($permissions->all());
 
         $user->getPermissionModels()->each(function (PermissionContract $permission) use ($permissions) {
             $this->assertTrue($permissions->contains($this->equalsAuthorization($permission)));
@@ -37,7 +37,7 @@ class AuthorizableTest extends TestCase
     {
         $user = $this->user();
         $permissions = $this->permissions(3);
-        $user->syncGrant($permissions->all());
+        $user->grantMultiple($permissions->all());
         $permissions->each($this->can($user));
     }
 
@@ -53,8 +53,8 @@ class AuthorizableTest extends TestCase
     {
         $user = $this->user();
         $permissions = $this->permissions(3);
-        $user->syncGrant($permissions->all());
-        $user->syncRevoke($permissions->all());
+        $user->grantMultiple($permissions->all());
+        $user->revokeMultiple($permissions->all());
         $permissions->each($this->cannot($user));
     }
 
@@ -71,7 +71,7 @@ class AuthorizableTest extends TestCase
     {
         $user = $this->user();
         $roles = $this->roles(3);
-        $user->syncGrant($roles->all());
+        $user->grantMultiple($roles->all());
 
         $user->getRoleModels()->each(function (RoleContract $role) use ($roles) {
             $this->assertTrue($roles->contains($this->equalsAuthorization($role)));
@@ -82,7 +82,7 @@ class AuthorizableTest extends TestCase
     {
         $user = $this->user();
         $roles = $this->roles(3);
-        $user->syncGrant($roles->all());
+        $user->grantMultiple($roles->all());
         $roles->each($this->is($user));
     }
 
@@ -98,8 +98,8 @@ class AuthorizableTest extends TestCase
     {
         $user = $this->user();
         $roles = $this->roles(3);
-        $user->syncGrant($roles->all());
-        $user->syncRevoke($roles->all());
+        $user->grantMultiple($roles->all());
+        $user->revokeMultiple($roles->all());
         $roles->each($this->isnt($user));
     }
 

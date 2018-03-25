@@ -19,7 +19,7 @@ class RoleTest extends AuthorizationTestCase
     {
         $role = $this->role();
         $permissions = $this->permissions(3);
-        $role->syncGrant($permissions->all());
+        $role->grantMultiple($permissions->all());
 
         $role->getPermissionModels()->each(function (PermissionContract $permission) use ($permissions) {
             $this->assertTrue($permissions->contains($this->equalsAuthorization($permission)));
@@ -30,7 +30,7 @@ class RoleTest extends AuthorizationTestCase
     {
         $role = $this->role();
         $permissions = $this->permissions(3);
-        $role->syncGrant($permissions->all());
+        $role->grantMultiple($permissions->all());
         $permissions->each($this->can($role));
     }
 
@@ -46,8 +46,8 @@ class RoleTest extends AuthorizationTestCase
     {
         $role = $this->role();
         $permissions = $this->permissions(3);
-        $role->syncGrant($permissions->all());
-        $role->syncRevoke($permissions->all());
+        $role->grantMultiple($permissions->all());
+        $role->revokeMultiple($permissions->all());
         $permissions->filter($this->cannot($role));
     }
 

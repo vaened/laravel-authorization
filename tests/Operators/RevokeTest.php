@@ -26,7 +26,7 @@ class RevokeTest extends OperatorTestCase
         Event::fake();
         $owner = $this->user();
         $permission = $this->permissions();
-        $owner->syncGrant($permission->all());
+        $owner->grantMultiple($permission->all());
         Revoker::permissions($owner, $permission);
         $this->assertEvent($owner, $permission, PermissionContract::class);
     }
@@ -36,7 +36,7 @@ class RevokeTest extends OperatorTestCase
         Event::fake();
         $owner = $this->user();
         $roles = $this->roles();
-        $owner->syncGrant($roles->all());
+        $owner->grantMultiple($roles->all());
         Revoker::roles($owner, $roles);
         $this->assertEvent($owner, $roles, RoleContract::class);
     }
@@ -59,7 +59,7 @@ class RevokeTest extends OperatorTestCase
     {
         $owner = $this->user();
         $permissions = $this->permissions(2);
-        $owner->syncGrant($permissions->all());
+        $owner->grantMultiple($permissions->all());
         Revoker::permissions($owner, $permissions);
 
         $operations = $permissions->filter(function (PermissionContract $permission) use ($owner) {
@@ -73,7 +73,7 @@ class RevokeTest extends OperatorTestCase
     {
         $owner = $this->user();
         $roles = $this->roles(2);
-        $owner->syncGrant($roles->all());
+        $owner->grantMultiple($roles->all());
         Revoker::roles($owner, $roles);
 
         $operations = $roles->filter(function (RoleContract $role) use ($owner) {

@@ -46,20 +46,20 @@ trait HasRole
 
     public function grant(PermissionContract $permission): void
     {
-        $this->syncGrant([$permission]);
+        $this->grantMultiple([$permission]);
     }
 
-    public function syncGrant(array $permissions): void
+    public function grantMultiple(array $permissions): void
     {
         Granter::permissions($this, collect($permissions));
     }
 
     public function revoke(PermissionContract $permission): void
     {
-        $this->syncRevoke([$permission]);
+        $this->revokeMultiple([$permission]);
     }
 
-    public function syncRevoke(array $permissions): void
+    public function revokeMultiple(array $permissions): void
     {
         Revoker::permissions($this, collect($permissions));
     }

@@ -39,10 +39,10 @@ trait Authorizable
 
     public function grant(Grantable $grantable): void
     {
-        $this->syncGrant([$grantable]);
+        $this->grantMultiple([$grantable]);
     }
 
-    public function syncGrant(array $grantables): void
+    public function grantMultiple(array $grantables): void
     {
         Granter::permissions($this, $this->filterPermissions($grantables));
         Granter::roles($this, $this->filterRoles($grantables));
@@ -50,10 +50,10 @@ trait Authorizable
 
     public function revoke(Grantable $grantable): void
     {
-        $this->syncRevoke([$grantable]);
+        $this->revokeMultiple([$grantable]);
     }
 
-    public function syncRevoke(array $grantables): void
+    public function revokeMultiple(array $grantables): void
     {
         Revoker::permissions($this, $this->filterPermissions($grantables));
         Revoker::roles($this, $this->filterRoles($grantables));

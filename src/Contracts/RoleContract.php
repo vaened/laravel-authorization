@@ -14,9 +14,9 @@ interface RoleContract extends Grantable, Permissible, PermissionsOwner
 
     public function grant(PermissionContract $permission): void;
 
+    public function grantMultiple(array $permissions): void;
+
     public function revoke(PermissionContract $permission): void;
 
-    public function syncGrant(array $permissions): void;
-
-    public function syncRevoke(array $permissions): void;
+    public function revokeMultiple(array $permissions): void;
 }

@@ -50,7 +50,7 @@ abstract class AuthorizerMiddlewareTestCase extends MiddlewareTestCase
     {
         $authorization1 = $this->getGrantableInstance('First Authorization');
         $authorization2 = $this->getGrantableInstance('Second Authorization');
-        $this->getLoggedUser()->syncGrant([$authorization1, $authorization2]);
+        $this->getLoggedUser()->grantMultiple([$authorization1, $authorization2]);
         $this->applyMiddleware($this->getMiddlewareName(), 'non-existent', 'second-authorization');
         $this->makeRequest()->assertStatus(200)->assertSeeText(self::SUCCESS_TEXT);
     }

@@ -24,7 +24,7 @@ abstract class AuthorizerTestCase extends DriverTestCase
     {
         $user = $this->user();
         $permissions = $this->permissions(3)->push($this->permission('Hide Articles'));
-        $user->syncGrant($permissions->all());
+        $user->grantMultiple($permissions->all());
         $this->assertTrue($this->getAuthorizer()->canAny($user, ['non-existent', 'hide-articles']));
     }
 
@@ -52,7 +52,7 @@ abstract class AuthorizerTestCase extends DriverTestCase
     {
         $user = $this->user();
         $roles = $this->roles(3)->push($this->role('Admin'));
-        $user->syncGrant($roles->all());
+        $user->grantMultiple($roles->all());
         $this->assertTrue($this->getAuthorizer()->isAny($user, ['non-existent', 'admin']));
     }
 
