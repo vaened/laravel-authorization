@@ -4,6 +4,18 @@ Laravel Authorization
 
 Laravel Authorization is a library that provides a simple administration interface for roles and permissions.
 
+## Documentation
+
+* [Quick Start](https://github.com/eneav/laravel-authorization/wiki/Quick-Start)
+    - [checks](https://github.com/eneav/laravel-authorization/wiki/Quick-Start#checks)
+    - [assignment](https://github.com/eneav/laravel-authorization/wiki/Quick-Start#assignment)
+    - [revocation](https://github.com/eneav/laravel-authorization/wiki/Quick-Start#revocation)
+
+## Examples
+[Simple CRUD](https://github.com/eneav/laravel-authorization-example)
+
+## Changelog
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
 ## License
 Laravel Authorization is licensed under [The MIT License (MIT)](LICENSE.md).
