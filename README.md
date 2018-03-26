@@ -10,7 +10,7 @@ Laravel Authorization is a library that provides a simple administration interfa
     - [checks](https://github.com/eneav/laravel-authorization/wiki/Quick-Start#checks)
     - [assignment](https://github.com/eneav/laravel-authorization/wiki/Quick-Start#assignment)
     - [revocation](https://github.com/eneav/laravel-authorization/wiki/Quick-Start#revocation)
-
+* [Middleware](https://github.com/eneav/laravel-authorization/wiki/Middleware)
 ## Examples
 [Simple CRUD](https://github.com/eneav/laravel-authorization-example)
 
