@@ -8,15 +8,17 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Tests\Drivers;
 
+use Enea\Authorization\Resolvers\DriverResolver;
 use Enea\Authorization\Tests\TestCase;
 
 abstract class DriverTestCase extends TestCase
 {
     abstract protected function getDriver(): string;
 
-    protected function getEnvironmentSetUp($app)
+    public function setUp()
     {
-        parent::getEnvironmentSetUp($app);
-        $app->make('config')->set('authorization.driver', $this->getDriver());
+        parent::setUp();
+        $this->app->make('config')->set('authorization.driver', $this->getDriver());
+        (new DriverResolver($this->app))->make();
     }
 }
