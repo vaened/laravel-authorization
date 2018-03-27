@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 /**
- * Created on 12/02/18 by enea dhack.
+ * @author enea dhack <hello@enea.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Enea\Authorization;
@@ -11,6 +14,7 @@ namespace Enea\Authorization;
 use Enea\Authorization\Commands\InstallCommand;
 use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
+use Enea\Authorization\Resolvers\DriverResolver;
 use Enea\Authorization\Support\Config;
 use Illuminate\Support\ServiceProvider;
 
@@ -68,6 +72,6 @@ class AuthorizationServiceProvider extends ServiceProvider
 
     private function configDriver(): void
     {
-        (new DriversResolver($this->app))->make();
+        (new DriverResolver($this->app))->make();
     }
 }
