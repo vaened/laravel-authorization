@@ -11,8 +11,8 @@ namespace Enea\Authorization\Tests\Drivers;
 use Enea\Authorization\Contracts\{
     PermissionContract, RoleContract
 };
-use Enea\Authorization\DriversResolver;
 use Enea\Authorization\Exceptions\UnsupportedDriverException;
+use Enea\Authorization\Resolvers\DriverResolver;
 use Enea\Authorization\Tests\TestCase;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,7 +21,7 @@ class BindingsTest extends TestCase
     public function test_throw_error_in_case_of_unsupported_driver(): void
     {
         $this->app->make('config')->set('authorization.driver', 'unsupported');
-        $resolver = new DriversResolver($this->app);
+        $resolver = new DriverResolver($this->app);
         $this->expectException(UnsupportedDriverException::class);
         $resolver->make();
     }
