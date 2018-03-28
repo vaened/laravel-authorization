@@ -16,10 +16,10 @@ use Enea\Authorization\Contracts\PermissionsOwner;
 use Enea\Authorization\Contracts\RolesOwner;
 use Enea\Authorization\Drivers\Cache\Repositories\PermissionRepository;
 use Enea\Authorization\Drivers\Cache\Repositories\RoleRepository;
-use Enea\Authorization\Drivers\DatabaseContract;
+use Enea\Authorization\Drivers\ManagerContract;
 use Illuminate\Support\Collection;
 
-class Database implements DatabaseContract
+class Manager implements ManagerContract
 {
     private $permissions;
 

@@ -16,7 +16,7 @@ use Enea\Authorization\Contracts\PermissionsOwner;
 use Enea\Authorization\Contracts\RolesOwner;
 use Illuminate\Support\Collection;
 
-interface DatabaseContract
+interface ManagerContract
 {
     public function permissions(PermissionsOwner $owner): Collection;
 

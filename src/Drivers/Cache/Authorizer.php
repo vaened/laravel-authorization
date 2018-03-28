@@ -18,21 +18,21 @@ use Enea\Authorization\Drivers\Authorizer as BaseAuthorizer;
 
 class Authorizer extends BaseAuthorizer
 {
-    private $database;
+    private $manager;
 
-    public function __construct(Database $database)
+    public function __construct(Manager $manager)
     {
-        $this->database = $database;
+        $this->manager = $manager;
     }
 
     public function canAny(PermissionsOwner $owner, array $permissions): bool
     {
-        return $this->database->permissions($owner)->contains($this->any($permissions));
+        return $this->manager->permissions($owner)->contains($this->any($permissions));
     }
 
     public function isAny(RolesOwner $owner, array $roles): bool
     {
-        return $this->database->roles($owner)->contains($this->any($roles));
+        return $this->manager->roles($owner)->contains($this->any($roles));
     }
 
     private function any(array $authorizations): Closure
