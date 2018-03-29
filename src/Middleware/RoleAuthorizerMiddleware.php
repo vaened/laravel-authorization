@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 /**
- * Created on 10/03/18 by enea dhack.
+ * @author enea dhack <me@enea.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Enea\Authorization\Middleware;
@@ -15,10 +18,6 @@ class RoleAuthorizerMiddleware extends AuthorizerMiddleware
 {
     protected function authorized(GrantableOwner $owner, array $grantables): bool
     {
-        if ($owner instanceof RolesOwner) {
-            return $this->authorizer->isAny($owner, $grantables);
-        }
-
-        return false;
+        return $owner instanceof RolesOwner ? $this->authorizer->isAny($owner, $grantables) : false;
     }
 }
