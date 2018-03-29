@@ -11,6 +11,7 @@ namespace Enea\Authorization\Tests;
 use Enea\Authorization\AuthorizationServiceProvider;
 use Enea\Authorization\Tests\Support\Models\User;
 use Enea\Authorization\Tests\Support\Traits\Factories;
+use Orchestra\Database\ConsoleServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -28,6 +29,7 @@ class TestCase extends BaseTestCase
     {
         return [
             AuthorizationServiceProvider::class,
+            ConsoleServiceProvider::class,
         ];
     }
 
