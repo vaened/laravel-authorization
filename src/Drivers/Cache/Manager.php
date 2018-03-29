@@ -43,7 +43,12 @@ class Manager implements ManagerContract
 
     public function forget(GrantableOwner $owner): void
     {
-        $this->roles->forget($owner);
-        $this->permissions->forget($owner);
+        if ($owner instanceof RolesOwner) {
+            $this->roles->forget($owner);
+        }
+
+        if ($owner instanceof PermissionsOwner) {
+            $this->permissions->forget($owner);
+        }
     }
 }
