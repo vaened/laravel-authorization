@@ -28,7 +28,7 @@ abstract class Resolver
 
     public function configure()
     {
-        $this->app->bind(AuthorizerContract::class, $this->authorizer());
+        $this->container()->bind(AuthorizerContract::class, $this->authorizer());
         $this->configureEvents();
     }
 
