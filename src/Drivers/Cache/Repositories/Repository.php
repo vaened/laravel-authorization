@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <hello@enea.io>
+ * @author enea dhack <me@enea.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -32,7 +32,7 @@ abstract class Repository
         $this->key = $key;
     }
 
-    abstract protected function getSuffix(): string;
+    abstract public static function getSuffix(): string;
 
     public function forget(GrantableOwner $owner): void
     {
