@@ -24,7 +24,7 @@ class RoleRepository extends Repository
     public function toCollection(RolesOwner $owner): Collection
     {
         return $this->remember($owner, function () use ($owner) {
-            return $owner->getRoleModels()->map($this->parse());
+            return $owner->roles()->get()->map($this->parse());
         });
     }
 }

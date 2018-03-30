@@ -32,7 +32,7 @@ class PermissionRepository extends Repository
 
     private function permissions(PermissionsOwner $owner): Collection
     {
-        $permissions = $owner->getPermissionModels();
+        $permissions = $owner->permissions()->get();
 
         if ($owner instanceof RolesOwner) {
             return $this->permissionsFromRole($owner)->merge($permissions)->map($this->parse());
