@@ -12,7 +12,7 @@ use Enea\Authorization\Contracts\{
     PermissionsOwner, RolesOwner
 };
 use Enea\Authorization\Traits\Authorizable;
-use Enea\Authorization\Traits\HasRole;
+use Enea\Authorization\Traits\isRole;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -21,8 +21,8 @@ use Illuminate\Support\Facades\Facade;
  * @package Enea\Authorization\Facades
  * @author enea dhack <enea.so@live.com>
  *
- * @method static bool can(PermissionsOwner | Authorizable | HasRole $owner, string $permission)
- * @method static bool canAny(PermissionsOwner | Authorizable | HasRole $owner, array $permissions)
+ * @method static bool can(PermissionsOwner | Authorizable | isRole $owner, string $permission)
+ * @method static bool canAny(PermissionsOwner | Authorizable | isRole $owner, array $permissions)
  * @method static bool is(RolesOwner | Authorizable $owner, string $role)
  * @method static bool isAny(RolesOwner | Authorizable $owner, array $roles)
  */
