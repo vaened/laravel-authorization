@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 /**
- * Created by enea dhack - 29/07/17 11:09 PM.
+ * @author enea dhack <me@enea.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Enea\Authorization\Tests;
@@ -38,6 +41,8 @@ class TestCase extends BaseTestCase
         $config = $app->make('config');
 
         $config->set('auth.providers.users.model', User::class);
+
+        $app->make('config')->set('view.paths', [__DIR__ . '/resources/views']);
 
         $config->set('database.connections.sqlite', [
             'driver' => 'sqlite',
