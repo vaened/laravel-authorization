@@ -50,7 +50,7 @@ class Config
 
     public static function getDriver(): string
     {
-        return self::get('driver', 'database');
+        return self::get('driver', Drivers::CACHE);
     }
 
     private static function get(string $key, string $default = null): string
