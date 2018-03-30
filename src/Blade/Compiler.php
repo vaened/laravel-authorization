@@ -25,7 +25,9 @@ class Compiler
     protected function directives(): array
     {
         return [
+            new IsDirective(),
             new CanDirective(),
+            new IsntDirective(),
             new CannotDirective(),
         ];
     }
