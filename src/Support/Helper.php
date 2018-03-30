@@ -16,9 +16,10 @@ use Enea\Authorization\Contracts\Authorizable;
 
 class Helper
 {
-    public function authenticated(?string $guard = null): Authorizable
+    public function authenticated(?string $guard = null): ?Authorizable
     {
-        return auth($guard)->user();
+        $authenticated = auth($guard)->user();
+        return $authenticated instanceof Authorizable ? $authenticated : null;
     }
 
     public function authorizer(): Authorizer
