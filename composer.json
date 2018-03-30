@@ -2,11 +2,20 @@
   "name": "enea/laravel-authorization",
   "description": "Package to manage the permissions in a laravel application",
   "type": "package",
+  "license": "MIT",
   "authors": [
     {
       "name": "enea dhack",
       "email": "enea.so@live.com"
     }
+  ],
+  "keywords": [
+    "enea",
+    "laravel",
+    "permission",
+    "authorization",
+    "acl",
+    "security"
   ],
   "require": {
     "php": "^7.1.3",

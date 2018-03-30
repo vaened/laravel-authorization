@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 /**
- * Created on 13/02/18 by enea dhack.
+ * @author enea dhack <me@enea.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Enea\Authorization\Traits;
@@ -44,8 +47,13 @@ trait Authorizable
 
     public function grantMultiple(array $grantables): void
     {
-        Granter::permissions($this, $this->filterPermissions($grantables));
-        Granter::roles($this, $this->filterRoles($grantables));
+        $this->operateOn(RoleContract::class, function (Collection $roles) {
+            Granter::roles($this, $roles);
+        }, $grantables);
+
+        $this->operateOn(PermissionContract::class, function (Collection $permissions) {
+            Granter::permissions($this, $permissions);
+        }, $grantables);
     }
 
     public function revoke(Grantable $grantable): void
@@ -55,8 +63,13 @@ trait Authorizable
 
     public function revokeMultiple(array $grantables): void
     {
-        Revoker::permissions($this, $this->filterPermissions($grantables));
-        Revoker::roles($this, $this->filterRoles($grantables));
+        $this->operateOn(RoleContract::class, function (Collection $roles) {
+            Revoker::roles($this, $roles);
+        }, $grantables);
+
+        $this->operateOn(PermissionContract::class, function (Collection $permissions) {
+            Revoker::permissions($this, $permissions);
+        }, $grantables);
     }
 
     public function can(string $permission): bool
@@ -99,14 +112,12 @@ trait Authorizable
         return $this->roles;
     }
 
-    private function filterPermissions(array $grantables): Collection
+    private function operateOn(string $contract, Closure $closure, array $grantables): void
     {
-        return $this->filterOnly(PermissionContract::class)($grantables);
-    }
-
-    private function filterRoles(array $grantables): Collection
-    {
-        return $this->filterOnly(RoleContract::class)($grantables);
+        $collection = $this->filterOnly($contract)($grantables);
+        if (! $collection->isEmpty()) {
+            $closure($collection);
+        }
     }
 
     private function filterOnly(string $abstract): Closure
