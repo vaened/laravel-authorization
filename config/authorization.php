@@ -9,9 +9,9 @@ return [
       | This option controls the default "driver" that will be used to
       | access the authorization repository, by default the "database" driver is used.
       |
-      | Supported: "database"
+      | Supported: "database", "cache"
       */
-    'driver' => 'database',
+    'driver' => 'cache',
 
     'models' => [
         /*

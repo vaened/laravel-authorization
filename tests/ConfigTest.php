@@ -22,7 +22,7 @@ class ConfigTest extends TestCase
     {
         $this->app->make('config')->set('authorization', null);
 
-        $this->assertEquals(Config::getDriver(), 'database');
+        $this->assertEquals(Config::getDriver(), 'cache');
         $this->assertEquals(Config::roleModel(), Role::class);
         $this->assertEquals(Config::permissionModel(), Permission::class);
         $this->assertEquals(Config::roleTableName(), 'roles');

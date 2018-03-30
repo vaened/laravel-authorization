@@ -11,6 +11,7 @@ namespace Enea\Authorization\Tests;
 use Enea\Authorization\AuthorizationServiceProvider;
 use Enea\Authorization\Tests\Support\Models\User;
 use Enea\Authorization\Tests\Support\Traits\Factories;
+use Orchestra\Database\ConsoleServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -28,6 +29,7 @@ class TestCase extends BaseTestCase
     {
         return [
             AuthorizationServiceProvider::class,
+            ConsoleServiceProvider::class,
         ];
     }
 
@@ -46,14 +48,13 @@ class TestCase extends BaseTestCase
 
     protected function registerModelFactories(): void
     {
-        $this->withFactories(__DIR__ . '/Support/Factories');
+        $this->withFactories(__DIR__ . '/database/factories');
     }
 
     protected function setUpDatabase(): void
     {
+        $this->loadMigrationsFrom(__DIR__ . '/database/migrations/');
         include_once __DIR__ . '/../database/migrations/create_laravel_authorization_tables.stub';
-        include_once __DIR__ . '/Support/Migrations/laravel_authorization_test_tables.php';
         (new \CreateLaravelAuthorizationTables())->up();
-        (new \CreateLaravelAuthorizationTestTables())->up();
     }
 }
