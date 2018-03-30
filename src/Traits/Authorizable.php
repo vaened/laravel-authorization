@@ -117,7 +117,7 @@ trait Authorizable
         $collection = $this->filterOnly($contract)($grantables);
         if (! $collection->isEmpty()) {
             $closure($collection);
-        };
+        }
     }
 
     private function filterOnly(string $abstract): Closure

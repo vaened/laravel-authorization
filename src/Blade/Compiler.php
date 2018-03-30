@@ -34,7 +34,7 @@ class Compiler
 
     private function addDirective(CheckableDirective $directive): void
     {
-        Blade::if ($directive->name(), function (string $grantable, ?string $guard = null) use ($directive): bool {
+        Blade::if($directive->name(), function (string $grantable, ?string $guard = null) use ($directive): bool {
             return $directive->isAuthorized($grantable, $guard);
         });
     }

@@ -14,7 +14,7 @@ namespace Enea\Authorization\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Class Helpers
+ * Class Helpers.
  *
  * @package Enea\Authorization\Facades
  *
