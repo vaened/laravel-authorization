@@ -2,6 +2,7 @@
   "name": "enea/laravel-authorization",
   "description": "Package to manage the permissions in a laravel application",
   "type": "package",
+  "license": "MIT",
   "authors": [
     {
       "name": "enea dhack",
