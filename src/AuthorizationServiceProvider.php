@@ -16,6 +16,7 @@ use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Resolvers\DriverResolver;
 use Enea\Authorization\Support\Config;
+use Enea\Authorization\Support\Helper;
 use Illuminate\Support\ServiceProvider;
 
 class AuthorizationServiceProvider extends ServiceProvider
@@ -68,6 +69,7 @@ class AuthorizationServiceProvider extends ServiceProvider
         $this->configDriver();
         $this->app->bind(PermissionContract::class, Config::permissionModel());
         $this->app->bind(RoleContract::class, Config::roleModel());
+        $this->app->singleton('authorization.helpers', Helper::class);
     }
 
     private function configDriver(): void
