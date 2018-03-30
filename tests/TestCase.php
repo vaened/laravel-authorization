@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Enea\Authorization\Tests;
 
 use Enea\Authorization\AuthorizationServiceProvider;
+use Enea\Authorization\Resolvers\DriverResolver;
 use Enea\Authorization\Tests\Support\Models\User;
 use Enea\Authorization\Tests\Support\Traits\Factories;
 use Orchestra\Database\ConsoleServiceProvider;
@@ -49,6 +50,12 @@ class TestCase extends BaseTestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
+    }
+
+    protected function configDriver(string $driver)
+    {
+        $this->app->make('config')->set('authorization.driver', $driver);
+        (new DriverResolver($this->app))->make();
     }
 
     protected function registerModelFactories(): void
