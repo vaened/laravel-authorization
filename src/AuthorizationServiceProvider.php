@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Enea\Authorization;
 
+use Enea\Authorization\Blade\Compiler;
 use Enea\Authorization\Commands\InstallCommand;
 use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
@@ -29,6 +30,7 @@ class AuthorizationServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publish();
+        $this->registerBladeDirectives();
     }
 
     /**
@@ -75,5 +77,10 @@ class AuthorizationServiceProvider extends ServiceProvider
     private function configDriver(): void
     {
         (new DriverResolver($this->app))->make();
+    }
+
+    private function registerBladeDirectives(): void
+    {
+        (new Compiler())->make();
     }
 }
