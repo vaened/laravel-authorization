@@ -2,4 +2,4 @@
     non member
 @else
     is member
-@endcan
+@endauthenticatedIsnt
