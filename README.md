@@ -1,12 +1,29 @@
 Laravel Authorization
 =====================
+
 [![Build Status](https://travis-ci.org/eneav/laravel-authorization.svg)](https://travis-ci.org/eneav/laravel-authorization) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/eneav/laravel-authorization/badges/quality-score.png)](https://scrutinizer-ci.com/g/eneav/laravel-authorization/)  [![Code Coverage](https://scrutinizer-ci.com/g/eneav/laravel-authorization/badges/coverage.png)](https://scrutinizer-ci.com/g/eneav/laravel-authorization/) [![StyleCI](https://styleci.io/repos/121161451/shield)](https://styleci.io/repos/121161451)  [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
 
 Laravel Authorization is a package that provides a simple administration interface for roles and permissions.
 
+```php
+// create an authorization
+$editor = $this->repository->create('Edit Articles');
+// grant authorization
+$user->grant($editor);
+// check
+$user->isMemberOf('edit-articles'); // true
+```
+
+## Content
+* [Installation](#installation)
+* [Quick Start](#quick-start)
+    - [checks](#checks)
+    - [assignment](#assignment)
+    - [revocation](#revocation)
+* [Middleware](#middleware)
+* [Blade Directives](#blade-directives)
 
 ## Installation
-
 Laravel Authorization requires PHP 7.1 or 7.2. This version supports Laravel 5.5 or 5.6 only.
 
 To get the latest version, simply require the project using Composer:
@@ -16,13 +33,10 @@ $ composer require enea/laravel-authorization
 
 Once installed, if you are not using automatic package discovery, then you need to register the [Enea\Authorization\AuthorizationServiceProvider](https://github.com/eneav/laravel-authorization/blob/master/src/AuthorizationServiceProvider.php) service provider in your `config/app.php`.
 
-## Documentation
-
-* [Quick Start](#quick-start)
-    - [checks](#checks)
-    - [assignment](#assignment)
-    - [revocation](#revocation)
-* [Middleware](#middleware)
+and finally, it only remains to run in the console:
+```sh
+$ php artisan authorization:install
+```
 
 ## Quick Start
 Starting with laravel-authorization is as simple as extending the `User` model that provides the package:
@@ -100,9 +114,6 @@ $role->revoke($permission);
 // revoke multiple permissions of a role
 $user->revokeMultiple([$firstPermission, $secondPermission]);
 ```
-
-To use the available middleware, you must configure them in your [kernel](https://github.com/eneav/laravel-authorization-example/blob/master/app/Http/Kernel.php#L64-L65) file:
-
 ## Middleware
 To use the available middleware, you must configure them in your [kernel](https://github.com/eneav/laravel-authorization-example/blob/master/app/Http/Kernel.php#L64-L65) file:
 ```php
@@ -134,6 +145,42 @@ public function render($request, Exception $exception)
     return parent::render($request, $exception);
 }
 ```
+## Blade Directives
+This package also adds Blade directives to verify if the currently connected user has a specific role or permission.
+Optionally you can pass in the `guard` that the check will be performed on as a second argument.
+### For Roles
+```php
+@authenticatedIs('articles-owner')
+    // is articles owner
+@else
+    // it's not articles owner
+@endauthenticatedIs
+```
+and to deny
+```php
+@authenticatedIsnt('articles-owner')
+    // it's not articles owner
+@else
+    // is articles owner
+@endauthenticatedIsnt
+```
+### For Permissions
+```php
+@authenticatedCan('edit-articles')
+    // can edit articles
+@else
+    // can not edit articles
+@endauthenticatedCan
+```
+and to deny
+```php
+@authenticatedCannot('edit-articles')
+    // ican not edit articles
+@else
+    // can edit articles
+@endauthenticatedCannot
+```
+
 ## Examples
 [Simple CRUD](https://github.com/eneav/laravel-authorization-example)
 
