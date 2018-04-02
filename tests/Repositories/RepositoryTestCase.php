@@ -13,7 +13,7 @@ namespace Enea\Authorization\Tests\Repositories;
 
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Repositories\Repository;
-use Enea\Authorization\Repositories\Struct;
+use Enea\Authorization\Repositories\Authorization;
 use Enea\Authorization\Tests\TestCase;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,8 +28,8 @@ abstract class RepositoryTestCase extends TestCase
     public function test_can_create_a_multiple_authorizations_from_the_repository(): void
     {
         $structs = [
-            Struct::create('First Authorization'),
-            Struct::create('Second Authorization'),
+            Authorization::create('First Authorization'),
+            Authorization::create('Second Authorization'),
         ];
 
         $permissions = $this->repository()->createMultiple($structs);

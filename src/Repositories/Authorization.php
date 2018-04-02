@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Repositories;
 
-class Struct
+class Authorization
 {
     private $name;
 
@@ -23,7 +23,7 @@ class Struct
         $this->description = $description;
     }
 
-    public static function create(string $name, ?string $description = null): Struct
+    public static function create(string $name, ?string $description = null): Authorization
     {
         return new static($name, $description);
     }

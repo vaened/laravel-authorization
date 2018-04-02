@@ -17,7 +17,7 @@ class RoleRepository extends Repository
 {
     public function create(string $name, ?string $description = null): RoleContract
     {
-        return $this->register([Struct::create($name, $description)])->first();
+        return $this->register([Authorization::create($name, $description)])->first();
     }
 
     protected function contract(): string

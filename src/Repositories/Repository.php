@@ -36,9 +36,9 @@ abstract class Repository
         });
     }
 
-    private function transform(array $authorization): Collection
+    protected function transform(array $authorization): Collection
     {
-        return collect($authorization)->map(function (Struct $struct) {
+        return collect($authorization)->map(function (Authorization $struct) {
             return [
                 'display_name' => $struct->getName(),
                 'description' => $struct->getDescription(),
