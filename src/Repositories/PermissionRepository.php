@@ -17,7 +17,7 @@ class PermissionRepository extends Repository
 {
     public function create(string $name, ?string $description = null): PermissionContract
     {
-        return $this->register([Authorization::create($name, $description)])->first();
+        return $this->register([Authorization::fake($name, $description)])->first();
     }
 
     protected function contract(): string

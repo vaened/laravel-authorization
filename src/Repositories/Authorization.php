@@ -23,7 +23,7 @@ class Authorization
         $this->description = $description;
     }
 
-    public static function create(string $name, ?string $description = null): Authorization
+    public static function fake(string $name, ?string $description = null): Authorization
     {
         return new static($name, $description);
     }

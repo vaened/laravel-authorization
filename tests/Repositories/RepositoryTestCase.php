@@ -28,8 +28,8 @@ abstract class RepositoryTestCase extends TestCase
     public function test_can_create_a_multiple_authorizations_from_the_repository(): void
     {
         $structs = [
-            Authorization::create('First Authorization'),
-            Authorization::create('Second Authorization'),
+            Authorization::fake('First Authorization'),
+            Authorization::fake('Second Authorization'),
         ];
 
         $permissions = $this->repository()->createMultiple($structs);
