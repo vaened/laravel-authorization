@@ -14,7 +14,7 @@ $edit = $this->permissions->create('Edit Articles');
 
 // grant authorizations
 $admin->grantMultiple([$edit, $create]);
-$user->grant($editor);
+$user->grant($admin);
 
 // check
 $user->isMemberOf('administrator'); // true
