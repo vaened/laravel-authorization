@@ -32,19 +32,19 @@ abstract class RepositoryTestCase extends TestCase
             Authorization::fake('Second Authorization'),
         ];
 
-        $permissions = $this->repository()->createMultiple($structs);
+        $authorizations = $this->repository()->createMultiple($structs);
 
-        $permissions->each(function (Model $authorization) {
+        $authorizations->each(function (Model $authorization) {
             $this->assertDatabaseHas($this->table(), $authorization->toArray());
         });
 
-        $this->assertCount(count($structs), $permissions);
+        $this->assertCount(count($structs), $authorizations);
     }
 
     public function test_can_delete_a_authorization_from_the_repository(): void
     {
-        $permission = $this->create('Authorization');
-        $this->assertTrue($this->repository()->delete($permission->getSecretName()));
+        $authorization = $this->create('Authorization');
+        $this->assertTrue($this->repository()->delete($authorization->getSecretName()));
         $this->assertDatabaseMissing($this->table(), [
             'secret_name' => 'authorization',
         ]);
