@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Drivers\Cache;
 
-class Authorization
+class Struct
 {
     private $name;
 
@@ -25,7 +25,7 @@ class Authorization
         return $this->name;
     }
 
-    public static function make(string $name): Authorization
+    public static function make(string $name): Struct
     {
         return new static($name);
     }
