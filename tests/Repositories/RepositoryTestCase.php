@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace Enea\Authorization\Tests\Repositories;
 
 use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Repositories\Repository;
 use Enea\Authorization\Repositories\Authorization;
+use Enea\Authorization\Repositories\Repository;
 use Enea\Authorization\Tests\TestCase;
 use Illuminate\Database\Eloquent\Model;
 

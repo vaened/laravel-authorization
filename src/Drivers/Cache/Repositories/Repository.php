@@ -14,9 +14,9 @@ namespace Enea\Authorization\Drivers\Cache\Repositories;
 use Closure;
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\GrantableOwner;
-use Enea\Authorization\Drivers\Cache\Struct;
 use Enea\Authorization\Drivers\Cache\CacheConfig;
 use Enea\Authorization\Drivers\Cache\KeyBuilder;
+use Enea\Authorization\Drivers\Cache\Struct;
 use Illuminate\Cache\Repository as Cache;
 use Illuminate\Support\Collection;
 
