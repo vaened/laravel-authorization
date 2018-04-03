@@ -37,7 +37,7 @@ class Authorizer extends BaseAuthorizer
 
     private function any(array $authorizations): Closure
     {
-        return function (Authorization $authorization) use ($authorizations): bool {
+        return function (Struct $authorization) use ($authorizations): bool {
             return in_array($authorization->getName(), $authorizations);
         };
     }

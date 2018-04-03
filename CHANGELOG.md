@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V0.2.0 - 2018-04-02
+
+### Changed
+- The struct for authorizations was renamed from `Struct` to `Authorization`
+
 ## V0.1.1 - 2018-03-30
 
 ### Added

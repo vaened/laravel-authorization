@@ -14,9 +14,9 @@ namespace Enea\Authorization\Drivers\Cache\Repositories;
 use Closure;
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\GrantableOwner;
-use Enea\Authorization\Drivers\Cache\Authorization;
 use Enea\Authorization\Drivers\Cache\CacheConfig;
 use Enea\Authorization\Drivers\Cache\KeyBuilder;
+use Enea\Authorization\Drivers\Cache\Struct;
 use Illuminate\Cache\Repository as Cache;
 use Illuminate\Support\Collection;
 
@@ -52,8 +52,8 @@ abstract class Repository
 
     protected function parse(): Closure
     {
-        return function (Grantable $grantable): Authorization {
-            return Authorization::make($grantable->getSecretName());
+        return function (Grantable $grantable): Struct {
+            return Struct::make($grantable->getSecretName());
         };
     }
 }
