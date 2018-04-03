@@ -6,15 +6,22 @@ Laravel Authorization
 Laravel Authorization is a package that provides a simple administration interface for roles and permissions.
 
 ```php
-// create an authorization
-$editor = $this->repository->create('Edit Articles');
-// grant authorization
+// create authorizations
+$admin = $this->roles->create('Administrator');
+$create = $this->permissions->create('Create Articles');
+$edit = $this->permissions->create('Edit Articles');
+
+
+// grant authorizations
+$admin->grantMultiple([$edit, $create]);
 $user->grant($editor);
+
 // check
-$user->isMemberOf('edit-articles'); // true
+$user->isMemberOf('administrator'); // true
+$user->can('create-articles'); // true
 ```
 
-## Content
+## Table of Contents
 * [Installation](#installation)
 * [Quick Start](#quick-start)
     - [checks](#checks)
