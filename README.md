@@ -83,7 +83,7 @@ isntMemberOf      | role-name       | boolean
 $user->cant('permission-name');
 // verify if a user does not have a permission
 $user->cannot('permission-name');
-// Verify if a user is a member of a role
+// verify if a user is a member of a role
 $user->isMemberOf('role-name');
 // verify if a user is not a member of a role
 $user->isntMemberOf('role-name');
@@ -176,13 +176,13 @@ and to deny
 @authenticatedCan('edit-articles')
     // can edit articles
 @else
-    // can not edit articles
+    // cannot edit articles
 @endauthenticatedCan
 ```
 and to deny
 ```php
 @authenticatedCannot('edit-articles')
-    // ican not edit articles
+    // cannot edit articles
 @else
     // can edit articles
 @endauthenticatedCannot
