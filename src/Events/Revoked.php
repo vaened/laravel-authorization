@@ -3,12 +3,15 @@
 declare(strict_types=1);
 
 /**
- * Created on 06/03/18 by enea dhack.
+ * @author enea dhack <me@enea.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Enea\Authorization\Events;
 
-use Enea\Authorization\Contracts\GrantableOwner;
+use Enea\Authorization\Contracts\Owner;
 use Illuminate\Support\Collection;
 
 class Revoked implements Operation
@@ -17,7 +20,7 @@ class Revoked implements Operation
 
     private $owner;
 
-    public function __construct(GrantableOwner $owner, Collection $grantableCollection)
+    public function __construct(Owner $owner, Collection $grantableCollection)
     {
         $this->owner = $owner;
         $this->grantableCollection = $grantableCollection;
@@ -28,7 +31,7 @@ class Revoked implements Operation
         return $this->grantableCollection;
     }
 
-    public function getOwner(): GrantableOwner
+    public function getOwner(): Owner
     {
         return $this->owner;
     }

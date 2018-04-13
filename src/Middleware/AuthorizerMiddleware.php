@@ -3,14 +3,17 @@
 declare(strict_types=1);
 
 /**
- * Created on 10/03/18 by enea dhack.
+ * @author enea dhack <me@enea.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Enea\Authorization\Middleware;
 
 use Closure;
 use Enea\Authorization\Authorizer;
-use Enea\Authorization\Contracts\GrantableOwner;
+use Enea\Authorization\Contracts\Owner;
 use Enea\Authorization\Events\UnauthorizedOwner;
 use Enea\Authorization\Exceptions\UnauthorizedOwnerException;
 use Illuminate\Database\Eloquent\Model;
@@ -29,7 +32,7 @@ abstract class AuthorizerMiddleware
         $this->event = $event;
     }
 
-    abstract protected function authorized(GrantableOwner $owner, array $grantables): bool;
+    abstract protected function authorized(Owner $owner, array $grantables): bool;
 
     public function handle(Request $request, Closure $next, string ...$grantables)
     {
@@ -47,7 +50,7 @@ abstract class AuthorizerMiddleware
     private function isAuthorizedRequestFor(Model $authenticated): Closure
     {
         return function (array $grantables) use ($authenticated): bool {
-            return $authenticated instanceof GrantableOwner && $this->authorized($authenticated, $grantables);
+            return $authenticated instanceof Owner && $this->authorized($authenticated, $grantables);
         };
     }
 }

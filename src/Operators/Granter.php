@@ -3,14 +3,17 @@
 declare(strict_types=1);
 
 /**
- * Created on 12/02/18 by enea dhack.
+ * @author enea dhack <me@enea.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Enea\Authorization\Operators;
 
 use Closure;
 use Enea\Authorization\Contracts\{
-    Grantable, GrantableOwner, PermissionsOwner, RolesOwner
+    Grantable, Owner, PermissionsOwner, RolesOwner
 };
 use Enea\Authorization\Events\Granted;
 use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
@@ -55,7 +58,7 @@ class Granter extends Operator
         }
     }
 
-    private function dispatchGrantedEvent(GrantableOwner $owner, Collection $grantableCollection): void
+    private function dispatchGrantedEvent(Owner $owner, Collection $grantableCollection): void
     {
         $this->dispatchEvent(new Granted($owner, $grantableCollection));
     }

@@ -11,18 +11,18 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Drivers\Cache;
 
-use Enea\Authorization\Contracts\GrantableOwner;
+use Enea\Authorization\Contracts\Owner;
 
 class KeyBuilder
 {
     public const HASH = 'crc32b';
 
-    public function make(GrantableOwner $owner): string
+    public function make(Owner $owner): string
     {
         return "{$this->prefix($owner)}.{$owner->getIdentificationKey()}";
     }
 
-    private function prefix(GrantableOwner $owner): string
+    private function prefix(Owner $owner): string
     {
         return hash(self::HASH, get_class($owner));
     }

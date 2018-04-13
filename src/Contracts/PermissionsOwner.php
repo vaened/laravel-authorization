@@ -11,7 +11,7 @@ namespace Enea\Authorization\Contracts;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-interface PermissionsOwner extends GrantableOwner
+interface PermissionsOwner extends Owner
 {
     public function permissions(): BelongsToMany;
 

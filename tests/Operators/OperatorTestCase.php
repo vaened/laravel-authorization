@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Enea\Authorization\Tests\Operators;
 
 use Closure;
-use Enea\Authorization\Contracts\GrantableOwner;
+use Enea\Authorization\Contracts\Owner;
 use Enea\Authorization\Events\Operation;
 use Enea\Authorization\Tests\TestCase;
 use Illuminate\Support\Collection;
@@ -22,12 +22,12 @@ abstract class OperatorTestCase extends TestCase
 {
     abstract protected function mainEventName(): string;
 
-    protected function assertEvent(GrantableOwner $owner, Collection $authorizations, string $contract): void
+    protected function assertEvent(Owner $owner, Collection $authorizations, string $contract): void
     {
         Event::assertDispatched($this->mainEventName(), $this->checkEvent($owner, $authorizations, $contract));
     }
 
-    private function checkEvent(GrantableOwner $owner, Collection $authorizations, string $contract): Closure
+    private function checkEvent(Owner $owner, Collection $authorizations, string $contract): Closure
     {
         return function (Operation $event) use ($owner, $authorizations, $contract): bool {
             $this->assertInstanceOf($contract, $event->getGrantableCollection()->last());

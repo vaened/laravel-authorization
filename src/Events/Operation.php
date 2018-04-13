@@ -8,12 +8,12 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Events;
 
-use Enea\Authorization\Contracts\GrantableOwner;
+use Enea\Authorization\Contracts\Owner;
 use Illuminate\Support\Collection;
 
 interface Operation
 {
     public function getGrantableCollection(): Collection;
 
-    public function getOwner(): GrantableOwner;
+    public function getOwner(): Owner;
 }

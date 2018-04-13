@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Tests\Drivers\Cache;
 
-use Enea\Authorization\Contracts\GrantableOwner;
+use Enea\Authorization\Contracts\Owner;
 use Enea\Authorization\Drivers\Cache\KeyBuilder;
 use Enea\Authorization\Drivers\Cache\Manager;
 use Enea\Authorization\Drivers\Cache\Repositories\PermissionRepository;
@@ -66,7 +66,7 @@ class ManagerTest extends TestCase
         return $this->app->make(Manager::class);
     }
 
-    private function hasCacheValue(GrantableOwner $owner, string $suffix): bool
+    private function hasCacheValue(Owner $owner, string $suffix): bool
     {
         $key = new KeyBuilder();
         return $this->app->make(CacheContract::class)->has("{$key->make($owner)}.{$suffix}");
