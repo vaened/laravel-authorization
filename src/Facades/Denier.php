@@ -11,26 +11,23 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Facades;
 
+use Enea\Authorization\Contracts\PermissionsOwner;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Class Helpers.
+ * Class Denier.
  *
  * @package Enea\Authorization\Facades
- *
- * @method static \Enea\Authorization\Contracts\Authorizable authenticated(?string $guard = null)
- * @method static \Enea\Authorization\Authorizer authorizer()
- * @method static \Illuminate\Support\Collection except(\Illuminate\Support\Collection $grantableCollection, array $exceptNames)
- *
- * @see \Enea\Authorization\Support\Helper
+ * @method static void permissions(PermissionsOwner $owner, Collection $permissions)
  */
-class Helper extends Facade
+class Denier extends Facade
 {
     /**
      * {@inheritdoc}
      */
     protected static function getFacadeAccessor()
     {
-        return 'authorization.helpers';
+        return \Enea\Authorization\Operators\Denier::class;
     }
 }
