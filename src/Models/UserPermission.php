@@ -15,7 +15,7 @@ use Enea\Authorization\Contracts\Deniable;
 use Illuminate\Database\Eloquent\Relations\MorphPivot;
 
 /**
- * Class UserPermission
+ * Class UserPermission.
  *
  * @package Enea\Authorization\Models
  *
