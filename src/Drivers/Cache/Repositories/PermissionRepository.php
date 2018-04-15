@@ -11,9 +11,13 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Drivers\Cache\Repositories;
 
+use Closure;
+use Enea\Authorization\Contracts\Deniable;
 use Enea\Authorization\Contracts\Grantable;
+use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\PermissionsOwner;
 use Enea\Authorization\Contracts\RolesOwner;
+use Enea\Authorization\Facades\Helper;
 use Illuminate\Support\Collection;
 
 class PermissionRepository extends Repository
@@ -35,15 +39,28 @@ class PermissionRepository extends Repository
         $permissions = $owner->permissions()->get();
 
         if ($owner instanceof RolesOwner) {
-            return $this->permissionsFromRole($owner)->merge($permissions)->map($this->parse());
+            $names = $permissions->pluck('secret_name')->toArray();
+            $permissions = $this->clean($this->permissionsFromRole($owner), $names)->merge($permissions);
         }
 
-        return $permissions->map($this->parse());
+        return $permissions->filter($this->allowed())->map($this->parse());
+    }
+
+    private function allowed(): Closure
+    {
+        return function (PermissionContract $permission): bool {
+            return $permission->pivot instanceof Deniable ? ! $permission->pivot->isDenied() : true;
+        };
+    }
+
+    private function clean(Collection $permissions, array $exceptNames): Collection
+    {
+        return Helper::except($permissions, $exceptNames);
     }
 
     private function permissionsFromRole(RolesOwner $owner): Collection
     {
-        return $this->extractPermissions($owner)->unique(function (Grantable $grantable) {
+        return $this->extractPermissions($owner)->unique(function (Grantable $grantable): string {
             return $grantable->getIdentificationKey();
         });
     }

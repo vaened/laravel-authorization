@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Middleware;
 
-use Enea\Authorization\Contracts\GrantableOwner;
+use Enea\Authorization\Contracts\Owner;
 use Enea\Authorization\Contracts\PermissionsOwner;
 
 class PermissionAuthorizerMiddleware extends AuthorizerMiddleware
 {
-    protected function authorized(GrantableOwner $owner, array $grantables): bool
+    protected function authorized(Owner $owner, array $grantables): bool
     {
         return $owner instanceof PermissionsOwner ? $this->authorizer->canAny($owner, $grantables) : false;
     }

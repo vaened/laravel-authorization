@@ -14,7 +14,7 @@ namespace Enea\Authorization\Events;
 use Enea\Authorization\Contracts\Owner;
 use Illuminate\Support\Collection;
 
-class Revoked implements Operation
+class Denied implements Operation
 {
     private $grantableCollection;
 

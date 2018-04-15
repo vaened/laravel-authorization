@@ -3,14 +3,17 @@
 declare(strict_types=1);
 
 /**
- * Created on 12/02/18 by enea dhack.
+ * @author enea dhack <me@enea.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Enea\Authorization\Operators;
 
 use Closure;
 use Enea\Authorization\Contracts\{
-    Grantable, GrantableOwner, PermissionsOwner, RolesOwner
+    Grantable, Owner, PermissionsOwner, RolesOwner
 };
 use Enea\Authorization\Events\Revoked;
 use Enea\Authorization\Exceptions\AuthorizationNotRevokedException;
@@ -54,7 +57,7 @@ class Revoker extends Operator
         return $results > 0;
     }
 
-    private function dispatchRevokedEvent(GrantableOwner $owner, Collection $grantableCollection): void
+    private function dispatchRevokedEvent(Owner $owner, Collection $grantableCollection): void
     {
         $this->dispatchEvent(new Revoked($owner, $grantableCollection));
     }

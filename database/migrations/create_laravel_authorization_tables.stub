@@ -12,7 +12,7 @@ class CreateLaravelAuthorizationTables extends Migration
         Schema::create(Config::roleTableName(), $this->getGrantableStructure());
         Schema::create(Config::permissionTableName(), $this->getGrantableStructure());
         Schema::create(Config::userRoleTableName(), $this->getAuthorizationsStructure(Config::roleTableName()));
-        Schema::create(Config::userPermissionTableName(), $this->getAuthorizationsStructure(Config::permissionTableName()));
+        Schema::create(Config::userPermissionTableName(), $this->getAuthorizationsStructure(Config::permissionTableName(), true));
 
         Schema::create(Config::rolePermissionTableName(), function (Blueprint $table): void {
             $table->unsignedInteger('role_id');
@@ -47,9 +47,9 @@ class CreateLaravelAuthorizationTables extends Migration
         };
     }
 
-    private function getAuthorizationsStructure($tableName): Closure
+    private function getAuthorizationsStructure(string $tableName, bool $denied = false): Closure
     {
-        return function (Blueprint $table) use ($tableName): void {
+        return function (Blueprint $table) use ($tableName, $denied): void {
             $table->increments('id');
 
             $table->unsignedInteger('authorizable_id');
@@ -59,6 +59,10 @@ class CreateLaravelAuthorizationTables extends Migration
             $name = str_singular($tableName);
             $table->unsignedInteger("{$name}_id");
             $table->foreign("{$name}_id")->references('id')->on($tableName);
+
+            if ($denied) {
+                $table->boolean('denied')->default(false);
+            }
 
             $table->timestamps();
         };

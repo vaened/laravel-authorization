@@ -23,4 +23,9 @@ class Permission extends Grantable implements PermissionContract
     {
         return Config::permissionTableName();
     }
+
+    public function getFillable()
+    {
+        return array_merge(parent::getFillable(), ['denied']);
+    }
 }
