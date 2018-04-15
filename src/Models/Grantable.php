@@ -12,12 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class Grantable extends Model
 {
-    protected $fillable = [
-        'secret_name',
-        'display_name',
-        'description'
-    ];
-
     public function __construct(array $attributes = [])
     {
         $this->setTable($this->getConfigTableName());
@@ -25,6 +19,15 @@ abstract class Grantable extends Model
     }
 
     abstract protected function getConfigTableName(): string;
+
+    public function getFillable()
+    {
+        return [
+            'secret_name',
+            'display_name',
+            'description'
+        ];
+    }
 
     public function __toString()
     {
