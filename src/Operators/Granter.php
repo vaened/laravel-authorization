@@ -13,7 +13,7 @@ namespace Enea\Authorization\Operators;
 
 use Closure;
 use Enea\Authorization\Contracts\{
-    Grantable, Owner, PermissionsOwner, RolesOwner
+    Grantable, Owner, PermissionContract, PermissionsOwner, RolesOwner
 };
 use Enea\Authorization\Events\Granted;
 use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
@@ -23,9 +23,13 @@ use Illuminate\Support\Collection;
 
 class Granter extends Operator
 {
+    use WithDeniablePermission;
+
     public function permissions(PermissionsOwner $owner, Collection $permissions): void
     {
-        $this->grantTo($owner->permissions())($permissions);
+        $granted = $this->getPermissions($owner, $permissions);
+        $granted->each($this->denialStatus($owner, false));
+        $this->grantTo($owner->permissions())($this->except($granted, $permissions));
         $this->dispatchGrantedEvent($owner, $permissions);
     }
 
@@ -61,5 +65,15 @@ class Granter extends Operator
     private function dispatchGrantedEvent(Owner $owner, Collection $grantableCollection): void
     {
         $this->dispatchEvent(new Granted($owner, $grantableCollection));
+    }
+
+    protected function isModifiable(PermissionContract $permission): bool
+    {
+        return $permission->pivot->isDenied();
+    }
+
+    protected function throwException(Grantable $grantable): void
+    {
+        throw new AuthorizationNotGrantedException($grantable);
     }
 }

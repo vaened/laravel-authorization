@@ -16,8 +16,10 @@ use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Facades\Authorizer;
+use Enea\Authorization\Facades\Denier;
 use Enea\Authorization\Facades\Granter;
 use Enea\Authorization\Facades\Revoker;
+use Enea\Authorization\Models\UserPermission;
 use Enea\Authorization\Support\Config;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -54,6 +56,16 @@ trait Authorizable
         $this->operateOn(PermissionContract::class, function (Collection $permissions) {
             Granter::permissions($this, $permissions);
         }, $grantables);
+    }
+
+    public function deny(PermissionContract $permission): void
+    {
+        $this->denyMultiple([$permission]);
+    }
+
+    public function denyMultiple(array $permissions): void
+    {
+        Denier::permissions($this, collect($permissions));
     }
 
     public function revoke(Grantable $grantable): void
@@ -94,7 +106,8 @@ trait Authorizable
 
     public function permissions(): BelongsToMany
     {
-        return $this->morphToMany(Config::permissionModel(), 'authorizable', Config::userPermissionTableName());
+        $params = [Config::permissionModel(), 'authorizable', Config::userPermissionTableName()];
+        return $this->morphToMany(...$params)->using(UserPermission::class)->withPivot('denied');
     }
 
     public function roles(): BelongsToMany
