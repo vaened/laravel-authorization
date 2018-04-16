@@ -13,7 +13,7 @@ namespace Enea\Authorization\Drivers\Cache\Repositories;
 
 use Closure;
 use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Contracts\GrantableOwner;
+use Enea\Authorization\Contracts\Owner;
 use Enea\Authorization\Drivers\Cache\CacheConfig;
 use Enea\Authorization\Drivers\Cache\KeyBuilder;
 use Enea\Authorization\Drivers\Cache\Struct;
@@ -34,18 +34,18 @@ abstract class Repository
 
     abstract public static function getSuffix(): string;
 
-    public function forget(GrantableOwner $owner): void
+    public function forget(Owner $owner): void
     {
         $this->cache->forget($this->keyFor($owner));
     }
 
-    protected function remember(GrantableOwner $owner, Closure $closure): Collection
+    protected function remember(Owner $owner, Closure $closure): Collection
     {
         $minutes = CacheConfig::getExpirationTime();
         return $this->cache->remember($this->keyFor($owner), $minutes, $closure);
     }
 
-    protected function keyFor(GrantableOwner $owner): string
+    protected function keyFor(Owner $owner): string
     {
         return "{$this->key->make($owner)}.{$this->getSuffix()}";
     }

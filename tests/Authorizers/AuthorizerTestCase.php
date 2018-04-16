@@ -33,6 +33,47 @@ abstract class AuthorizerTestCase extends DriverTestCase
         $this->assertFalse($this->getAuthorizer()->can($user, 'see-articles'));
     }
 
+    public function test_a_permit_included_in_a_role_can_be_denied(): void
+    {
+        $user = $this->user();
+        $owner = $this->role('Owner');
+        $create = $this->permission('Create Articles');
+        $edit = $this->permission('Edit Articles');
+        $owner->grantMultiple([$create, $edit]);
+        $user->grant($owner);
+        $this->assertTrue($this->getAuthorizer()->can($user, 'create-articles'));
+        $this->assertTrue($this->getAuthorizer()->can($user, 'edit-articles'));
+        $user->deny($create);
+        $this->assertFalse($this->getAuthorizer()->can($user, 'create-articles'));
+        $this->assertTrue($this->getAuthorizer()->can($user, 'edit-articles'));
+    }
+
+    public function test_you_can_grant_a_permit_after_being_denied_from_a_role(): void
+    {
+        $user = $this->user();
+        $owner = $this->role('Owner');
+        $create = $this->permission('Create Articles');
+        $owner->grant($create);
+        $user->grant($owner);
+        $this->assertTrue($this->getAuthorizer()->can($user, 'create-articles'));
+        $user->deny($create);
+        $this->assertFalse($this->getAuthorizer()->can($user, 'create-articles'));
+        $user->grant($create);
+        $this->assertTrue($this->getAuthorizer()->can($user, 'create-articles'));
+    }
+
+    public function test_you_can_regrant_a_permit_after_being_denied(): void
+    {
+        $user = $this->user();
+        $delete = $this->permission('Delete Articles');
+        $user->grant($delete);
+        $this->assertTrue($user->can('delete-articles'));
+        $user->deny($delete);
+        $this->assertFalse($user->can('delete-articles'));
+        $user->grant($delete);
+        $this->assertTrue($user->can('delete-articles'));
+    }
+
     public function test_check_that_you_have_some_permissions(): void
     {
         $user = $this->user();

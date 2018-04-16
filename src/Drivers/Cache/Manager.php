@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <hello@enea.io>
+ * @author enea dhack <me@enea.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Drivers\Cache;
 
-use Enea\Authorization\Contracts\GrantableOwner;
+use Enea\Authorization\Contracts\Owner;
 use Enea\Authorization\Contracts\PermissionsOwner;
 use Enea\Authorization\Contracts\RolesOwner;
 use Enea\Authorization\Drivers\Cache\Repositories\PermissionRepository;
@@ -41,7 +41,7 @@ class Manager implements ManagerContract
         return $this->roles->toCollection($owner);
     }
 
-    public function forget(GrantableOwner $owner): void
+    public function forget(Owner $owner): void
     {
         if ($owner instanceof RolesOwner) {
             $this->roles->forget($owner);

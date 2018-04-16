@@ -35,4 +35,17 @@ class HelperTest extends TestCase
         $this->actingAs($user);
         $this->assertInstanceOf(Authorizable::class, Helper::authenticated());
     }
+
+    public function test_the_method_to_exclude_authorizations_works_correctly(): void
+    {
+        $edit = $this->permission('Edit');
+        $create = $this->permission('Create');
+        $delete = $this->permission('Delete');
+        $permissions = collect([$create, $edit, $delete]);
+        $allowed = Helper::except($permissions, [$edit->getSecretName()]);
+
+        $this->assertCount(2, $allowed);
+        $this->assertSame($allowed->first()->getSecretName(), $create->getSecretName());
+        $this->assertSame($allowed->last()->getSecretName(), $delete->getSecretName());
+    }
 }

@@ -7,26 +7,35 @@ Laravel Authorization is a package that provides a simple administration interfa
 
 ```php
 // create authorizations
-$admin = $this->roles->create('Administrator');
-$create = $this->permissions->create('Create Articles');
-$edit = $this->permissions->create('Edit Articles');
+$cashier = $this->roles->create('Cashier');
+$create = $this->permissions->create('Create Documents');
+$annul = $this->permissions->create('Annul Documents');
 
 
 // grant authorizations
-$admin->grantMultiple([$edit, $create]);
-$user->grant($admin);
+$cashier->grantMultiple([$create, $annul]);
+$user->grant($cashier);
 
 // check
-$user->isMemberOf('administrator'); // true
-$user->can('create-articles'); // true
+$user->isMemberOf('cashier'); // true
+$user->can('create-documents'); // true
+$user->can('annul-documents'); // true
+
+// deny authorizations
+$user->deny('annul-documents');
+
+// now
+$user->can('annul-documents'); // false
+
 ```
 
 ## Table of Contents
 * [Installation](#installation)
 * [Quick Start](#quick-start)
     - [checks](#checks)
-    - [assignment](#assignment)
-    - [revocation](#revocation)
+    - [`GRANT`](#grant)
+    - [`REVOKE`](#revoke)
+    - [`DENY`](#deny)
 * [Middleware](#middleware)
 * [Blade Directives](#blade-directives)
 
@@ -96,7 +105,7 @@ $role->cant('permission-name');
 $role->cannot('permission-name');
 ```
 
-### Assignment
+### GRANT
 Simplify the way in which roles and permissions are granted, both can be granted through the `grant` method in your model, you can see an example [here](https://github.com/eneav/laravel-authorization-example/blob/master/database/seeds/AuthorizationsSeeder.php)
 
 ```php
@@ -109,17 +118,26 @@ $role->grant($permission);
 // grant multiple permissions to role
 $user->grantMultiple([$firstPermission, $secondPermission]);
 ```
-### Revocation
-To revoke a permission or role of a model, you must use the `revoke` method:
+### REVOKE
+To revoke a permission or role of a model, you must use the `revoke` or `revokeMultiple` method:
 ```php
-// revoke an authorization of a user
+// revoke an authorization to a user
 $user->revoke($authorization);
 // revoke multiple authorizations of a user
 $user->revokeMultiple([$permission, $role]);
-// revoke a permission of a role
+// revoke a permission to a role
 $role->revoke($permission);
 // revoke multiple permissions of a role
 $user->revokeMultiple([$firstPermission, $secondPermission]);
+```
+
+### DENY
+To prohibit certain accesses to a user can do it through the method `deny` and `denyMultiple`:
+```php
+// deny a permission to a user
+$user->deny($permission);
+// deny multiple permissions to a user
+$user->denyMultiple($permissions);
 ```
 ## Middleware
 To use the available middleware, you must configure them in your [kernel](https://github.com/eneav/laravel-authorization-example/blob/master/app/Http/Kernel.php#L64-L65) file:

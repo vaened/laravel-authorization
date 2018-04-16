@@ -2,6 +2,16 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V1.0.0 - 2018-04-15
+
+### Added
+- Now it is allowed to deny a permission through the methods `deny` and `denyMultiple`
+- The event `Denied` was added
+
+### Changed
+- The `GrantableOwner` was renamed to simply `Owner`
+- The `denied` column was added to the `user_permissions` table
+
 ## V0.2.1 - 2018-04-08
 
 ### Fixed

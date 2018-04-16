@@ -13,6 +13,8 @@ namespace Enea\Authorization\Support;
 
 use Enea\Authorization\Authorizer;
 use Enea\Authorization\Contracts\Authorizable;
+use Enea\Authorization\Contracts\Grantable;
+use Illuminate\Support\Collection;
 
 class Helper
 {
@@ -25,5 +27,12 @@ class Helper
     public function authorizer(): Authorizer
     {
         return app()->make(Authorizer::class);
+    }
+
+    public function except(Collection $grantableCollection, array $exceptNames): Collection
+    {
+        return $grantableCollection->filter(function (Grantable $grantable) use ($exceptNames): bool {
+            return ! in_array($grantable, $exceptNames);
+        });
     }
 }
