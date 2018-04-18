@@ -20,6 +20,7 @@ class DeterminerTest extends TestCase
         $this->app->make('config')->set('authorization', null);
         $this->assertTrue(Determiner::listenUnauthorizedOwnerEventForLogger());
         $this->assertTrue(Determiner::transformSecretNameToKebabCase());
+        $this->assertTrue(Determiner::isEnabledMiddleware());
     }
 
     public function test_its_loading_custom_config(): void
@@ -27,6 +28,7 @@ class DeterminerTest extends TestCase
         $this->loadCustomListenerConfig();
         $this->assertFalse(Determiner::listenUnauthorizedOwnerEventForLogger());
         $this->assertFalse(Determiner::transformSecretNameToKebabCase());
+        $this->assertFalse(Determiner::isEnabledMiddleware());
     }
 
     private function loadCustomListenerConfig(): void
@@ -38,6 +40,9 @@ class DeterminerTest extends TestCase
             'listeners' => [
                 'unauthorized-owner-logger' => false,
             ],
+            'middleware' => [
+                'enabled' => false,
+            ]
         ]);
     }
 }
