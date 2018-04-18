@@ -39,11 +39,11 @@ class Authenticated
         }
     }
 
-    private function unauthorized(bool $passed, array $permissions): void
+    private function unauthorized(bool $passed, array $authorizations): void
     {
         if (! $passed) {
             $authenticated = Helper::authenticated();
-            event(new UnauthorizedOwner($authenticated, $permissions));
+            event(new UnauthorizedOwner($authenticated, $authorizations));
 
             throw new UnauthorizedOwnerException($authenticated);
         }
