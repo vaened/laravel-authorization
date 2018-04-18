@@ -17,6 +17,7 @@ use Enea\Authorization\Contracts\PermissionContract;
 use Enea\Authorization\Contracts\RoleContract;
 use Enea\Authorization\Resolvers\DriverResolver;
 use Enea\Authorization\Support\Config;
+use Enea\Authorization\Support\Determiner;
 use Enea\Authorization\Support\Helper;
 use Illuminate\Support\ServiceProvider;
 
@@ -72,11 +73,19 @@ class AuthorizationServiceProvider extends ServiceProvider
         $this->app->bind(PermissionContract::class, Config::permissionModel());
         $this->app->bind(RoleContract::class, Config::roleModel());
         $this->app->singleton('authorization.helpers', Helper::class);
+        $this->configMiddleware();
     }
 
     private function configDriver(): void
     {
         (new DriverResolver($this->app))->make();
+    }
+
+    private function configMiddleware(): void
+    {
+        if (Determiner::isEnabledMiddleware()) {
+            new Middleware($this->app->make('router'));
+        }
     }
 
     private function registerBladeDirectives(): void

@@ -20,6 +20,11 @@ class Determiner
         return self::get('authorizations.transform-secret-name-to-kebab-case', true);
     }
 
+    public static function isEnabledMiddleware(): bool
+    {
+        return self::get('middleware.enabled', true);
+    }
+
     private static function get(string $key, bool $default = false): bool
     {
         return (bool) config("authorization.{$key}", $default);
