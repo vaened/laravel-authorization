@@ -44,6 +44,7 @@ class Authenticated
         if (! $passed) {
             $authenticated = Helper::authenticated();
             event(new UnauthorizedOwner($authenticated, $permissions));
+
             throw new UnauthorizedOwnerException($authenticated);
         }
     }
