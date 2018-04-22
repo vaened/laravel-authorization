@@ -3,11 +3,16 @@
 declare(strict_types=1);
 
 /**
- * Created on 20/02/18 by enea dhack.
+ * @author enea dhack <me@enea.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Enea\Authorization\Support;
 
+use Enea\Authorization\Middleware\PermissionAuthorizerMiddleware;
+use Enea\Authorization\Middleware\RoleAuthorizerMiddleware;
 use Enea\Authorization\Models\Permission;
 use Enea\Authorization\Models\Role;
 
@@ -53,8 +58,28 @@ class Config
         return self::get('driver', Drivers::CACHE);
     }
 
-    private static function get(string $key, string $default = null): string
+    public static function getPermissionMiddlewareAlias(): string
     {
-        return config("authorization.{$key}", $default);
+        return self::get('middleware.permissions.alias', 'authenticated.can');
+    }
+
+    public static function getPermissionMiddlewareClass(): string
+    {
+        return self::get('middleware.permissions.class', PermissionAuthorizerMiddleware::class);
+    }
+
+    public static function getRoleMiddlewareAlias(): string
+    {
+        return self::get('middleware.roles.alias', 'authenticated.is');
+    }
+
+    public static function getRoleMiddlewareClass(): string
+    {
+        return self::get('middleware.roles.class', RoleAuthorizerMiddleware::class);
+    }
+
+    private static function get(string $key, string $default = ''): string
+    {
+        return (string) config("authorization.{$key}", $default);
     }
 }

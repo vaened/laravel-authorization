@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Facade;
  *
  * @package Enea\Authorization\Facades
  *
- * @method static \Enea\Authorization\Contracts\Authorizable authenticated(?string $guard = null)
+ * @method static \Enea\Authorization\Contracts\Authorizable|\Illuminate\Database\Eloquent\Model authenticated(?string $guard = null)
  * @method static \Enea\Authorization\Authorizer authorizer()
  * @method static \Illuminate\Support\Collection except(\Illuminate\Support\Collection $grantableCollection, array $exceptNames)
  *

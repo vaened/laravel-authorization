@@ -64,5 +64,20 @@ return [
     'authorizations' => [
         // apply a transformation to the secret name every time the name is updated.
         'transform-secret-name-to-kebab-case' => true,
-    ]
+    ],
+
+    // automatic middleware configuration.
+    'middleware' => [
+        'enabled' => true,
+
+        // authorizers.
+        'permissions' => [
+            'alias' => 'authenticated.can',
+            'class' => \Enea\Authorization\Middleware\PermissionAuthorizerMiddleware::class,
+        ],
+        'roles' => [
+            'alias' => 'authenticated.is',
+            'class' => \Enea\Authorization\Middleware\RoleAuthorizerMiddleware::class,
+        ],
+    ],
 ];

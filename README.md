@@ -140,7 +140,25 @@ $user->deny($permission);
 $user->denyMultiple($permissions);
 ```
 ## Middleware
-To use the available middleware, you must configure them in your [kernel](https://github.com/eneav/laravel-authorization-example/blob/master/app/Http/Kernel.php#L64-L65) file:
+The middleware are activated automatically from the beginning, to change this you can do it from the [configuration](https://github.com/eneav/laravel-authorization/blob/master/config/authorization.php) file:
+```php
+    // automatic middleware configuration.
+    'middleware' => [
+        'enabled' => true,
+
+        'permissions' => [
+            'alias' => 'authenticated.can',
+            'class' => \Enea\Authorization\Middleware\PermissionAuthorizerMiddleware::class,
+        ],
+        'roles' => [
+            'alias' => 'authenticated.is',
+            'class' => \Enea\Authorization\Middleware\RoleAuthorizerMiddleware::class,
+        ],
+    ],
+
+```
+Or in case you want to do a manual configuration you can deactivate the automatic load and modify your [kernel](https://github.com/eneav/laravel-authorization-example/blob/master/app/Http/Kernel.php#L64-L65) file:
+
 ```php
 protected $routeMiddleware = [
     ...

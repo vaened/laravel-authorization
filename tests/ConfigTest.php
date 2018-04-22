@@ -3,11 +3,16 @@
 declare(strict_types=1);
 
 /**
- * Created on 15/03/18 by enea dhack.
+ * @author enea dhack <me@enea.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Enea\Authorization\Tests;
 
+use Enea\Authorization\Middleware\PermissionAuthorizerMiddleware;
+use Enea\Authorization\Middleware\RoleAuthorizerMiddleware;
 use Enea\Authorization\Models\{
     Permission, Role
 };
@@ -30,6 +35,10 @@ class ConfigTest extends TestCase
         $this->assertEquals(Config::rolePermissionTableName(), 'role_permissions');
         $this->assertEquals(Config::userPermissionTableName(), 'user_permissions');
         $this->assertEquals(Config::userRoleTableName(), 'user_roles');
+        $this->assertEquals(Config::getPermissionMiddlewareAlias(), 'authenticated.can');
+        $this->assertEquals(Config::getPermissionMiddlewareClass(), PermissionAuthorizerMiddleware::class);
+        $this->assertEquals(Config::getRoleMiddlewareAlias(), 'authenticated.is');
+        $this->assertEquals(Config::getRoleMiddlewareClass(), RoleAuthorizerMiddleware::class);
     }
 
     public function test_custom_configuration_is_loaded(): void
@@ -43,6 +52,10 @@ class ConfigTest extends TestCase
         $this->assertEquals(Config::rolePermissionTableName(), 'rol_permisos');
         $this->assertEquals(Config::userPermissionTableName(), 'usuario_permisos');
         $this->assertEquals(Config::userRoleTableName(), 'usuario_roles');
+        $this->assertEquals(Config::getPermissionMiddlewareAlias(), 'can');
+        $this->assertEquals(Config::getPermissionMiddlewareClass(), 'can-middleware');
+        $this->assertEquals(Config::getRoleMiddlewareAlias(), 'is');
+        $this->assertEquals(Config::getRoleMiddlewareClass(), 'is-middleware');
     }
 
     private function loadCustomConfig(): void
@@ -60,6 +73,16 @@ class ConfigTest extends TestCase
                 'user_permissions' => 'usuario_permisos',
                 'user_roles' => 'usuario_roles',
             ],
+            'middleware' => [
+                'permissions' => [
+                    'alias' => 'can',
+                    'class' => 'can-middleware',
+                ],
+                'roles' => [
+                    'alias' => 'is',
+                    'class' => 'is-middleware',
+                ],
+            ]
         ]);
     }
 }

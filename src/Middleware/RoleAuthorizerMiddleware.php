@@ -11,13 +11,12 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Middleware;
 
-use Enea\Authorization\Contracts\Owner;
-use Enea\Authorization\Contracts\RolesOwner;
+use Enea\Authorization\Facades\Authenticated;
 
 class RoleAuthorizerMiddleware extends AuthorizerMiddleware
 {
-    protected function authorized(Owner $owner, array $grantables): bool
+    protected function authorized(array $grantable): void
     {
-        return $owner instanceof RolesOwner ? $this->authorizer->isAny($owner, $grantables) : false;
+        Authenticated::is(...$grantable);
     }
 }
