@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V1.1.0 - 2018-04-21
+### Added
+- Add facade `Authenticated` to facilitate the use of the checks of roles and permissions
+- Enable automatic middleware configuration
+
 ## V1.0.0 - 2018-04-15
 
 ### Added
@@ -41,6 +46,3 @@ All notable changes to `laravel-authorization` will be documented in this file
 - Default driver is now cache
 
 ## V0.0.1 - 2018-03-25
-
-### Added
-- Everything, initial release
