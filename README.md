@@ -81,7 +81,7 @@ There are some methods available for checking roles and permissions:
 
 Method            | Parameter       | Return
 ------------------|-----------------|------------------
-cant              | permission-name | boolean
+can               | permission-name | boolean
 cannot            | permission-name | boolean
 isMemberOf        | role-name       | boolean
 isntMemberOf      | role-name       | boolean
@@ -89,7 +89,7 @@ isntMemberOf      | role-name       | boolean
 #### Example
 ```php
 // verify if a user has a permission
-$user->cant('permission-name');
+$user->can('permission-name');
 // verify if a user does not have a permission
 $user->cannot('permission-name');
 // verify if a user is a member of a role
@@ -100,7 +100,7 @@ $user->isntMemberOf('role-name');
 On the other hand, a role can only have permissions:
 ```php
 // verify if a role has a permission
-$role->cant('permission-name');
+$role->can('permission-name');
 // verify if a role does not have a permission
 $role->cannot('permission-name');
 ```
