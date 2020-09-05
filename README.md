@@ -1,7 +1,7 @@
 Laravel Authorization
 =====================
 
-[![Build Status](https://travis-ci.org/eneav/laravel-authorization.svg)](https://travis-ci.org/eneav/laravel-authorization) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/eneav/laravel-authorization/badges/quality-score.png)](https://scrutinizer-ci.com/g/eneav/laravel-authorization/)  [![Code Coverage](https://scrutinizer-ci.com/g/eneav/laravel-authorization/badges/coverage.png)](https://scrutinizer-ci.com/g/eneav/laravel-authorization/) [![StyleCI](https://styleci.io/repos/121161451/shield)](https://styleci.io/repos/121161451)  [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
+[![Build Status](https://travis-ci.org/vaened/laravel-authorization.svg?branch=master)](https://travis-ci.org/vaened/laravel-authorization) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/eneav/laravel-authorization/badges/quality-score.png)](https://scrutinizer-ci.com/g/eneav/laravel-authorization/)  [![Code Coverage](https://scrutinizer-ci.com/g/eneav/laravel-authorization/badges/coverage.png)](https://scrutinizer-ci.com/g/eneav/laravel-authorization/) [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
 
 Laravel Authorization is a package that provides a simple administration interface for roles and permissions.
 
