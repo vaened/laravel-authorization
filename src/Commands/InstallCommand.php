@@ -60,8 +60,6 @@ class InstallCommand extends Command
         $migration = 'create_laravel_authorization_tables';
         $this->info('Publishing the migration file');
         $source = __DIR__ . "/../../database/migrations/{$migration}.stub";
-        $destination = $this->laravel->make('migration.creator')->create($migration, database_path('migrations'));
-
-        $this->files->copy($source, $destination);
+        $this->files->copy($source, database_path(sprintf("migrations/%s_{$migration}}.php", date('Y_m_d_His'))));
     }
 }

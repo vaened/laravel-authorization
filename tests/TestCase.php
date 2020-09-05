@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Tests;
 
+use Carbon\Carbon;
 use Enea\Authorization\AuthorizationServiceProvider;
 use Enea\Authorization\Resolvers\DriverResolver;
 use Enea\Authorization\Tests\Support\Models\User;
@@ -22,7 +23,7 @@ class TestCase extends BaseTestCase
 {
     use Factories;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->registerModelFactories();

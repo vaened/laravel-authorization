@@ -27,7 +27,7 @@ class ManagerTest extends TestCase
 {
     private $relationship;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->relationship = Mockery::mock(BelongsToMany::class);

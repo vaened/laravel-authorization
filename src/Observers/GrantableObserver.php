@@ -7,6 +7,7 @@ namespace Enea\Authorization\Observers;
 
 use Enea\Authorization\Support\Determiner;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class GrantableObserver
 {
@@ -14,7 +15,7 @@ class GrantableObserver
     {
         if (Determiner::transformSecretNameToKebabCase()) {
             $name = $model->getAttribute('display_name');
-            $model->setAttribute('secret_name', kebab_case($name));
+            $model->setAttribute('secret_name', Str::kebab($name));
         }
     }
 }

@@ -41,17 +41,7 @@ class InstallCommandTest extends TestCase
         $filesystem->shouldReceive('copy')->once()->andReturn(true);
         $command = new InstallCommand($filesystem, $composer);
 
-        $this->app['migration.creator'] = $this->app->make(MigrationCreator::class);
-
         $this->app->make(Kernel::class)->registerCommand($command);
         $this->artisan('authorization:install');
-    }
-}
-
-final class MigrationCreator extends \Illuminate\Database\Migrations\MigrationCreator
-{
-    protected function ensureMigrationDoesntAlreadyExist($name)
-    {
-        //
     }
 }
