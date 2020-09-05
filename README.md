@@ -40,7 +40,7 @@ $user->can('annul-documents'); // false
 * [Blade Directives](#blade-directives)
 
 ## Installation
-Laravel Authorization requires PHP 7.1 or 7.2. This version supports Laravel 5.5 or 5.6 only.
+Laravel Authorization requires PHP 7. This version supports Laravel 7 only.
 
 To get the latest version, simply require the project using Composer:
 ```sh
