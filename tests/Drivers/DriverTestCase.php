@@ -17,7 +17,7 @@ abstract class DriverTestCase extends TestCase
 {
     abstract protected function getDriver(): string;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->configDriver($this->getDriver());

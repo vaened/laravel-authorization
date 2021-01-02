@@ -21,7 +21,7 @@ class TestCase extends BaseTestCase
 {
     use Factories;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->registerModelFactories();

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class Grantable extends Model
@@ -27,6 +28,11 @@ abstract class Grantable extends Model
             'display_name',
             'description'
         ];
+    }
+
+    protected function serializeDate(\DateTimeInterface $date): string
+    {
+        return Carbon::instance($date)->toDateTimeString();
     }
 
     public function __toString()
