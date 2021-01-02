@@ -1,7 +1,7 @@
 Laravel Authorization
 =====================
 
-[![Build Status](https://travis-ci.org/eneav/laravel-authorization.svg)](https://travis-ci.org/eneav/laravel-authorization) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/eneav/laravel-authorization/badges/quality-score.png)](https://scrutinizer-ci.com/g/eneav/laravel-authorization/)  [![Code Coverage](https://scrutinizer-ci.com/g/eneav/laravel-authorization/badges/coverage.png)](https://scrutinizer-ci.com/g/eneav/laravel-authorization/) [![StyleCI](https://styleci.io/repos/121161451/shield)](https://styleci.io/repos/121161451)  [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
+[![Build Status](https://travis-ci.org/vaened/laravel-authorization.svg?branch=master)](https://travis-ci.org/vaened/laravel-authorization) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vaened/laravel-authorization/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/vaened/laravel-authorization/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/vaened/laravel-authorization/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/vaened/laravel-authorization/?branch=master) [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
 
 Laravel Authorization is a package that provides a simple administration interface for roles and permissions.
 
@@ -40,7 +40,9 @@ $user->can('annul-documents'); // false
 * [Blade Directives](#blade-directives)
 
 ## Installation
-Laravel Authorization requires PHP 7.1 or 7.2. This version supports Laravel 5.5 or 5.6 only.
+Laravel Authorization requires PHP 7.4. This version supports Laravel 8 only.
+
+*if you need to use it in laravel 7, you can use version enea/laravel-authorization@1.2*
 
 To get the latest version, simply require the project using Composer:
 ```sh
@@ -81,7 +83,7 @@ There are some methods available for checking roles and permissions:
 
 Method            | Parameter       | Return
 ------------------|-----------------|------------------
-cant              | permission-name | boolean
+can               | permission-name | boolean
 cannot            | permission-name | boolean
 isMemberOf        | role-name       | boolean
 isntMemberOf      | role-name       | boolean
@@ -89,7 +91,7 @@ isntMemberOf      | role-name       | boolean
 #### Example
 ```php
 // verify if a user has a permission
-$user->cant('permission-name');
+$user->can('permission-name');
 // verify if a user does not have a permission
 $user->cannot('permission-name');
 // verify if a user is a member of a role
@@ -100,7 +102,7 @@ $user->isntMemberOf('role-name');
 On the other hand, a role can only have permissions:
 ```php
 // verify if a role has a permission
-$role->cant('permission-name');
+$role->can('permission-name');
 // verify if a role does not have a permission
 $role->cannot('permission-name');
 ```

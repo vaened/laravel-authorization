@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Tests;
 
+use Carbon\Carbon;
 use Enea\Authorization\AuthorizationServiceProvider;
 use Enea\Authorization\Resolvers\DriverResolver;
 use Enea\Authorization\Tests\Support\Models\User;

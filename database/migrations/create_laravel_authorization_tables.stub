@@ -4,6 +4,7 @@ use Enea\Authorization\Support\Config;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class CreateLaravelAuthorizationTables extends Migration
 {
@@ -56,7 +57,7 @@ class CreateLaravelAuthorizationTables extends Migration
             $table->string('authorizable_type', 100);
             $table->index(['authorizable_id', 'authorizable_type']);
 
-            $name = str_singular($tableName);
+            $name = Str::singular($tableName);
             $table->unsignedInteger("{$name}_id");
             $table->foreign("{$name}_id")->references('id')->on($tableName);
 

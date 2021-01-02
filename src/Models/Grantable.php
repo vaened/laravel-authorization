@@ -30,7 +30,7 @@ abstract class Grantable extends Model
         ];
     }
 
-    protected function serializeDate(\DateTimeInterface $date): string
+    protected function serializeDate(\DateTimeInterface $date)
     {
         return Carbon::instance($date)->toDateTimeString();
     }
