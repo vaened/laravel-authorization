@@ -62,9 +62,17 @@ class AuthorizationServiceProvider extends ServiceProvider
 
     private function publish(): void
     {
-        $this->publishes([
-            __DIR__ . '/../config/authorization.php' => base_path('config/authorization.php')
-        ]);
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../config/authorization.php' => base_path('config/authorization.php')
+            ], 'config');
+
+            $this->publishes([
+                __DIR__.'/../database/migrations/create_laravel_authorization_tables.stub' => database_path(
+                    sprintf('migrations/%s_create_laravel_authorization_tables.php', date('Y_m_d_His'))
+                ),
+            ], 'migrations');
+        }
     }
 
     private function registerBindings(): void

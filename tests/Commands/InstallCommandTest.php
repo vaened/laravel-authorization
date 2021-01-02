@@ -11,13 +11,8 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Tests\Commands;
 
-use Enea\Authorization\Commands\InstallCommand;
 use Enea\Authorization\Tests\TestCase;
-use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\Artisan;
-use Mockery;
 
 class InstallCommandTest extends TestCase
 {
@@ -30,18 +25,5 @@ class InstallCommandTest extends TestCase
     {
         $this->artisan('authorization:install');
         $this->assertFileExists(base_path('config/authorization.php'));
-    }
-
-    public function test_command(): void
-    {
-        $composer = Mockery::mock(Composer::class);
-        $composer->shouldReceive('dumpAutoloads');
-
-        $filesystem = Mockery::mock(Filesystem::class);
-        $filesystem->shouldReceive('copy')->once()->andReturn(true);
-        $command = new InstallCommand($filesystem, $composer);
-
-        $this->app->make(Kernel::class)->registerCommand($command);
-        $this->artisan('authorization:install');
     }
 }

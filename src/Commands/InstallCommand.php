@@ -8,11 +8,9 @@ declare(strict_types=1);
 
 namespace Enea\Authorization\Commands;
 
-use Enea\Authorization\AuthorizationServiceProvider;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
-use Illuminate\Support\Facades\Artisan;
 
 class InstallCommand extends Command
 {
@@ -48,18 +46,13 @@ class InstallCommand extends Command
 
     private function publishConfig(): void
     {
-        $this->info('Publishing the config file');
-
-        Artisan::call('vendor:publish', [
-            '--provider' => AuthorizationServiceProvider::class,
-        ]);
+        $this->comment('Publishing the config file...');
+        $this->callSilent('vendor:publish', ['--tag' => 'config']);
     }
 
     private function publishMigration(): void
     {
-        $migration = 'create_laravel_authorization_tables';
-        $this->info('Publishing the migration file');
-        $source = __DIR__ . "/../../database/migrations/{$migration}.stub";
-        $this->files->copy($source, database_path(sprintf("migrations/%s_{$migration}.php", date('Y_m_d_His'))));
+        $this->comment('Publishing the migration file...');
+        $this->callSilent('vendor:publish', ['--tag' => 'migrations']);
     }
 }

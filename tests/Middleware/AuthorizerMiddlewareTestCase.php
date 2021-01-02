@@ -10,8 +10,8 @@ namespace Enea\Authorization\Tests\Middleware;
 
 use Enea\Authorization\Contracts\Grantable;
 use Enea\Authorization\Exceptions\UnauthorizedOwnerException;
-use Illuminate\Testing\TestResponse;
 use Illuminate\Routing\Route;
+use Illuminate\Testing\TestResponse;
 
 abstract class AuthorizerMiddlewareTestCase extends MiddlewareTestCase
 {
