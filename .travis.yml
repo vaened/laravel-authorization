@@ -4,6 +4,8 @@ sudo: false
 
 php:
   - 7.4
+  - 8.0
+
 
 install:
   - travis_retry composer install --no-suggest --prefer-dist -n -o
