@@ -29,14 +29,13 @@ use Illuminate\Support\Collection;
  * Trait Authorizable.
  *
  * @package Enea\Authorization\Traits
+ * @mixin \Illuminate\Database\Eloquent\Model
  *
  * @property EloquentCollection permissions
  * @property EloquentCollection roles
  */
 trait Authorizable
 {
-    use Model;
-
     public function getIdentificationKey(): string
     {
         return (string) $this->getKey();

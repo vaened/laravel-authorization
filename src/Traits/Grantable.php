@@ -14,14 +14,13 @@ use Enea\Authorization\Observers\GrantableObserver;
  * Trait Grantable.
  *
  * @package Enea\Authorization\Traits
+ * @mixin \Illuminate\Database\Eloquent\Model
  *
  * @property int id
  * @property string secret_name
  */
 trait Grantable
 {
-    use Model;
-
     public function getSecretName(): string
     {
         return $this->secret_name;
