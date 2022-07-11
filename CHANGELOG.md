@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V2.0.0 - 2022-07-11
+### Added
+- Support for Laravel 9
+- Support for php 8.1
+
 ## V1.1.0 - 2018-04-21
 ### Added
 - Add facade `Authenticated` to facilitate the use of the checks of roles and permissions
