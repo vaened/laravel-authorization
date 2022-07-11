@@ -1,7 +1,7 @@
 Laravel Authorization
 =====================
 
-[![Build Status](https://travis-ci.org/vaened/laravel-authorization.svg?branch=master)](https://travis-ci.org/vaened/laravel-authorization) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vaened/laravel-authorization/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/vaened/laravel-authorization/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/vaened/laravel-authorization/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/vaened/laravel-authorization/?branch=master) [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
+[![Build Status](https://github.com/vaened/laravel-authorization/actions/workflows/tests.yml/badge.svg)](https://github.com/vaened/laravel-authorization/actions?query=workflow%3ATests) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vaened/laravel-authorization/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/vaened/laravel-authorization/?branch=master)  [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
 
 Laravel Authorization is a package that provides a simple administration interface for roles and permissions.
 
@@ -40,9 +40,7 @@ $user->can('annul-documents'); // false
 * [Blade Directives](#blade-directives)
 
 ## Installation
-Laravel Authorization requires PHP 7.4. This version supports Laravel 8 only.
-
-*if you need to use it in laravel 7, you can use version enea/laravel-authorization@1.2*
+Laravel Authorization requires PHP 8.1. This version supports Laravel 9 only.
 
 To get the latest version, simply require the project using Composer:
 ```sh
