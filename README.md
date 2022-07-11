@@ -1,7 +1,7 @@
 Laravel Authorization
 =====================
 
-[![Build Status](https://travis-ci.org/vaened/laravel-authorization.svg?branch=master)](https://travis-ci.org/vaened/laravel-authorization) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vaened/laravel-authorization/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/vaened/laravel-authorization/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/vaened/laravel-authorization/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/vaened/laravel-authorization/?branch=master) [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
+[![Build Status](https://github.com/vaened/laravel-authorization/actions/workflows/tests.yml/badge.svg)](https://github.com/vaened/laravel-authorization/actions?query=workflow%3ATests) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vaened/laravel-authorization/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/vaened/laravel-authorization/?branch=master)  [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
 
 Laravel Authorization is a package that provides a simple administration interface for roles and permissions.
 
