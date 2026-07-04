@@ -3,20 +3,21 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Drivers\Cache\Repositories;
+namespace Vaened\Authorization\Drivers\Cache\Repositories;
 
 use Closure;
-use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Contracts\Owner;
-use Enea\Authorization\Drivers\Cache\CacheConfig;
-use Enea\Authorization\Drivers\Cache\KeyBuilder;
-use Enea\Authorization\Drivers\Cache\Struct;
+use Vaened\Authorization\Contracts\Grantable;
+use Vaened\Authorization\Contracts\Owner;
+use Vaened\Authorization\Drivers\Cache\CacheConfig;
+use Vaened\Authorization\Drivers\Cache\KeyBuilder;
+use Vaened\Authorization\Drivers\Cache\Struct;
 use Illuminate\Cache\Repository as Cache;
 use Illuminate\Support\Collection;
 

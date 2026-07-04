@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 /**
- * Created on 19/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Tests\Models;
+namespace Vaened\Authorization\Tests\Models;
 
-use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Tests\TestCase;
+use Vaened\Authorization\Contracts\Grantable;
+use Vaened\Authorization\Tests\TestCase;
 
 abstract class AuthorizationTestCase extends TestCase
 {

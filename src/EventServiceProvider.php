@@ -3,14 +3,15 @@
 declare(strict_types=1);
 
 /**
- * Created on 10/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization;
+namespace Vaened\Authorization;
 
-use Enea\Authorization\Events\UnauthorizedOwner;
-use Enea\Authorization\Listeners\WriteUnauthorizedLog;
-use Enea\Authorization\Support\Determiner;
+use Vaened\Authorization\Events\UnauthorizedOwner;
+use Vaened\Authorization\Listeners\WriteUnauthorizedLog;
+use Vaened\Authorization\Support\Determiner;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as BaseEventServiceProvider;
 
 class EventServiceProvider extends BaseEventServiceProvider

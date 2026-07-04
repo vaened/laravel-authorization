@@ -3,15 +3,16 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Blade;
+namespace Vaened\Authorization\Blade;
 
-use Enea\Authorization\Contracts\Authorizable;
+use Vaened\Authorization\Contracts\Authorizable;
 
 class CannotDirective extends CanDirective
 {

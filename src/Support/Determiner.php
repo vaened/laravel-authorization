@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 /**
- * Created on 18/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Support;
+namespace Vaened\Authorization\Support;
 
 class Determiner
 {

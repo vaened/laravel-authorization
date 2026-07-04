@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 /**
- * Created on 07/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Drivers\Database;
+namespace Vaened\Authorization\Drivers\Database;
 
-use Enea\Authorization\Contracts\RolesOwner;
+use Vaened\Authorization\Contracts\RolesOwner;
 
 class RoleEvaluator extends Evaluator
 {

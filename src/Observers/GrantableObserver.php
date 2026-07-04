@@ -1,11 +1,12 @@
 <?php
 /**
- * Created on 22/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Observers;
+namespace Vaened\Authorization\Observers;
 
-use Enea\Authorization\Support\Determiner;
+use Vaened\Authorization\Support\Determiner;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 

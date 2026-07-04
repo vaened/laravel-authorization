@@ -3,15 +3,16 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <hello@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Resolvers;
+namespace Vaened\Authorization\Resolvers;
 
-use Enea\Authorization\Authorizer as AuthorizerContract;
+use Vaened\Authorization\Authorizer as AuthorizerContract;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Facades\Event;
 

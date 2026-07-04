@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 /**
- * Created on 18/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Exceptions;
+namespace Vaened\Authorization\Exceptions;
 
-use Enea\Authorization\Contracts\Grantable;
+use Vaened\Authorization\Contracts\Grantable;
 use RuntimeException;
 use Throwable;
 

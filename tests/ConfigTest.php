@@ -3,21 +3,22 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Tests;
+namespace Vaened\Authorization\Tests;
 
-use Enea\Authorization\Middleware\PermissionAuthorizerMiddleware;
-use Enea\Authorization\Middleware\RoleAuthorizerMiddleware;
-use Enea\Authorization\Models\{
+use Vaened\Authorization\Middleware\PermissionAuthorizerMiddleware;
+use Vaened\Authorization\Middleware\RoleAuthorizerMiddleware;
+use Vaened\Authorization\Models\{
     Permission, Role
 };
-use Enea\Authorization\Support\Config;
-use Enea\Authorization\Tests\Support\Models\{
+use Vaened\Authorization\Support\Config;
+use Vaened\Authorization\Tests\Support\Models\{
     Permiso, Rol
 };
 

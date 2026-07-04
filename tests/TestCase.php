@@ -3,19 +3,20 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Tests;
+namespace Vaened\Authorization\Tests;
 
 use Carbon\Carbon;
-use Enea\Authorization\AuthorizationServiceProvider;
-use Enea\Authorization\Resolvers\DriverResolver;
-use Enea\Authorization\Tests\Support\Models\User;
-use Enea\Authorization\Tests\Support\Traits\Factories;
+use Vaened\Authorization\AuthorizationServiceProvider;
+use Vaened\Authorization\Resolvers\DriverResolver;
+use Vaened\Authorization\Tests\Support\Models\User;
+use Vaened\Authorization\Tests\Support\Traits\Factories;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase

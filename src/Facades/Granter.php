@@ -3,21 +3,23 @@
 declare(strict_types=1);
 
 /**
- * Created on 13/02/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Facades;
+namespace Vaened\Authorization\Facades;
 
-use Enea\Authorization\Contracts\PermissionsOwner;
-use Enea\Authorization\Contracts\RolesOwner;
+use Vaened\Authorization\Contracts\PermissionsOwner;
+use Vaened\Authorization\Contracts\RolesOwner;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
  * Class Granter.
  *
- * @package Enea\Authorization\Facades
- * @author enea dhack <enea.so@live.com>
+ * @package Vaened\Authorization\Facades
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * @method static void permissions(PermissionsOwner $owner, Collection $permissions)
  * @method static void roles(RolesOwner $owner, Collection $roles)
@@ -29,6 +31,6 @@ class Granter extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return \Enea\Authorization\Operators\Granter::class;
+        return \Vaened\Authorization\Operators\Granter::class;
     }
 }

@@ -3,17 +3,18 @@
 declare(strict_types=1);
 
 /**
- * Created on 11/02/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Traits;
+namespace Vaened\Authorization\Traits;
 
-use Enea\Authorization\Observers\GrantableObserver;
+use Vaened\Authorization\Observers\GrantableObserver;
 
 /**
  * Trait Grantable.
  *
- * @package Enea\Authorization\Traits
+ * @package Vaened\Authorization\Traits
  * @mixin \Illuminate\Database\Eloquent\Model
  *
  * @property int id

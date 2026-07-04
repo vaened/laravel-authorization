@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 /**
- * Created on 17/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Tests\Middleware;
+namespace Vaened\Authorization\Tests\Middleware;
 
-use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Middleware\RoleAuthorizerMiddleware;
+use Vaened\Authorization\Contracts\Grantable;
+use Vaened\Authorization\Middleware\RoleAuthorizerMiddleware;
 use Illuminate\Routing\Router;
 
 class RoleAuthorizerTest extends AuthorizerMiddlewareTestCase

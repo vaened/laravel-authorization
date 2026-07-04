@@ -47,11 +47,11 @@ Laravel Authorization requires PHP 8.1. This version supports Laravel 10 only.
 To get the latest version, simply require the project using Composer:
 
 ```sh
-$ composer require enea/laravel-authorization
+$ composer require vaened/laravel-authorization
 ```
 
 Once installed, if you are not using automatic package discovery, then you need to register
-the [Enea\Authorization\AuthorizationServiceProvider](https://github.com/eneav/laravel-authorization/blob/master/src/AuthorizationServiceProvider.php)
+the [Vaened\Authorization\AuthorizationServiceProvider](https://github.com/vaened/laravel-authorization/blob/master/src/AuthorizationServiceProvider.php)
 service provider in your `config/app.php`.
 
 and finally, it only remains to run in the console:
@@ -65,19 +65,19 @@ $ php artisan authorization:install
 Starting with laravel-authorization is as simple as extending the `User` model that provides the package:
 
 ``` php
-use Enea\Authorization\Models\User as Authorizable;
+use Vaened\Authorization\Models\User as Authorizable;
 
 class User extends Authorizable {
     //
 }
 ```
 
-Or in case you need to customize your user model, you must implement the `Enea\Authorization\Contracts\Authorisable` interface and use
-the `Enea\Authorization\Traits\Authorisable` trait:
+Or in case you need to customize your user model, you must implement the `Vaened\Authorization\Contracts\Authorisable` interface and use
+the `Vaened\Authorization\Traits\Authorisable` trait:
 
 ``` php
-use Enea\Authorization\Contracts\Authorizable as AuthorizableContract;
-use Enea\Authorization\Traits\Authorizable;
+use Vaened\Authorization\Contracts\Authorizable as AuthorizableContract;
+use Vaened\Authorization\Traits\Authorizable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
@@ -124,7 +124,7 @@ $role->cannot('permission-name');
 ### GRANT
 
 Simplify the way in which roles and permissions are granted, both can be granted through the `grant` method in your model, you can see an
-example [here](https://github.com/eneav/laravel-authorization-example/blob/master/database/seeds/AuthorizationsSeeder.php)
+example [here](https://github.com/vaened/laravel-authorization-example/blob/master/database/seeds/AuthorizationsSeeder.php)
 
 ```php
 // grant an authorization to user
@@ -166,7 +166,7 @@ $user->denyMultiple($permissions);
 ## Middleware
 
 The middleware are activated automatically from the beginning, to change this you can do it from
-the [configuration](https://github.com/eneav/laravel-authorization/blob/master/config/authorization.php) file:
+the [configuration](https://github.com/vaened/laravel-authorization/blob/master/config/authorization.php) file:
 
 ```php
     // automatic middleware configuration.
@@ -175,31 +175,31 @@ the [configuration](https://github.com/eneav/laravel-authorization/blob/master/c
 
         'permissions' => [
             'alias' => 'authenticated.can',
-            'class' => \Enea\Authorization\Middleware\PermissionAuthorizerMiddleware::class,
+            'class' => \Vaened\Authorization\Middleware\PermissionAuthorizerMiddleware::class,
         ],
         'roles' => [
             'alias' => 'authenticated.is',
-            'class' => \Enea\Authorization\Middleware\RoleAuthorizerMiddleware::class,
+            'class' => \Vaened\Authorization\Middleware\RoleAuthorizerMiddleware::class,
         ],
     ],
 
 ```
 
 Or in case you want to do a manual configuration you can deactivate the automatic load and modify
-your [kernel](https://github.com/eneav/laravel-authorization-example/blob/master/app/Http/Kernel.php#L64-L65) file:
+your [kernel](https://github.com/vaened/laravel-authorization-example/blob/master/app/Http/Kernel.php#L64-L65) file:
 
 ```php
 protected $routeMiddleware = [
     ...
     
     // laravel-authorization
-    'authenticated.can' => \Enea\Authorization\Middleware\PermissionAuthorizerMiddleware::class,
-    'authenticated.is' => \Enea\Authorization\Middleware\RoleAuthorizerMiddleware::class,
+    'authenticated.can' => \Vaened\Authorization\Middleware\PermissionAuthorizerMiddleware::class,
+    'authenticated.is' => \Vaened\Authorization\Middleware\RoleAuthorizerMiddleware::class,
 ];
 ```
 
 Then you can use it in your routes like any
-other [middleware](https://github.com/eneav/laravel-authorization-example/blob/master/routes/web.php#L33-L40):
+other [middleware](https://github.com/vaened/laravel-authorization-example/blob/master/routes/web.php#L33-L40):
 
 ```php
 $router->get('create', 'CreateController@create')->middleware('authenticated.can:create-articles');
@@ -207,13 +207,13 @@ $router->get('admin', 'DashboardController@index')->middleware('authenticated.is
 ```
 
 In case any user tries to access a protected route without authorization, an exception of
-type [`UnauthorizedOwnerException`](https://github.com/eneav/laravel-authorization/blob/master/src/Exceptions/UnauthorizedOwnerException.php) will be
+type [`UnauthorizedOwnerException`](https://github.com/vaened/laravel-authorization/blob/master/src/Exceptions/UnauthorizedOwnerException.php) will be
 throw.
 
 ### Custom errors
 
 To show a custom error, we can edit
-the [`Handler`](https://github.com/eneav/laravel-authorization-example/blob/master/app/Exceptions/Handler.php#L52-L54) file:
+the [`Handler`](https://github.com/vaened/laravel-authorization-example/blob/master/app/Exceptions/Handler.php#L52-L54) file:
 
 ```php
 public function render($request, Exception $exception)
@@ -272,7 +272,7 @@ and to deny
 
 ## Examples
 
-[Simple CRUD](https://github.com/eneav/laravel-authorization-example)
+[Simple CRUD](https://github.com/vaened/laravel-authorization-example)
 
 ## Changelog
 

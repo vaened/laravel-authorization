@@ -1,25 +1,27 @@
 <?php
 /**
- * Created by enea dhack - 18/04/2018 11:54.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Facades;
+namespace Vaened\Authorization\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
  * Class Authenticated.
  *
- * @package Enea\Authorization\Facades
+ * @package Vaened\Authorization\Facades
  * @method static void can(string... $permissions)
  * @method static void is(string... $roles)
  */
@@ -30,6 +32,6 @@ class Authenticated extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return \Enea\Authorization\Support\Authenticated::class;
+        return \Vaened\Authorization\Support\Authenticated::class;
     }
 }

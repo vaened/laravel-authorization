@@ -3,16 +3,17 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Models;
+namespace Vaened\Authorization\Models;
 
-use Enea\Authorization\Contracts\Authorizable as AuthorizableContract;
-use Enea\Authorization\Traits\Authorizable;
+use Vaened\Authorization\Contracts\Authorizable as AuthorizableContract;
+use Vaened\Authorization\Traits\Authorizable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;

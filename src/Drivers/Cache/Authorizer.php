@@ -3,18 +3,19 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <hello@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Drivers\Cache;
+namespace Vaened\Authorization\Drivers\Cache;
 
 use Closure;
-use Enea\Authorization\Contracts\PermissionsOwner;
-use Enea\Authorization\Contracts\RolesOwner;
-use Enea\Authorization\Drivers\Authorizer as BaseAuthorizer;
+use Vaened\Authorization\Contracts\PermissionsOwner;
+use Vaened\Authorization\Contracts\RolesOwner;
+use Vaened\Authorization\Drivers\Authorizer as BaseAuthorizer;
 
 class Authorizer extends BaseAuthorizer
 {

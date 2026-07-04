@@ -3,17 +3,18 @@
 declare(strict_types=1);
 
 /**
- * Created on 14/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Tests\Drivers;
+namespace Vaened\Authorization\Tests\Drivers;
 
-use Enea\Authorization\Contracts\{
+use Vaened\Authorization\Contracts\{
     PermissionContract, RoleContract
 };
-use Enea\Authorization\Exceptions\UnsupportedDriverException;
-use Enea\Authorization\Resolvers\DriverResolver;
-use Enea\Authorization\Tests\TestCase;
+use Vaened\Authorization\Exceptions\UnsupportedDriverException;
+use Vaened\Authorization\Resolvers\DriverResolver;
+use Vaened\Authorization\Tests\TestCase;
 use Illuminate\Database\Eloquent\Model;
 
 class BindingsTest extends TestCase

@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 /**
- * Created on 17/02/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Contracts;
+namespace Vaened\Authorization\Contracts;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

@@ -3,21 +3,22 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Drivers\Cache\Repositories;
+namespace Vaened\Authorization\Drivers\Cache\Repositories;
 
 use Closure;
-use Enea\Authorization\Contracts\Deniable;
-use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Contracts\PermissionContract;
-use Enea\Authorization\Contracts\PermissionsOwner;
-use Enea\Authorization\Contracts\RolesOwner;
-use Enea\Authorization\Facades\Helper;
+use Vaened\Authorization\Contracts\Deniable;
+use Vaened\Authorization\Contracts\Grantable;
+use Vaened\Authorization\Contracts\PermissionContract;
+use Vaened\Authorization\Contracts\PermissionsOwner;
+use Vaened\Authorization\Contracts\RolesOwner;
+use Vaened\Authorization\Facades\Helper;
 use Illuminate\Support\Collection;
 
 class PermissionRepository extends Repository

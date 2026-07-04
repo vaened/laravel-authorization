@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 /**
- * Created on 20/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Tests\Models;
+namespace Vaened\Authorization\Tests\Models;
 
 use Closure;
-use Enea\Authorization\Contracts\Grantable;
+use Vaened\Authorization\Contracts\Grantable;
 
 trait OwnerTest
 {

@@ -3,18 +3,19 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Tests\Operators;
+namespace Vaened\Authorization\Tests\Operators;
 
 use Closure;
-use Enea\Authorization\Contracts\Owner;
-use Enea\Authorization\Events\Operation;
-use Enea\Authorization\Tests\TestCase;
+use Vaened\Authorization\Contracts\Owner;
+use Vaened\Authorization\Events\Operation;
+use Vaened\Authorization\Tests\TestCase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 

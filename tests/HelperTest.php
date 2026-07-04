@@ -3,19 +3,20 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Tests;
+namespace Vaened\Authorization\Tests;
 
-use Enea\Authorization\Contracts\Authorizable;
-use Enea\Authorization\Drivers\Cache\Authorizer as CacheAuthorizer;
-use Enea\Authorization\Drivers\Database\Authorizer as DatabaseAuthorizer;
-use Enea\Authorization\Facades\Helper;
-use Enea\Authorization\Support\Drivers;
+use Vaened\Authorization\Contracts\Authorizable;
+use Vaened\Authorization\Drivers\Cache\Authorizer as CacheAuthorizer;
+use Vaened\Authorization\Drivers\Database\Authorizer as DatabaseAuthorizer;
+use Vaened\Authorization\Facades\Helper;
+use Vaened\Authorization\Support\Drivers;
 
 class HelperTest extends TestCase
 {

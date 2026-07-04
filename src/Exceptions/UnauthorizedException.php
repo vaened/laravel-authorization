@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 /**
- * Created on 10/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Exceptions;
+namespace Vaened\Authorization\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 

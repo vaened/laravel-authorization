@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 /**
- * Created on 14/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Tests\Drivers\Database;
+namespace Vaened\Authorization\Tests\Drivers\Database;
 
-use Enea\Authorization\Support\Drivers;
-use Enea\Authorization\Tests\Drivers\DriverTestCase;
+use Vaened\Authorization\Support\Drivers;
+use Vaened\Authorization\Tests\Drivers\DriverTestCase;
 
 class DatabaseTestCase extends DriverTestCase
 {

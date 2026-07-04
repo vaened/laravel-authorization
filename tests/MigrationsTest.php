@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 /**
- * Created by enea dhack - 31/07/17 10:00 PM.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Tests;
+namespace Vaened\Authorization\Tests;
 
 use Illuminate\Support\Facades\Schema;
 

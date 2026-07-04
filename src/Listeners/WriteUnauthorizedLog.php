@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 /**
- * Created on 10/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Listeners;
+namespace Vaened\Authorization\Listeners;
 
-use Enea\Authorization\Events\UnauthorizedOwner;
+use Vaened\Authorization\Events\UnauthorizedOwner;
 use Illuminate\Database\Eloquent\Model;
 use Psr\Log\LoggerInterface;
 

@@ -3,18 +3,19 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Support;
+namespace Vaened\Authorization\Support;
 
-use Enea\Authorization\Middleware\PermissionAuthorizerMiddleware;
-use Enea\Authorization\Middleware\RoleAuthorizerMiddleware;
-use Enea\Authorization\Models\Permission;
-use Enea\Authorization\Models\Role;
+use Vaened\Authorization\Middleware\PermissionAuthorizerMiddleware;
+use Vaened\Authorization\Middleware\RoleAuthorizerMiddleware;
+use Vaened\Authorization\Models\Permission;
+use Vaened\Authorization\Models\Role;
 
 class Config
 {

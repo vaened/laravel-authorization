@@ -3,15 +3,16 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Tests\Commands;
+namespace Vaened\Authorization\Tests\Commands;
 
-use Enea\Authorization\Tests\TestCase;
+use Vaened\Authorization\Tests\TestCase;
 use Illuminate\Support\Facades\Artisan;
 
 class InstallCommandTest extends TestCase

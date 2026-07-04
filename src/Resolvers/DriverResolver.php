@@ -3,17 +3,18 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <hello@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Resolvers;
+namespace Vaened\Authorization\Resolvers;
 
-use Enea\Authorization\Exceptions\UnsupportedDriverException;
-use Enea\Authorization\Support\Config;
-use Enea\Authorization\Support\Drivers;
+use Vaened\Authorization\Exceptions\UnsupportedDriverException;
+use Vaened\Authorization\Support\Config;
+use Vaened\Authorization\Support\Drivers;
 use Illuminate\Contracts\Container\Container;
 
 class DriverResolver

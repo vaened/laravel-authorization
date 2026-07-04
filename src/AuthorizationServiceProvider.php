@@ -3,22 +3,23 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <hello@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization;
+namespace Vaened\Authorization;
 
-use Enea\Authorization\Blade\Compiler;
-use Enea\Authorization\Commands\InstallCommand;
-use Enea\Authorization\Contracts\PermissionContract;
-use Enea\Authorization\Contracts\RoleContract;
-use Enea\Authorization\Resolvers\DriverResolver;
-use Enea\Authorization\Support\Config;
-use Enea\Authorization\Support\Determiner;
-use Enea\Authorization\Support\Helper;
+use Vaened\Authorization\Blade\Compiler;
+use Vaened\Authorization\Commands\InstallCommand;
+use Vaened\Authorization\Contracts\PermissionContract;
+use Vaened\Authorization\Contracts\RoleContract;
+use Vaened\Authorization\Resolvers\DriverResolver;
+use Vaened\Authorization\Support\Config;
+use Vaened\Authorization\Support\Determiner;
+use Vaened\Authorization\Support\Helper;
 use Illuminate\Support\ServiceProvider;
 
 class AuthorizationServiceProvider extends ServiceProvider

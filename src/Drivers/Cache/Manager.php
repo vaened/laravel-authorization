@@ -3,20 +3,21 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Drivers\Cache;
+namespace Vaened\Authorization\Drivers\Cache;
 
-use Enea\Authorization\Contracts\Owner;
-use Enea\Authorization\Contracts\PermissionsOwner;
-use Enea\Authorization\Contracts\RolesOwner;
-use Enea\Authorization\Drivers\Cache\Repositories\PermissionRepository;
-use Enea\Authorization\Drivers\Cache\Repositories\RoleRepository;
-use Enea\Authorization\Drivers\ManagerContract;
+use Vaened\Authorization\Contracts\Owner;
+use Vaened\Authorization\Contracts\PermissionsOwner;
+use Vaened\Authorization\Contracts\RolesOwner;
+use Vaened\Authorization\Drivers\Cache\Repositories\PermissionRepository;
+use Vaened\Authorization\Drivers\Cache\Repositories\RoleRepository;
+use Vaened\Authorization\Drivers\ManagerContract;
 use Illuminate\Support\Collection;
 
 class Manager implements ManagerContract

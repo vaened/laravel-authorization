@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 /**
- * Created on 22/02/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Drivers\Database;
+namespace Vaened\Authorization\Drivers\Database;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;

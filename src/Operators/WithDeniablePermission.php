@@ -3,19 +3,20 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Operators;
+namespace Vaened\Authorization\Operators;
 
 use Closure;
-use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Contracts\PermissionContract;
-use Enea\Authorization\Contracts\PermissionsOwner;
-use Enea\Authorization\Facades\Helper;
+use Vaened\Authorization\Contracts\Grantable;
+use Vaened\Authorization\Contracts\PermissionContract;
+use Vaened\Authorization\Contracts\PermissionsOwner;
+use Vaened\Authorization\Facades\Helper;
 use Illuminate\Support\Collection;
 
 trait WithDeniablePermission

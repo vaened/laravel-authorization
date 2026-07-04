@@ -3,20 +3,21 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Support;
+namespace Vaened\Authorization\Support;
 
-use Enea\Authorization\Contracts\Owner;
-use Enea\Authorization\Events\UnauthorizedOwner;
-use Enea\Authorization\Exceptions\InvalidModelException;
-use Enea\Authorization\Exceptions\UnauthorizedOwnerException;
-use Enea\Authorization\Facades\Authorizer;
-use Enea\Authorization\Facades\Helper;
+use Vaened\Authorization\Contracts\Owner;
+use Vaened\Authorization\Events\UnauthorizedOwner;
+use Vaened\Authorization\Exceptions\InvalidModelException;
+use Vaened\Authorization\Exceptions\UnauthorizedOwnerException;
+use Vaened\Authorization\Facades\Authorizer;
+use Vaened\Authorization\Facades\Helper;
 
 class Authenticated
 {

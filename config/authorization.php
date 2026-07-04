@@ -24,7 +24,7 @@ return [
           | or implement the contracts 'RoleContract', also use the traits 'HasPermission'
           |
           */
-        'role' => \Enea\Authorization\Models\Role::class,
+        'role' => \Vaened\Authorization\Models\Role::class,
 
         /*
           |--------------------------------------------------------------------------
@@ -36,7 +36,7 @@ return [
           | or implement the contracts 'PermissionContract', also have to use the trait 'HasPermission'
           |
           */
-        'permission' => \Enea\Authorization\Models\Permission::class,
+        'permission' => \Vaened\Authorization\Models\Permission::class,
     ],
 
     'tables' => [
@@ -73,11 +73,11 @@ return [
         // authorizers.
         'permissions' => [
             'alias' => 'authenticated.can',
-            'class' => \Enea\Authorization\Middleware\PermissionAuthorizerMiddleware::class,
+            'class' => \Vaened\Authorization\Middleware\PermissionAuthorizerMiddleware::class,
         ],
         'roles' => [
             'alias' => 'authenticated.is',
-            'class' => \Enea\Authorization\Middleware\RoleAuthorizerMiddleware::class,
+            'class' => \Vaened\Authorization\Middleware\RoleAuthorizerMiddleware::class,
         ],
     ],
 ];

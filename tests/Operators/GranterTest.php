@@ -3,22 +3,23 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Tests\Operators;
+namespace Vaened\Authorization\Tests\Operators;
 
-use Enea\Authorization\Contracts\PermissionContract;
-use Enea\Authorization\Contracts\RoleContract;
-use Enea\Authorization\Events\Granted;
-use Enea\Authorization\Exceptions\AuthorizationNotGrantedException;
-use Enea\Authorization\Facades\Authorizer;
-use Enea\Authorization\Facades\Granter;
-use Enea\Authorization\Models\Permission;
-use Enea\Authorization\Models\Role;
+use Vaened\Authorization\Contracts\PermissionContract;
+use Vaened\Authorization\Contracts\RoleContract;
+use Vaened\Authorization\Events\Granted;
+use Vaened\Authorization\Exceptions\AuthorizationNotGrantedException;
+use Vaened\Authorization\Facades\Authorizer;
+use Vaened\Authorization\Facades\Granter;
+use Vaened\Authorization\Models\Permission;
+use Vaened\Authorization\Models\Role;
 use Illuminate\Support\Facades\Event;
 
 class GranterTest extends OperatorTestCase

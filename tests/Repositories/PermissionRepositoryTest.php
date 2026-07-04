@@ -3,18 +3,19 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Tests\Repositories;
+namespace Vaened\Authorization\Tests\Repositories;
 
-use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Repositories\PermissionRepository;
-use Enea\Authorization\Repositories\Repository;
-use Enea\Authorization\Support\Config;
+use Vaened\Authorization\Contracts\Grantable;
+use Vaened\Authorization\Repositories\PermissionRepository;
+use Vaened\Authorization\Repositories\Repository;
+use Vaened\Authorization\Support\Config;
 
 class PermissionRepositoryTest extends RepositoryTestCase
 {

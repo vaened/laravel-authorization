@@ -1,16 +1,16 @@
 {
-  "name": "enea/laravel-authorization",
+  "name": "vaened/laravel-authorization",
   "description": "Package to manage the permissions in a laravel application",
   "type": "package",
   "license": "MIT",
   "authors": [
     {
       "name": "enea dhack",
-      "email": "enea.so@live.com"
+      "email": "contact@vaened.dev"
     }
   ],
   "keywords": [
-    "enea",
+    "vaened",
     "laravel",
     "permission",
     "authorization",
@@ -30,18 +30,18 @@
   },
   "autoload": {
     "psr-4": {
-      "Enea\\Authorization\\": "src"
+      "Vaened\\Authorization\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Enea\\Authorization\\Tests\\": "tests"
+      "Vaened\\Authorization\\Tests\\": "tests"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Enea\\Authorization\\AuthorizationServiceProvider"
+        "Vaened\\Authorization\\AuthorizationServiceProvider"
       ]
     }
   }

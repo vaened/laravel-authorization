@@ -3,21 +3,22 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Models;
+namespace Vaened\Authorization\Models;
 
-use Enea\Authorization\Contracts\Deniable;
+use Vaened\Authorization\Contracts\Deniable;
 use Illuminate\Database\Eloquent\Relations\MorphPivot;
 
 /**
  * Class UserPermission.
  *
- * @package Enea\Authorization\Models
+ * @package Vaened\Authorization\Models
  *
  * @property bool denied
  */

@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 /**
- * Created on 17/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Tests\Middleware;
+namespace Vaened\Authorization\Tests\Middleware;
 
-use Enea\Authorization\Tests\Support\Models\User;
-use Enea\Authorization\Tests\TestCase;
+use Vaened\Authorization\Tests\Support\Models\User;
+use Vaened\Authorization\Tests\TestCase;
 use Illuminate\Routing\Router;
 
 abstract class MiddlewareTestCase extends TestCase

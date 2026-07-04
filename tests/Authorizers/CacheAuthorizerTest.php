@@ -3,15 +3,16 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <hello@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Tests\Authorizers;
+namespace Vaened\Authorization\Tests\Authorizers;
 
-use Enea\Authorization\Support\Drivers;
+use Vaened\Authorization\Support\Drivers;
 
 class CacheAuthorizerTest extends AuthorizerTestCase
 {

@@ -3,16 +3,17 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Tests\Drivers\Cache;
+namespace Vaened\Authorization\Tests\Drivers\Cache;
 
-use Enea\Authorization\Support\Drivers;
-use Enea\Authorization\Tests\Drivers\DriverTestCase;
+use Vaened\Authorization\Support\Drivers;
+use Vaened\Authorization\Tests\Drivers\DriverTestCase;
 
 class CacheTestCase extends DriverTestCase
 {

@@ -3,23 +3,19 @@
 declare(strict_types=1);
 
 /**
- * Created on 04/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Facades;
+namespace Vaened\Authorization\Facades;
 
-use Enea\Authorization\Contracts\{
-    PermissionsOwner, RolesOwner
-};
-use Enea\Authorization\Traits\Authorizable;
-use Enea\Authorization\Traits\isRole;
 use Illuminate\Support\Facades\Facade;
+use Vaened\Authorization\Contracts\{PermissionsOwner, RolesOwner};
+use Vaened\Authorization\Traits\Authorizable;
+use Vaened\Authorization\Traits\isRole;
 
 /**
  * Class Authorizer.
- *
- * @package Enea\Authorization\Facades
- * @author enea dhack <enea.so@live.com>
  *
  * @method static bool can(PermissionsOwner | Authorizable | isRole $owner, string $permission)
  * @method static bool canAny(PermissionsOwner | Authorizable | isRole $owner, array $permissions)
@@ -33,6 +29,6 @@ class Authorizer extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return \Enea\Authorization\Authorizer::class;
+        return \Vaened\Authorization\Authorizer::class;
     }
 }

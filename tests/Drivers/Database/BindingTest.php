@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 /**
- * Created on 14/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Tests\Drivers\Database;
+namespace Vaened\Authorization\Tests\Drivers\Database;
 
-use Enea\Authorization\Authorizer;
-use Enea\Authorization\Drivers\Database\Authorizer as DatabaseAuthorizer;
+use Vaened\Authorization\Authorizer;
+use Vaened\Authorization\Drivers\Database\Authorizer as DatabaseAuthorizer;
 
 class BindingTest extends DatabaseTestCase
 {

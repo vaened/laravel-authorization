@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 /**
- * Created on 21/02/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization;
+namespace Vaened\Authorization;
 
-use Enea\Authorization\Contracts\{
+use Vaened\Authorization\Contracts\{
     PermissionsOwner, RolesOwner
 };
 

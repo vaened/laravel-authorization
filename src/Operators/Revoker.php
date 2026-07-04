@@ -3,20 +3,21 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Operators;
+namespace Vaened\Authorization\Operators;
 
 use Closure;
-use Enea\Authorization\Contracts\{
+use Vaened\Authorization\Contracts\{
     Grantable, Owner, PermissionsOwner, RolesOwner
 };
-use Enea\Authorization\Events\Revoked;
-use Enea\Authorization\Exceptions\AuthorizationNotRevokedException;
+use Vaened\Authorization\Events\Revoked;
+use Vaened\Authorization\Exceptions\AuthorizationNotRevokedException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 

@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 /**
- * Created by enea dhack - 30/07/17 02:54 PM.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Tests\Support\Models;
+namespace Vaened\Authorization\Tests\Support\Models;
 
-use Enea\Authorization\Models\User as Authorizable;
+use Vaened\Authorization\Models\User as Authorizable;
 
 class User extends Authorizable
 {

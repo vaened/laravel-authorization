@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Enea\Authorization\Models\Permission;
-use Enea\Authorization\Models\Role;
-use Enea\Authorization\Tests\Support\Models\User;
+use Vaened\Authorization\Models\Permission;
+use Vaened\Authorization\Models\Role;
+use Vaened\Authorization\Tests\Support\Models\User;
 use Faker\Generator;
 use Illuminate\Support\Str;
 

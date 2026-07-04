@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 /**
- * Created on 12/03/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Events;
+namespace Vaened\Authorization\Events;
 
-use Enea\Authorization\Contracts\Owner;
+use Vaened\Authorization\Contracts\Owner;
 use Illuminate\Support\Collection;
 
 interface Operation

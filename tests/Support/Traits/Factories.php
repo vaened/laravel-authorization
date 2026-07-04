@@ -3,14 +3,15 @@
 declare(strict_types=1);
 
 /**
- * Created by enea dhack - 01/08/17 12:43 AM.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Tests\Support\Traits;
+namespace Vaened\Authorization\Tests\Support\Traits;
 
-use Enea\Authorization\Models\Permission;
-use Enea\Authorization\Models\Role;
-use Enea\Authorization\Tests\Support\Models\User;
+use Vaened\Authorization\Models\Permission;
+use Vaened\Authorization\Models\Role;
+use Vaened\Authorization\Tests\Support\Models\User;
 use Illuminate\Support\Collection;
 
 trait Factories

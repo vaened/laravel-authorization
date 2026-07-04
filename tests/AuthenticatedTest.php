@@ -3,17 +3,18 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Tests;
+namespace Vaened\Authorization\Tests;
 
-use Enea\Authorization\Exceptions\InvalidModelException;
-use Enea\Authorization\Exceptions\UnauthorizedOwnerException;
-use Enea\Authorization\Facades\Authenticated;
+use Vaened\Authorization\Exceptions\InvalidModelException;
+use Vaened\Authorization\Exceptions\UnauthorizedOwnerException;
+use Vaened\Authorization\Facades\Authenticated;
 
 class AuthenticatedTest extends TestCase
 {

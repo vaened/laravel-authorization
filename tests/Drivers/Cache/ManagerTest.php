@@ -3,20 +3,21 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Tests\Drivers\Cache;
+namespace Vaened\Authorization\Tests\Drivers\Cache;
 
-use Enea\Authorization\Contracts\Owner;
-use Enea\Authorization\Drivers\Cache\KeyBuilder;
-use Enea\Authorization\Drivers\Cache\Manager;
-use Enea\Authorization\Drivers\Cache\Repositories\PermissionRepository;
-use Enea\Authorization\Drivers\Cache\Repositories\RoleRepository;
-use Enea\Authorization\Tests\TestCase;
+use Vaened\Authorization\Contracts\Owner;
+use Vaened\Authorization\Drivers\Cache\KeyBuilder;
+use Vaened\Authorization\Drivers\Cache\Manager;
+use Vaened\Authorization\Drivers\Cache\Repositories\PermissionRepository;
+use Vaened\Authorization\Drivers\Cache\Repositories\RoleRepository;
+use Vaened\Authorization\Tests\TestCase;
 use Illuminate\Cache\Repository as CacheContract;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection as EloquentCollection;
@@ -36,7 +37,7 @@ class ManagerTest extends TestCase
 
     public function test_the_permission_cache_works_correctly(): void
     {
-        $mock = Mockery::mock('Enea\Authorization\Contracts\PermissionsOwner[permissions]')->shouldIgnoreMissing();
+        $mock = Mockery::mock('Vaened\Authorization\Contracts\PermissionsOwner[permissions]')->shouldIgnoreMissing();
         $mock->shouldReceive('permissions')->twice()->andReturn($this->relationship);
         $this->manager()->permissions($mock);
         $this->manager()->permissions($mock);
@@ -46,7 +47,7 @@ class ManagerTest extends TestCase
 
     public function test_the_roles_cache_works_correctly(): void
     {
-        $mock = Mockery::mock('Enea\Authorization\Contracts\RolesOwner[roles]')->shouldIgnoreMissing();
+        $mock = Mockery::mock('Vaened\Authorization\Contracts\RolesOwner[roles]')->shouldIgnoreMissing();
         $mock->shouldReceive('roles')->twice()->andReturn($this->relationship);
         $this->manager()->roles($mock);
         $this->manager()->roles($mock);

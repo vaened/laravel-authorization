@@ -3,20 +3,21 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Contracts;
+namespace Vaened\Authorization\Contracts;
 
 /**
  * Interface PermissionContract.
  *
- * @package Enea\Authorization\Contracts
+ * @package Vaened\Authorization\Contracts
  *
- * @property \Enea\Authorization\Models\UserPermission pivot
+ * @property \Vaened\Authorization\Models\UserPermission pivot
  */
 interface PermissionContract extends Grantable
 {

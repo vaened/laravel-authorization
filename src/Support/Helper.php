@@ -3,17 +3,18 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <me@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Support;
+namespace Vaened\Authorization\Support;
 
-use Enea\Authorization\Authorizer;
-use Enea\Authorization\Contracts\Authorizable;
-use Enea\Authorization\Contracts\Grantable;
+use Vaened\Authorization\Authorizer;
+use Vaened\Authorization\Contracts\Authorizable;
+use Vaened\Authorization\Contracts\Grantable;
 use Illuminate\Support\Collection;
 
 class Helper

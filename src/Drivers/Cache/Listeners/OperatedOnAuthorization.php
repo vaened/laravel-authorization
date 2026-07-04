@@ -3,21 +3,22 @@
 declare(strict_types=1);
 
 /**
- * @author enea dhack <hello@enea.io>
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Enea\Authorization\Drivers\Cache\Listeners;
+namespace Vaened\Authorization\Drivers\Cache\Listeners;
 
 use Closure;
-use Enea\Authorization\Contracts\Grantable;
-use Enea\Authorization\Contracts\PermissionContract;
-use Enea\Authorization\Contracts\RoleContract;
-use Enea\Authorization\Drivers\Cache\Repositories\PermissionRepository;
-use Enea\Authorization\Drivers\Cache\Repositories\RoleRepository;
-use Enea\Authorization\Events\Operation;
+use Vaened\Authorization\Contracts\Grantable;
+use Vaened\Authorization\Contracts\PermissionContract;
+use Vaened\Authorization\Contracts\RoleContract;
+use Vaened\Authorization\Drivers\Cache\Repositories\PermissionRepository;
+use Vaened\Authorization\Drivers\Cache\Repositories\RoleRepository;
+use Vaened\Authorization\Events\Operation;
 use Illuminate\Support\Collection;
 
 class OperatedOnAuthorization

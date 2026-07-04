@@ -3,15 +3,16 @@
 declare(strict_types=1);
 
 /**
- * Created on 13/02/18 by enea dhack.
+ * @author enea dhack <contact@vaened.dev>
+ * @link https://vaened.dev DevFolio
  */
 
-namespace Enea\Authorization\Operators;
+namespace Vaened\Authorization\Operators;
 
-use Enea\Authorization\Contracts\{
+use Vaened\Authorization\Contracts\{
     PermissionsOwner, RolesOwner
 };
-use Enea\Authorization\Events\Operation;
+use Vaened\Authorization\Events\Operation;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Collection;
 
