@@ -14,44 +14,44 @@ namespace Vaened\Authorization\Tests;
 
 use Vaened\Authorization\Exceptions\InvalidModelException;
 use Vaened\Authorization\Exceptions\UnauthorizedOwnerException;
-use Vaened\Authorization\Facades\Authenticated;
+use Vaened\Authorization\Support\Authenticated;
 
 class AuthenticatedTest extends TestCase
 {
     public function test_checking_a_permission_with_an_unauthenticated_user_throws_an_exception(): void
     {
         $this->expectLogoutInvalidModelException();
-        Authenticated::can('create');
+        $this->app->make(Authenticated::class)->can('create');
     }
 
     public function test_checking_a_role_with_an_unauthenticated_user_throws_an_exception(): void
     {
         $this->expectLogoutInvalidModelException();
-        Authenticated::is('admin');
+        $this->app->make(Authenticated::class)->is('admin');
     }
 
     public function test_consulting_a_permission_with_a_user_that_is_not_authoritative_throws_an_exception(): void
     {
         $this->expectLoginInvalidModelException();
-        Authenticated::can('create');
+        $this->app->make(Authenticated::class)->can('create');
     }
 
     public function test_consulting_a_role_with_a_user_that_is_not_authoritative_throws_an_exception(): void
     {
         $this->expectLoginInvalidModelException();
-        Authenticated::is('admin');
+        $this->app->make(Authenticated::class)->is('admin');
     }
 
     public function test_an_exception_is_thrown_when_the_required_permission_is_not_obtained(): void
     {
         $this->expectUnauthorizedException();
-        Authenticated::can('create');
+        $this->app->make(Authenticated::class)->can('create');
     }
 
     public function test_an_exception_is_thrown_when_the_required_role_is_not_obtained(): void
     {
         $this->expectUnauthorizedException();
-        Authenticated::is('admin');
+        $this->app->make(Authenticated::class)->is('admin');
     }
 
     private function expectLogoutInvalidModelException(): void
@@ -59,7 +59,7 @@ class AuthenticatedTest extends TestCase
         $this->withoutExceptionHandling();
         $this->actingAs(new TestUser());
         $this->expectException(InvalidModelException::class);
-        Authenticated::can('create');
+        $this->app->make(Authenticated::class)->can('create');
     }
 
     private function expectLoginInvalidModelException(): void

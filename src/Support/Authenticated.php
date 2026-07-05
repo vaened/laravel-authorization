@@ -12,30 +12,37 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Support;
 
+use Vaened\Authorization\Authorizer;
 use Vaened\Authorization\Contracts\Owner;
 use Vaened\Authorization\Events\UnauthorizedOwner;
 use Vaened\Authorization\Exceptions\InvalidModelException;
 use Vaened\Authorization\Exceptions\UnauthorizedOwnerException;
-use Vaened\Authorization\Facades\Authorizer;
-use Vaened\Authorization\Facades\Helper;
 
 class Authenticated
 {
+    public function __construct(
+        private readonly Helper $helper,
+        private readonly Authorizer $authorizer
+    ) {
+    }
+
     public function can(string ...$permissions): void
     {
         $this->validModel();
-        $this->unauthorized(Authorizer::canAny(Helper::authenticated(), $permissions), $permissions);
+        $authenticated = $this->authenticated();
+        $this->unauthorized($this->authorizer->canAny($authenticated, $permissions), $permissions);
     }
 
     public function is(string ...$roles): void
     {
         $this->validModel();
-        $this->unauthorized(Authorizer::isAny(Helper::authenticated(), $roles), $roles);
+        $authenticated = $this->authenticated();
+        $this->unauthorized($this->authorizer->isAny($authenticated, $roles), $roles);
     }
 
     private function validModel(): void
     {
-        if (! Helper::authenticated() instanceof Owner) {
+        if (! $this->authenticated() instanceof Owner) {
             throw new InvalidModelException();
         }
     }
@@ -43,10 +50,16 @@ class Authenticated
     private function unauthorized(bool $passed, array $authorizations): void
     {
         if (! $passed) {
-            $authenticated = Helper::authenticated();
+            $authenticated = $this->authenticated();
             event(new UnauthorizedOwner($authenticated, $authorizations));
 
             throw new UnauthorizedOwnerException($authenticated);
         }
+    }
+
+    private function authenticated(): ?Owner
+    {
+        $authenticated = $this->helper->authenticated();
+        return $authenticated instanceof Owner ? $authenticated : null;
     }
 }

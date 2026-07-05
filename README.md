@@ -38,7 +38,6 @@ $user->can('annul-documents'); // false
     - [`REVOKE`](#revoke)
     - [`DENY`](#deny)
 * [Middleware](#middleware)
-* [Blade Directives](#blade-directives)
 
 ## Installation
 
@@ -225,50 +224,6 @@ public function render($request, Exception $exception)
 }
 ```
 
-## Blade Directives
-
-This package also adds Blade directives to verify if the currently connected user has a specific role or permission.
-Optionally you can pass in the `guard` that the check will be performed on as a second argument.
-
-### For Roles
-
-```php
-@authenticatedIs('articles-owner')
-    // is articles owner
-@else
-    // it's not articles owner
-@endauthenticatedIs
-```
-
-and to deny
-
-```php
-@authenticatedIsnt('articles-owner')
-    // it's not articles owner
-@else
-    // is articles owner
-@endauthenticatedIsnt
-```
-
-### For Permissions
-
-```php
-@authenticatedCan('edit-articles')
-    // can edit articles
-@else
-    // cannot edit articles
-@endauthenticatedCan
-```
-
-and to deny
-
-```php
-@authenticatedCannot('edit-articles')
-    // cannot edit articles
-@else
-    // can edit articles
-@endauthenticatedCannot
-```
 
 ## Examples
 

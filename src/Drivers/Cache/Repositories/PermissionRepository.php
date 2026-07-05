@@ -18,7 +18,7 @@ use Vaened\Authorization\Contracts\Grantable;
 use Vaened\Authorization\Contracts\PermissionContract;
 use Vaened\Authorization\Contracts\PermissionsOwner;
 use Vaened\Authorization\Contracts\RolesOwner;
-use Vaened\Authorization\Facades\Helper;
+use Vaened\Authorization\Support\Helper;
 use Illuminate\Support\Collection;
 
 class PermissionRepository extends Repository
@@ -56,7 +56,7 @@ class PermissionRepository extends Repository
 
     private function clean(Collection $permissions, array $exceptNames): Collection
     {
-        return Helper::except($permissions, $exceptNames);
+        return app(Helper::class)->except($permissions, $exceptNames);
     }
 
     private function permissionsFromRole(RolesOwner $owner): Collection

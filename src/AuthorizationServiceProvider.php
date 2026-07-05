@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization;
 
-use Vaened\Authorization\Blade\Compiler;
 use Vaened\Authorization\Commands\InstallCommand;
 use Vaened\Authorization\Contracts\PermissionContract;
 use Vaened\Authorization\Contracts\RoleContract;
@@ -20,6 +19,7 @@ use Vaened\Authorization\Resolvers\DriverResolver;
 use Vaened\Authorization\Support\Config;
 use Vaened\Authorization\Support\Determiner;
 use Vaened\Authorization\Support\Helper;
+use Vaened\Authorization\Support\Authenticated;
 use Illuminate\Support\ServiceProvider;
 
 class AuthorizationServiceProvider extends ServiceProvider
@@ -32,7 +32,6 @@ class AuthorizationServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publish();
-        $this->registerBladeDirectives();
     }
 
     /**
@@ -81,7 +80,8 @@ class AuthorizationServiceProvider extends ServiceProvider
         $this->configDriver();
         $this->app->bind(PermissionContract::class, Config::permissionModel());
         $this->app->bind(RoleContract::class, Config::roleModel());
-        $this->app->singleton('authorization.helpers', Helper::class);
+        $this->app->singleton(Helper::class, Helper::class);
+        $this->app->singleton(Authenticated::class, Authenticated::class);
         $this->configMiddleware();
     }
 
@@ -95,10 +95,5 @@ class AuthorizationServiceProvider extends ServiceProvider
         if (Determiner::isEnabledMiddleware()) {
             new Middleware($this->app->make('router'));
         }
-    }
-
-    private function registerBladeDirectives(): void
-    {
-        (new Compiler())->make();
     }
 }

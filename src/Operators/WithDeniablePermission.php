@@ -16,7 +16,7 @@ use Closure;
 use Vaened\Authorization\Contracts\Grantable;
 use Vaened\Authorization\Contracts\PermissionContract;
 use Vaened\Authorization\Contracts\PermissionsOwner;
-use Vaened\Authorization\Facades\Helper;
+use Vaened\Authorization\Support\Helper;
 use Illuminate\Support\Collection;
 
 trait WithDeniablePermission
@@ -32,7 +32,7 @@ trait WithDeniablePermission
 
     private function except(Collection $granted, Collection $permissions): Collection
     {
-        return Helper::except($permissions, $granted->pluck('secret_name')->toArray());
+        return app(Helper::class)->except($permissions, $granted->pluck('secret_name')->toArray());
     }
 
     private function denialStatus(PermissionsOwner $owner, bool $denied): Closure

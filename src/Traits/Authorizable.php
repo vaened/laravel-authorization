@@ -13,13 +13,13 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Traits;
 
 use Closure;
+use Vaened\Authorization\Authorizer as AuthorizerContract;
 use Vaened\Authorization\Contracts\Grantable;
 use Vaened\Authorization\Contracts\PermissionContract;
 use Vaened\Authorization\Contracts\RoleContract;
-use Vaened\Authorization\Facades\Authorizer;
-use Vaened\Authorization\Facades\Denier;
-use Vaened\Authorization\Facades\Granter;
-use Vaened\Authorization\Facades\Revoker;
+use Vaened\Authorization\Operators\Denier;
+use Vaened\Authorization\Operators\Granter;
+use Vaened\Authorization\Operators\Revoker;
 use Vaened\Authorization\Models\UserPermission;
 use Vaened\Authorization\Support\Config;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -50,11 +50,11 @@ trait Authorizable
     public function grantMultiple(array $grantables): void
     {
         $this->operateOn(RoleContract::class, function (Collection $roles) {
-            Granter::roles($this, $roles);
+            app(Granter::class)->roles($this, $roles);
         }, $grantables);
 
         $this->operateOn(PermissionContract::class, function (Collection $permissions) {
-            Granter::permissions($this, $permissions);
+            app(Granter::class)->permissions($this, $permissions);
         }, $grantables);
     }
 
@@ -65,7 +65,7 @@ trait Authorizable
 
     public function denyMultiple(array $permissions): void
     {
-        Denier::permissions($this, collect($permissions));
+        app(Denier::class)->permissions($this, collect($permissions));
     }
 
     public function revoke(Grantable $grantable): void
@@ -76,17 +76,17 @@ trait Authorizable
     public function revokeMultiple(array $grantables): void
     {
         $this->operateOn(RoleContract::class, function (Collection $roles) {
-            Revoker::roles($this, $roles);
+            app(Revoker::class)->roles($this, $roles);
         }, $grantables);
 
         $this->operateOn(PermissionContract::class, function (Collection $permissions) {
-            Revoker::permissions($this, $permissions);
+            app(Revoker::class)->permissions($this, $permissions);
         }, $grantables);
     }
 
     public function can(string $permission): bool
     {
-        return Authorizer::can($this, $permission);
+        return app(AuthorizerContract::class)->can($this, $permission);
     }
 
     public function cannot(string $permission): bool
@@ -96,7 +96,7 @@ trait Authorizable
 
     public function isMemberOf(string $role): bool
     {
-        return Authorizer::is($this, $role);
+        return app(AuthorizerContract::class)->is($this, $role);
     }
 
     public function isntMemberOf(string $role): bool

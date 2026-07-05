@@ -14,10 +14,10 @@ namespace Vaened\Authorization\Tests\Operators;
 
 use Vaened\Authorization\Contracts\PermissionContract;
 use Vaened\Authorization\Contracts\RoleContract;
+use Vaened\Authorization\Authorizer;
 use Vaened\Authorization\Events\Revoked;
 use Vaened\Authorization\Exceptions\AuthorizationNotRevokedException;
-use Vaened\Authorization\Facades\Authorizer;
-use Vaened\Authorization\Facades\Revoker;
+use Vaened\Authorization\Operators\Revoker;
 use Illuminate\Support\Facades\Event;
 
 class RevokeTest extends OperatorTestCase
@@ -28,7 +28,7 @@ class RevokeTest extends OperatorTestCase
         $owner = $this->user();
         $permission = $this->permissions();
         $owner->grantMultiple($permission->all());
-        Revoker::permissions($owner, $permission);
+        $this->app->make(Revoker::class)->permissions($owner, $permission);
         $this->assertEvent($owner, $permission, PermissionContract::class);
     }
 
@@ -38,7 +38,7 @@ class RevokeTest extends OperatorTestCase
         $owner = $this->user();
         $roles = $this->roles();
         $owner->grantMultiple($roles->all());
-        Revoker::roles($owner, $roles);
+        $this->app->make(Revoker::class)->roles($owner, $roles);
         $this->assertEvent($owner, $roles, RoleContract::class);
     }
 
@@ -46,14 +46,14 @@ class RevokeTest extends OperatorTestCase
     {
         $user = $this->user();
         $this->expectException(AuthorizationNotRevokedException::class);
-        Revoker::roles($user, $this->roles());
+        $this->app->make(Revoker::class)->roles($user, $this->roles());
     }
 
     public function test_when_an_permission_can_not_be_revoked_an_exception_is_thrown(): void
     {
         $user = $this->user();
         $this->expectException(AuthorizationNotRevokedException::class);
-        Revoker::permissions($user, $this->permissions());
+        $this->app->make(Revoker::class)->permissions($user, $this->permissions());
     }
 
     public function test_can_revoke_permissions_to_a_owner(): void
@@ -61,10 +61,10 @@ class RevokeTest extends OperatorTestCase
         $owner = $this->user();
         $permissions = $this->permissions(2);
         $owner->grantMultiple($permissions->all());
-        Revoker::permissions($owner, $permissions);
+        $this->app->make(Revoker::class)->permissions($owner, $permissions);
 
         $operations = $permissions->filter(function (PermissionContract $permission) use ($owner) {
-            return ! Authorizer::can($owner, $permission->getSecretName());
+            return ! $this->app->make(Authorizer::class)->can($owner, $permission->getSecretName());
         });
 
         $this->assertSame($permissions->count(), $operations->count());
@@ -75,10 +75,10 @@ class RevokeTest extends OperatorTestCase
         $owner = $this->user();
         $roles = $this->roles(2);
         $owner->grantMultiple($roles->all());
-        Revoker::roles($owner, $roles);
+        $this->app->make(Revoker::class)->roles($owner, $roles);
 
         $operations = $roles->filter(function (RoleContract $role) use ($owner) {
-            return ! Authorizer::is($owner, $role->getSecretName());
+            return ! $this->app->make(Authorizer::class)->is($owner, $role->getSecretName());
         });
 
         $this->assertSame($roles->count(), $operations->count());

@@ -12,12 +12,16 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Middleware;
 
-use Vaened\Authorization\Facades\Authenticated;
+use Vaened\Authorization\Support\Authenticated;
 
 class PermissionAuthorizerMiddleware extends AuthorizerMiddleware
 {
+    public function __construct(private readonly Authenticated $authenticated)
+    {
+    }
+
     protected function authorized(array $grantable): void
     {
-        Authenticated::can(...$grantable);
+        $this->authenticated->can(...$grantable);
     }
 }

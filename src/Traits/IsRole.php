@@ -14,9 +14,9 @@ namespace Vaened\Authorization\Traits;
 
 use Vaened\Authorization\Contracts\PermissionContract;
 use Vaened\Authorization\Contracts\RoleContract;
-use Vaened\Authorization\Facades\Authorizer;
-use Vaened\Authorization\Facades\Granter;
-use Vaened\Authorization\Facades\Revoker;
+use Vaened\Authorization\Authorizer as AuthorizerContract;
+use Vaened\Authorization\Operators\Granter;
+use Vaened\Authorization\Operators\Revoker;
 use Vaened\Authorization\Support\Config;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -40,7 +40,7 @@ trait IsRole
 
     public function can(string $permission): bool
     {
-        return Authorizer::can($this, $permission);
+        return app(AuthorizerContract::class)->can($this, $permission);
     }
 
     public function cannot(string $permission): bool
@@ -55,7 +55,7 @@ trait IsRole
 
     public function grantMultiple(array $permissions): void
     {
-        Granter::permissions($this, collect($permissions));
+        app(Granter::class)->permissions($this, collect($permissions));
     }
 
     public function revoke(PermissionContract $permission): void
@@ -65,7 +65,7 @@ trait IsRole
 
     public function revokeMultiple(array $permissions): void
     {
-        Revoker::permissions($this, collect($permissions));
+        app(Revoker::class)->permissions($this, collect($permissions));
     }
 
     public function permissions(): BelongsToMany

@@ -13,11 +13,11 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Tests\Operators;
 
 use Vaened\Authorization\Contracts\PermissionContract;
+use Vaened\Authorization\Authorizer;
 use Vaened\Authorization\Events\Denied;
 use Vaened\Authorization\Exceptions\AuthorizationNotDeniedException;
-use Vaened\Authorization\Facades\Authorizer;
-use Vaened\Authorization\Facades\Denier;
 use Vaened\Authorization\Models\Permission;
+use Vaened\Authorization\Operators\Denier;
 use Illuminate\Support\Facades\Event;
 
 class DenierTest extends OperatorTestCase
@@ -27,7 +27,7 @@ class DenierTest extends OperatorTestCase
         Event::fake();
         $owner = $this->user();
         $permissions = $this->permissions();
-        Denier::permissions($owner, $permissions);
+        $this->app->make(Denier::class)->permissions($owner, $permissions);
         $this->assertEvent($owner, $permissions, PermissionContract::class);
     }
 
@@ -35,7 +35,7 @@ class DenierTest extends OperatorTestCase
     {
         $permission = new Permission(['secret_name' => 'secret']);
         $this->expectException(AuthorizationNotDeniedException::class);
-        Denier::permissions($this->user(), collect([$permission]));
+        $this->app->make(Denier::class)->permissions($this->user(), collect([$permission]));
     }
 
     public function test_can_deny_permissions_to_a_owner(): void
@@ -47,11 +47,11 @@ class DenierTest extends OperatorTestCase
         $owner->grantMultiple($permissions->all());
         $this->assertTrue($owner->can('edit-articles'));
         $this->assertTrue($owner->can('create-articles'));
-        Denier::permissions($owner, $permissions);
+        $this->app->make(Denier::class)->permissions($owner, $permissions);
         $this->assertFalse($owner->can('edit-articles'));
         $this->assertFalse($owner->can('create-articles'));
         $operations = $permissions->filter(function (PermissionContract $permission) use ($owner) {
-            return ! Authorizer::can($owner, $permission->getSecretName());
+            return ! $this->app->make(Authorizer::class)->can($owner, $permission->getSecretName());
         });
         $this->assertCount($permissions->count(), $operations);
     }
