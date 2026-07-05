@@ -6,42 +6,22 @@ on:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}; Laravel ${{ matrix.laravel }}
+    name: PHP 8.4 / Laravel 12
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        php: [ '8.1' ]
-        laravel: [ '10' ]
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v5
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: "8.4"
           tools: composer:v2
           coverage: none
 
-      - name: Setup Problem Matchers
-        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - name: Install dependencies
+        run: composer update --no-interaction --no-progress --prefer-dist
 
-      - name: Select Laravel ${{ matrix.laravel }}
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: composer require "laravel/framework:10.*" --no-update --no-interaction
-        if: "matrix.laravel == '10'"
-
-      - name: Install PHP 8.1 Dependencies
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: composer update --no-interaction --no-progress --ignore-platform-req=php
-
-      - name: Execute PHPUnit
+      - name: Run tests
         run: vendor/bin/phpunit

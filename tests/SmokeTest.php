@@ -10,10 +10,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Vaened\Authorization\Exceptions;
+namespace Vaened\Authorization\Tests;
 
-use RuntimeException;
-
-class InvalidModelException extends RuntimeException implements AuthorizationException
+final class SmokeTest extends TestCase
 {
+    public function test_true_is_true(): void
+    {
+        self::assertTrue(true);
+    }
 }

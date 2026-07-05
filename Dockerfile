@@ -1,4 +1,4 @@
-FROM php:8.1-cli
+FROM php:8.4-cli
 
 WORKDIR /app
 
@@ -10,4 +10,3 @@ RUN docker-php-ext-install \
 	pdo_sqlite
 
 COPY . /app
-
