@@ -17,11 +17,20 @@
     "acl",
     "security"
   ],
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../php-sentinel",
+      "options": {
+        "symlink": true
+      }
+    }
+  ],
   "require": {
     "php": "^8.4",
     "laravel/framework": "^12.0",
     "psr/log": "^3.0",
-    "vaened/support": "^4.2"
+    "vaened/php-sentinel": "dev-master"
   },
   "require-dev": {
     "orchestra/testbench": "^10.5",
@@ -29,7 +38,6 @@
   },
   "autoload": {
     "psr-4": {
-      "Vaened\\Sentinel\\": "core",
       "Vaened\\Authorization\\": "src"
     }
   },

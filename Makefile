@@ -1,4 +1,6 @@
 current-dir := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+workspace-dir := $(abspath $(current-dir)/..)
+project-dir := $(notdir $(patsubst %/,%,$(current-dir)))
 
 .PHONY: build clean deps composer-install composer-update composer-require composer-require-module
 
@@ -20,10 +22,10 @@ composer-require: CMD=require
 composer-require: INTERACTIVE=-ti --interactive
 
 composer composer-install composer-update composer-require composer-require-module:
-	@docker run --rm $(INTERACTIVE) --volume $(current-dir):/app --user $(id -u):$(id -g) \
+	@docker run --rm $(INTERACTIVE) --volume $(workspace-dir):/workspace --workdir /workspace/$(project-dir) --user $(id -u):$(id -g) \
 		composer:2.5.8 $(CMD) \
 			--ignore-platform-reqs \
 			--no-ansi
 
 test: composer-install
-	docker run --rm -v $(PWD):/app -w /app $(IMAGE) vendor/bin/phpunit $(FILTER_TEST_OPTIONS);
+	docker run --rm -v $(workspace-dir):/workspace -w /workspace/$(project-dir) $(IMAGE) vendor/bin/phpunit $(FILTER_TEST_OPTIONS);
