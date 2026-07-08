@@ -2,7 +2,7 @@
 
 Roles, permissions, explicit denials, and route middleware for Laravel applications.
 
-Built on top of [PHP Sentinel](https://packagist.org/packages/vaened/php-sentinel).
+Built on top of [PHP Sentinel](https://github.com/vaened/php-sentinel).
 
 ```php
 // Authorizations
@@ -117,7 +117,7 @@ You can rename any of these tables by publishing and editing the `tables` array 
 
 ## Default models and repositories
 
-This package provides the Laravel-side infrastructure for [PHP Sentinel](https://packagist.org/packages/vaened/php-sentinel):
+This package provides the Laravel-side infrastructure for [PHP Sentinel](https://github.com/vaened/php-sentinel):
 
 - Eloquent repositories
 - package configuration
