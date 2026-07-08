@@ -37,12 +37,12 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 
         $this->repository->create(
             $subject,
-            new SubjectPermissionSnapshot($readUsers),
-            new SubjectPermissionSnapshot($updateUsers, true),
+            SubjectPermissionSnapshot::from($readUsers),
+            SubjectPermissionSnapshot::from($updateUsers, true),
         );
 
         $otherSubject = $this->subject();
-        $this->repository->create($otherSubject, new SubjectPermissionSnapshot($deleteUsers, true));
+        $this->repository->create($otherSubject, SubjectPermissionSnapshot::from($deleteUsers, true));
 
         $permissions = $this->repository->lookup($subject, 'users.update', 'users.delete');
 
@@ -56,7 +56,7 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
         $subject    = $this->subject();
         $permission = $this->permission('users.read', 'Read Users');
 
-        $this->repository->create($subject, new SubjectPermissionSnapshot($permission));
+        $this->repository->create($subject, SubjectPermissionSnapshot::from($permission));
 
         self::assertTrue($this->repository->exists($permission->id()));
         self::assertFalse($this->repository->exists(999_999));
@@ -70,8 +70,8 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 
         $this->repository->create(
             $subject,
-            new SubjectPermissionSnapshot($readUsers),
-            new SubjectPermissionSnapshot($updateUsers, true),
+            SubjectPermissionSnapshot::from($readUsers),
+            SubjectPermissionSnapshot::from($updateUsers, true),
         );
 
         $permissions = $this->repository->allOf($subject);
@@ -86,7 +86,7 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
         $subject    = $this->subject();
         $permission = $this->permission('users.read', 'Read Users');
 
-        $this->repository->create($subject, new SubjectPermissionSnapshot($permission, true));
+        $this->repository->create($subject, SubjectPermissionSnapshot::from($permission, true));
 
         self::assertDatabaseHas('subject_permissions', [
             'permission_id'     => $permission->id(),
@@ -104,11 +104,11 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 
         $this->repository->create(
             $subject,
-            new SubjectPermissionSnapshot($readUsers, false),
-            new SubjectPermissionSnapshot($updateUsers, false),
+            SubjectPermissionSnapshot::from($readUsers, false),
+            SubjectPermissionSnapshot::from($updateUsers, false),
         );
 
-        $this->repository->update($subject, new SubjectPermissionSnapshot($updateUsers, true));
+        $this->repository->update($subject, SubjectPermissionSnapshot::from($updateUsers, true));
 
         self::assertDatabaseHas('subject_permissions', [
             'permission_id'     => $readUsers->id(),
@@ -134,9 +134,9 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 
         $this->repository->create(
             $subject,
-            new SubjectPermissionSnapshot($readUsers, false),
-            new SubjectPermissionSnapshot($updateUsers, false),
-            new SubjectPermissionSnapshot($deleteUsers, false),
+            SubjectPermissionSnapshot::from($readUsers, false),
+            SubjectPermissionSnapshot::from($updateUsers, false),
+            SubjectPermissionSnapshot::from($deleteUsers, false),
         );
 
         $captured = [];
@@ -148,9 +148,9 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 
         $this->repository->update(
             $subject,
-            new SubjectPermissionSnapshot($readUsers, true),
-            new SubjectPermissionSnapshot($updateUsers, false),
-            new SubjectPermissionSnapshot($deleteUsers, true),
+            SubjectPermissionSnapshot::from($readUsers, true),
+            SubjectPermissionSnapshot::from($updateUsers, false),
+            SubjectPermissionSnapshot::from($deleteUsers, true),
         );
 
         self::assertCount(2, $captured);
@@ -180,11 +180,11 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 
         $this->repository->create(
             $subject,
-            new SubjectPermissionSnapshot($readUsers),
-            new SubjectPermissionSnapshot($updateUsers, true),
+            SubjectPermissionSnapshot::from($readUsers),
+            SubjectPermissionSnapshot::from($updateUsers, true),
         );
 
-        $this->repository->remove($subject, new SubjectPermissionSnapshot($readUsers));
+        $this->repository->remove($subject, SubjectPermissionSnapshot::from($readUsers));
 
         self::assertDatabaseMissing('subject_permissions', [
             'permission_id'     => $readUsers->id(),

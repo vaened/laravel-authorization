@@ -18,7 +18,6 @@ use Vaened\Authorization\Models\Permission as PermissionModel;
 use Vaened\Sentinel\Operators\SubjectPermissionSnapshot;
 use Vaened\Sentinel\Repositories\SubjectPermissionRepository as SubjectPermissionRepositoryContract;
 use Vaened\Sentinel\Subject;
-use Vaened\Sentinel\SubjectPermission;
 use Vaened\Sentinel\SubjectPermissions;
 
 final class EloquentSubjectPermissionRepository extends SubjectRepository implements SubjectPermissionRepositoryContract
@@ -44,7 +43,7 @@ final class EloquentSubjectPermissionRepository extends SubjectRepository implem
         return $this->subjectPermissionsOf($subject);
     }
 
-    public function create(Subject $subject, SubjectPermission ...$permissions): void
+    public function create(Subject $subject, SubjectPermissionSnapshot ...$permissions): void
     {
         if (empty($permissions)) {
             return;
@@ -52,8 +51,8 @@ final class EloquentSubjectPermissionRepository extends SubjectRepository implem
 
         DB::table(Tables::subjectPermissions())->insert(
             array_map(
-                fn(SubjectPermission $permission): array => [
-                    'permission_id'     => $permission->id(),
+                fn(SubjectPermissionSnapshot $permission): array => [
+                    'permission_id'     => $permission->permissionId(),
                     'authorizable_type' => $this->subjectType($subject),
                     'authorizable_id'   => $this->subjectId($subject),
                     'denied'            => $permission->isDenied(),
@@ -63,7 +62,7 @@ final class EloquentSubjectPermissionRepository extends SubjectRepository implem
         );
     }
 
-    public function update(Subject $subject, SubjectPermission ...$permissions): void
+    public function update(Subject $subject, SubjectPermissionSnapshot ...$permissions): void
     {
         if (empty($permissions)) {
             return;
@@ -74,9 +73,9 @@ final class EloquentSubjectPermissionRepository extends SubjectRepository implem
 
         foreach ($permissions as $permission) {
             if ($permission->isDenied()) {
-                $denied[] = $permission->id();
+                $denied[] = $permission->permissionId();
             } else {
-                $granted[] = $permission->id();
+                $granted[] = $permission->permissionId();
             }
         }
 
@@ -93,7 +92,7 @@ final class EloquentSubjectPermissionRepository extends SubjectRepository implem
         }
     }
 
-    public function remove(Subject $subject, SubjectPermission ...$permissions): void
+    public function remove(Subject $subject, SubjectPermissionSnapshot ...$permissions): void
     {
         if (empty($permissions)) {
             return;
@@ -104,7 +103,7 @@ final class EloquentSubjectPermissionRepository extends SubjectRepository implem
           ->where('authorizable_id', $this->subjectId($subject))
           ->whereIn(
               'permission_id',
-              array_map(static fn(SubjectPermission $permission): int|string => $permission->id(), $permissions)
+              array_map(static fn(SubjectPermissionSnapshot $permission): int|string => $permission->permissionId(), $permissions)
           )
           ->delete();
     }
@@ -137,7 +136,8 @@ final class EloquentSubjectPermissionRepository extends SubjectRepository implem
                 ->get()
                 ->map(
                     static fn(PermissionModel $permission): SubjectPermissionSnapshot => new SubjectPermissionSnapshot(
-                        $permission,
+                        $permission->id(),
+                        $permission->code(),
                         (bool)$permission->getAttributeValue('pivot_denied'),
                     )
                 )
