@@ -63,6 +63,8 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         self::assertSame('role_permissions', config('authorization.tables.role_permissions'));
         self::assertSame('subject_roles', config('authorization.tables.subject_roles'));
         self::assertSame('subject_permissions', config('authorization.tables.subject_permissions'));
+        self::assertSame('authorization.permissions', config('authorization.middlewares.permissions'));
+        self::assertSame('authorization.roles', config('authorization.middlewares.roles'));
     }
 
     public function test_it_is_the_registered_package_provider(): void

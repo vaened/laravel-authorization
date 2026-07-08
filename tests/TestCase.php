@@ -32,6 +32,8 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('authorization.tables.role_permissions', 'role_permissions');
         $app['config']->set('authorization.tables.subject_roles', 'subject_roles');
         $app['config']->set('authorization.tables.subject_permissions', 'subject_permissions');
+        $app['config']->set('authorization.middlewares.permissions', 'authorization.permissions');
+        $app['config']->set('authorization.middlewares.roles', 'authorization.roles');
     }
 
     protected function subject(array $attributes = []): Subject
