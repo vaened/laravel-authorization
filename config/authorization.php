@@ -33,4 +33,21 @@ return [
 
         'subject_permissions' => 'subject_permissions',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authorization Middleware
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the middleware aliases registered by the package.
+    | You may change them if your application already uses similar names or if
+    | you want to expose a different public API for your route middleware.
+    |
+    */
+
+    'middlewares' => [
+        'permissions' => 'authorization.permissions',
+
+        'roles' => 'authorization.roles',
+    ],
 ];
