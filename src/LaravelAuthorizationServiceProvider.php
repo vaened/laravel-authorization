@@ -13,6 +13,9 @@ declare(strict_types=1);
 namespace Vaened\Authorization;
 
 use Illuminate\Support\ServiceProvider;
+use Vaened\Authorization\Configuration\Middlewares;
+use Vaened\Authorization\Middlewares\AuthorizePermissions;
+use Vaened\Authorization\Middlewares\AuthorizeRoles;
 use Vaened\Authorization\Persistence\Database\EloquentPermissionRepository;
 use Vaened\Authorization\Persistence\Database\EloquentRolePermissionRepository;
 use Vaened\Authorization\Persistence\Database\EloquentRoleRepository;
@@ -58,6 +61,9 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->app['router']->aliasMiddleware(Middlewares::permissions(), AuthorizePermissions::class);
+        $this->app['router']->aliasMiddleware(Middlewares::roles(), AuthorizeRoles::class);
+
         $this->publishes([
             __DIR__ . '/../config/authorization.php' => config_path('authorization.php'),
         ], 'laravel-authorization-config');
