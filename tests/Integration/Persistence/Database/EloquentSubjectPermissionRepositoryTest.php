@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Tests\Integration\Persistence\Database;
 
+use Illuminate\Support\Facades\DB;
 use Vaened\Authorization\Persistence\Database\EloquentSubjectPermissionRepository;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Sentinel\Operators\SubjectPermissionSnapshot;
@@ -119,6 +120,53 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
         self::assertDatabaseHas('subject_permissions', [
             'permission_id'     => $updateUsers->id(),
             'authorizable_type' => $subject->getMorphClass(),
+            'authorizable_id'   => $subject->id(),
+            'denied'            => true,
+        ]);
+    }
+
+    public function test_update_with_mixed_snapshots_groups_them_into_at_most_two_queries(): void
+    {
+        $subject      = $this->subject();
+        $readUsers    = $this->permission('users.read', 'Read Users');
+        $updateUsers  = $this->permission('users.update', 'Update Users');
+        $deleteUsers  = $this->permission('users.delete', 'Delete Users');
+
+        $this->repository->create(
+            $subject,
+            new SubjectPermissionSnapshot($readUsers, false),
+            new SubjectPermissionSnapshot($updateUsers, false),
+            new SubjectPermissionSnapshot($deleteUsers, false),
+        );
+
+        $captured = [];
+        DB::listen(static function ($query) use (&$captured): void {
+            if (str_contains($query->sql, 'subject_permissions')) {
+                $captured[] = $query->sql;
+            }
+        });
+
+        $this->repository->update(
+            $subject,
+            new SubjectPermissionSnapshot($readUsers, true),
+            new SubjectPermissionSnapshot($updateUsers, false),
+            new SubjectPermissionSnapshot($deleteUsers, true),
+        );
+
+        self::assertCount(2, $captured);
+
+        $this->assertDatabaseHas('subject_permissions', [
+            'permission_id'     => $readUsers->id(),
+            'authorizable_id'   => $subject->id(),
+            'denied'            => true,
+        ]);
+        $this->assertDatabaseHas('subject_permissions', [
+            'permission_id'     => $updateUsers->id(),
+            'authorizable_id'   => $subject->id(),
+            'denied'            => false,
+        ]);
+        $this->assertDatabaseHas('subject_permissions', [
+            'permission_id'     => $deleteUsers->id(),
             'authorizable_id'   => $subject->id(),
             'denied'            => true,
         ]);

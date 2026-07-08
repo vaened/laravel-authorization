@@ -69,14 +69,27 @@ final class EloquentSubjectPermissionRepository extends SubjectRepository implem
             return;
         }
 
+        $granted = [];
+        $denied  = [];
+
+        foreach ($permissions as $permission) {
+            if ($permission->isDenied()) {
+                $denied[] = $permission->id();
+            } else {
+                $granted[] = $permission->id();
+            }
+        }
+
         $query = DB::table(Tables::subjectPermissions())
                    ->where('authorizable_type', $this->subjectType($subject))
                    ->where('authorizable_id', $this->subjectId($subject));
 
-        foreach ($permissions as $permission) {
-            (clone $query)
-                ->where('permission_id', $permission->id())
-                ->update(['denied' => $permission->isDenied()]);
+        if (!empty($granted)) {
+            $query->clone()->whereIn('permission_id', $granted)->update(['denied' => false]);
+        }
+
+        if (!empty($denied)) {
+            $query->clone()->whereIn('permission_id', $denied)->update(['denied' => true]);
         }
     }
 
