@@ -12,37 +12,23 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization;
 
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Vaened\Authorization\Configuration\Tables;
-use Vaened\Authorization\Models\Permission;
-use Vaened\Authorization\Models\Role;
+use Vaened\Sentinel\Authorization as AuthorizationContract;
+use Vaened\Sentinel\Permission;
+use Vaened\Sentinel\Subject;
 
-trait Authorizable
+interface Authorizable extends Subject
 {
-    public function id(): int|string
-    {
-        return $this->getKey();
-    }
+    public function can(string ...$permissions): bool;
 
-    public function roles(): MorphToMany
-    {
-        return $this->morphToMany(
-            Role::class,
-            'authorizable',
-            Tables::subjectRoles(),
-            'authorizable_id',
-            'role_id',
-        );
-    }
+    public function cannot(string ...$permissions): bool;
 
-    public function permissions(): MorphToMany
-    {
-        return $this->morphToMany(
-            Permission::class,
-            'authorizable',
-            Tables::subjectPermissions(),
-            'authorizable_id',
-            'permission_id',
-        )->withPivot('denied');
-    }
+    public function grant(AuthorizationContract ...$authorizations): void;
+
+    public function deny(Permission ...$permissions): void;
+
+    public function revoke(AuthorizationContract ...$authorizations): void;
+
+    public function actsAs(string ...$roles): bool;
+
+    public function actsNotAs(string ...$roles): bool;
 }

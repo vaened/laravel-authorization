@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Models;
 
-use Vaened\Authorization\Authorizable;
 use Illuminate\Database\Eloquent\Model;
-use Vaened\Sentinel\Subject as SubjectContract;
+use Vaened\Authorization\Authorizable;
+use Vaened\Authorization\UsesAuthorizations;
 
-class Subject extends Model implements SubjectContract
+class Subject extends Model implements Authorizable
 {
-    use Authorizable;
+    use UsesAuthorizations;
 
     public    $timestamps = false;
 
