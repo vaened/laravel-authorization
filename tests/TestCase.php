@@ -13,12 +13,18 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Tests;
 
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Vaened\Authorization\LaravelAuthorizationServiceProvider;
 use Vaened\Authorization\Models\Permission;
 use Vaened\Authorization\Models\Role;
 use Vaened\Authorization\Models\Subject;
 
 abstract class TestCase extends OrchestraTestCase
 {
+    protected function getPackageProviders($app): array
+    {
+        return [LaravelAuthorizationServiceProvider::class];
+    }
+
     protected function defineEnvironment($app): void
     {
         $app['config']->set('authorization.tables.roles', 'roles');

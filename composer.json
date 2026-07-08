@@ -45,5 +45,12 @@
     "psr-4": {
       "Vaened\\Authorization\\Tests\\": "tests"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Vaened\\Authorization\\LaravelAuthorizationServiceProvider"
+      ]
+    }
   }
 }
