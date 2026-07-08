@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization;
 
-use Vaened\Sentinel\Authorization as AuthorizationContract;
+use Vaened\Sentinel\Authorization;
 use Vaened\Sentinel\Permission;
 use Vaened\Sentinel\Subject;
 
@@ -22,11 +22,11 @@ interface Authorizable extends Subject
 
     public function cannot(string ...$permissions): bool;
 
-    public function grant(AuthorizationContract ...$authorizations): void;
+    public function grant(Authorization ...$authorizations): void;
 
     public function deny(Permission ...$permissions): void;
 
-    public function revoke(AuthorizationContract ...$authorizations): void;
+    public function revoke(Authorization ...$authorizations): void;
 
     public function actsAs(string ...$roles): bool;
 
