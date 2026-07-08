@@ -17,20 +17,11 @@
     "acl",
     "security"
   ],
-  "repositories": [
-    {
-      "type": "path",
-      "url": "../php-sentinel",
-      "options": {
-        "symlink": true
-      }
-    }
-  ],
   "require": {
     "php": "^8.4",
     "laravel/framework": "^12.0",
     "psr/log": "^3.0",
-    "vaened/php-sentinel": "dev-master"
+    "vaened/php-sentinel": "^0.1.0"
   },
   "require-dev": {
     "orchestra/testbench": "^10.5",
