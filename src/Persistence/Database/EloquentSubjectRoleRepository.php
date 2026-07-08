@@ -81,6 +81,11 @@ final class EloquentSubjectRoleRepository extends SubjectRepository implements S
                  ->exists();
     }
 
+    public function allOf(Subject $subject): Roles
+    {
+        return new Roles($this->rolesOf($subject)->get()->all());
+    }
+
     public function create(Subject $subject, RoleContract ...$roles): void
     {
         if (empty($roles)) {

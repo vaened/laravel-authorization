@@ -62,6 +62,25 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
         self::assertFalse($this->repository->exists(999_999));
     }
 
+    public function test_all_of_returns_every_permission_assigned_to_the_subject_with_denied_flags(): void
+    {
+        $subject     = $this->subject();
+        $readUsers   = $this->permission('users.read', 'Read Users');
+        $updateUsers = $this->permission('users.update', 'Update Users');
+
+        $this->repository->create(
+            $subject,
+            new SubjectPermissionSnapshot($readUsers),
+            new SubjectPermissionSnapshot($updateUsers, true),
+        );
+
+        $permissions = $this->repository->allOf($subject);
+
+        self::assertCount(2, $permissions);
+        self::assertFalse($permissions->find('users.read')?->isDenied());
+        self::assertTrue($permissions->find('users.update')?->isDenied());
+    }
+
     public function test_create_persists_subject_permissions_with_their_denied_state(): void
     {
         $subject    = $this->subject();

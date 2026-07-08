@@ -54,6 +54,20 @@ final class EloquentRolePermissionRepositoryTest extends DatabaseTestCase
         self::assertFalse($this->repository->exists(999_999));
     }
 
+    public function test_all_of_returns_every_permission_assigned_to_the_role(): void
+    {
+        $role        = $this->role('admin', 'Administrator');
+        $readUsers   = $this->permission('users.read', 'Read Users');
+        $updateUsers = $this->permission('users.update', 'Update Users');
+
+        $this->repository->create($role, $readUsers, $updateUsers);
+
+        $permissions = $this->repository->allOf($role);
+
+        self::assertCount(2, $permissions);
+        self::assertSame(['users.read', 'users.update'], $permissions->codes());
+    }
+
     public function test_create_persists_role_permission_bindings(): void
     {
         $role       = $this->role('admin', 'Administrator');

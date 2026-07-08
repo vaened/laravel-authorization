@@ -44,6 +44,11 @@ final class EloquentRolePermissionRepository implements RolePermissionRepository
                  ->exists();
     }
 
+    public function allOf(Role $role): Permissions
+    {
+        return new Permissions($this->permissionsOf($role)->get()->all());
+    }
+
     public function create(Role $role, PermissionContract ...$permissions): void
     {
         if (empty($permissions)) {
