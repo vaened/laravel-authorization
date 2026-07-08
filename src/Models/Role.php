@@ -14,6 +14,9 @@ namespace Vaened\Authorization\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Vaened\Authorization\Configuration\Tables;
+use Vaened\Authorization\Facades\Granter;
+use Vaened\Authorization\Facades\Revoker;
+use Vaened\Sentinel\Permission as PermissionContract;
 use Vaened\Sentinel\Role as RoleContract;
 
 class Role extends Authorization implements RoleContract
@@ -31,5 +34,15 @@ class Role extends Authorization implements RoleContract
             'role_id',
             'permission_id',
         );
+    }
+
+    public function grant(PermissionContract ...$permissions): void
+    {
+        Granter::grant($this, ...$permissions);
+    }
+
+    public function revoke(PermissionContract ...$permissions): void
+    {
+        Revoker::revoke($this, ...$permissions);
     }
 }
