@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Persistence\Database;
 
 use Illuminate\Database\Eloquent\Model;
-use InvalidArgumentException;
+use Vaened\Authorization\Errors\UnsupportedSubject;
 use Vaened\Sentinel\Identifiers;
 use Vaened\Sentinel\Subject;
 
@@ -35,10 +35,6 @@ abstract class SubjectRepository
             return $subject;
         }
 
-        $type = $subject::class;
-
-        throw new InvalidArgumentException(
-            "The subject [$type] must extend [" . Model::class . '] to be used by the Laravel adapter.'
-        );
+        throw UnsupportedSubject::becauseItDoesNotExtendModel($subject::class);
     }
 }
