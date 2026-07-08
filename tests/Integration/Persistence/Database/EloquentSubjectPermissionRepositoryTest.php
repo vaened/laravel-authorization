@@ -30,10 +30,10 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 
     public function test_lookup_returns_only_requested_permissions_with_their_denied_state(): void
     {
-        $subject      = $this->subject();
-        $readUsers    = $this->permission('users.read', 'Read Users');
-        $updateUsers  = $this->permission('users.update', 'Update Users');
-        $deleteUsers  = $this->permission('users.delete', 'Delete Users');
+        $subject     = $this->subject();
+        $readUsers   = $this->permission('users.read', 'Read Users');
+        $updateUsers = $this->permission('users.update', 'Update Users');
+        $deleteUsers = $this->permission('users.delete', 'Delete Users');
 
         $this->repository->create(
             $subject,
@@ -53,8 +53,8 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 
     public function test_exists_reports_when_a_permission_is_assigned_to_any_subject(): void
     {
-        $subject     = $this->subject();
-        $permission  = $this->permission('users.read', 'Read Users');
+        $subject    = $this->subject();
+        $permission = $this->permission('users.read', 'Read Users');
 
         $this->repository->create($subject, new SubjectPermissionSnapshot($permission));
 
@@ -62,29 +62,10 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
         self::assertFalse($this->repository->exists(999_999));
     }
 
-    public function test_all_of_returns_every_permission_assigned_to_the_subject_with_denied_flags(): void
-    {
-        $subject      = $this->subject();
-        $readUsers    = $this->permission('users.read', 'Read Users');
-        $updateUsers  = $this->permission('users.update', 'Update Users');
-
-        $this->repository->create(
-            $subject,
-            new SubjectPermissionSnapshot($readUsers),
-            new SubjectPermissionSnapshot($updateUsers, true),
-        );
-
-        $permissions = $this->repository->allOf($subject);
-
-        self::assertCount(2, $permissions);
-        self::assertFalse($permissions->find('users.read')?->isDenied());
-        self::assertTrue($permissions->find('users.update')?->isDenied());
-    }
-
     public function test_create_persists_subject_permissions_with_their_denied_state(): void
     {
-        $subject     = $this->subject();
-        $permission  = $this->permission('users.read', 'Read Users');
+        $subject    = $this->subject();
+        $permission = $this->permission('users.read', 'Read Users');
 
         $this->repository->create($subject, new SubjectPermissionSnapshot($permission, true));
 
@@ -98,9 +79,9 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 
     public function test_update_changes_only_the_requested_denied_flags(): void
     {
-        $subject      = $this->subject();
-        $readUsers    = $this->permission('users.read', 'Read Users');
-        $updateUsers  = $this->permission('users.update', 'Update Users');
+        $subject     = $this->subject();
+        $readUsers   = $this->permission('users.read', 'Read Users');
+        $updateUsers = $this->permission('users.update', 'Update Users');
 
         $this->repository->create(
             $subject,
@@ -127,10 +108,10 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 
     public function test_update_with_mixed_snapshots_groups_them_into_at_most_two_queries(): void
     {
-        $subject      = $this->subject();
-        $readUsers    = $this->permission('users.read', 'Read Users');
-        $updateUsers  = $this->permission('users.update', 'Update Users');
-        $deleteUsers  = $this->permission('users.delete', 'Delete Users');
+        $subject     = $this->subject();
+        $readUsers   = $this->permission('users.read', 'Read Users');
+        $updateUsers = $this->permission('users.update', 'Update Users');
+        $deleteUsers = $this->permission('users.delete', 'Delete Users');
 
         $this->repository->create(
             $subject,
@@ -156,27 +137,27 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
         self::assertCount(2, $captured);
 
         $this->assertDatabaseHas('subject_permissions', [
-            'permission_id'     => $readUsers->id(),
-            'authorizable_id'   => $subject->id(),
-            'denied'            => true,
+            'permission_id'   => $readUsers->id(),
+            'authorizable_id' => $subject->id(),
+            'denied'          => true,
         ]);
         $this->assertDatabaseHas('subject_permissions', [
-            'permission_id'     => $updateUsers->id(),
-            'authorizable_id'   => $subject->id(),
-            'denied'            => false,
+            'permission_id'   => $updateUsers->id(),
+            'authorizable_id' => $subject->id(),
+            'denied'          => false,
         ]);
         $this->assertDatabaseHas('subject_permissions', [
-            'permission_id'     => $deleteUsers->id(),
-            'authorizable_id'   => $subject->id(),
-            'denied'            => true,
+            'permission_id'   => $deleteUsers->id(),
+            'authorizable_id' => $subject->id(),
+            'denied'          => true,
         ]);
     }
 
     public function test_remove_deletes_only_the_requested_subject_permissions(): void
     {
-        $subject      = $this->subject();
-        $readUsers    = $this->permission('users.read', 'Read Users');
-        $updateUsers  = $this->permission('users.update', 'Update Users');
+        $subject     = $this->subject();
+        $readUsers   = $this->permission('users.read', 'Read Users');
+        $updateUsers = $this->permission('users.update', 'Update Users');
 
         $this->repository->create(
             $subject,

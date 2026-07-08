@@ -76,20 +76,6 @@ final class EloquentSubjectRoleRepositoryTest extends DatabaseTestCase
         self::assertFalse($this->repository->exists(999_999));
     }
 
-    public function test_all_of_returns_every_role_assigned_to_the_subject(): void
-    {
-        $subject = $this->subject();
-        $admin   = $this->role('admin', 'Administrator');
-        $editor  = $this->role('editor', 'Editor');
-
-        $this->repository->create($subject, $admin, $editor);
-
-        $roles = $this->repository->allOf($subject);
-
-        self::assertCount(2, $roles);
-        self::assertSame(['admin', 'editor'], $roles->codes());
-    }
-
     public function test_create_persists_subject_role_bindings_with_morph_data(): void
     {
         $subject = $this->subject();

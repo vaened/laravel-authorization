@@ -39,11 +39,6 @@ final class EloquentSubjectPermissionRepository extends SubjectRepository implem
                  ->exists();
     }
 
-    public function allOf(Subject $subject): SubjectPermissions
-    {
-        return $this->subjectPermissionsOf($subject);
-    }
-
     public function create(Subject $subject, SubjectPermission ...$permissions): void
     {
         if (empty($permissions)) {
