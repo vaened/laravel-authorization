@@ -10,7 +10,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Vaened\Authorization\Persistence\Database;
+namespace Vaened\Authorization\Persistence;
 
 use Illuminate\Database\Eloquent\Model;
 use Vaened\Authorization\Errors\UnsupportedSubject;

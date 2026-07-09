@@ -15,6 +15,7 @@ namespace Vaened\Authorization\Persistence\Database;
 use Illuminate\Support\Facades\DB;
 use Vaened\Authorization\Configuration\Tables;
 use Vaened\Authorization\Models\Permission as PermissionModel;
+use Vaened\Authorization\Persistence\SubjectRepository;
 use Vaened\Sentinel\Operators\SubjectPermissionSnapshot;
 use Vaened\Sentinel\Repositories\SubjectPermissionRepository as SubjectPermissionRepositoryContract;
 use Vaened\Sentinel\Subject;

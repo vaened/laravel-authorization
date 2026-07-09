@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Vaened\Authorization\Configuration\Tables;
 use Vaened\Authorization\Models\Permission as PermissionModel;
+use Vaened\Authorization\Persistence\SubjectRepository;
 use Vaened\Authorization\Models\Role;
 use Vaened\Sentinel\Permissions;
 use Vaened\Sentinel\Repositories\SubjectRoleRepository as SubjectRoleRepositoryContract;
