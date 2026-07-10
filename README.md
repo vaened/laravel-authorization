@@ -1,5 +1,8 @@
 # Laravel Authorization
 
+[![Tests](https://github.com/vaened/laravel-authorization/actions/workflows/tests.yml/badge.svg)](https://github.com/vaened/laravel-authorization/actions/workflows/tests.yml)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+
 Roles, permissions, explicit denials, and route middleware for Laravel applications.
 
 Built on top of [PHP Sentinel](https://github.com/vaened/php-sentinel).
