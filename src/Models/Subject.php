@@ -14,11 +14,11 @@ namespace Vaened\Authorization\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Vaened\Authorization\Authorizable;
-use Vaened\Authorization\UsesAuthorizations;
+use Vaened\Authorization\Authorizations;
 
 class Subject extends Model implements Authorizable
 {
-    use UsesAuthorizations;
+    use Authorizations;
 
     public    $timestamps = false;
 

@@ -59,16 +59,16 @@ Laravel Authorization does not require you to extend a package-specific user mod
 Instead, the user model you want to make authorizable only needs to:
 
 - implement [`Authorizable`](src/Authorizable.php)
-- use [`UsesAuthorizations`](src/UsesAuthorizations.php)
+- use [`Authorizations`](src/Authorizations.php)
 
 ```php
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Vaened\Authorization\Authorizable;
-use Vaened\Authorization\UsesAuthorizations;
+use Vaened\Authorization\Authorizations;
 
 class User extends Authenticatable implements Authorizable
 {
-    use UsesAuthorizations;
+    use Authorizations;
 }
 ```
 
@@ -203,7 +203,7 @@ This package provides the Laravel-side infrastructure for [PHP Sentinel](https:/
 - service provider wiring
 
 It also includes default models for roles and permissions, plus a convenience `Subject` model.  
-However, the intended integration point for your application user model is the `Authorizable` contract and `UsesAuthorizations` trait.
+However, the intended integration point for your application user model is the `Authorizable` contract and `Authorizations` trait.
 
 ## Errors
 

@@ -26,7 +26,7 @@ use Vaened\Sentinel\Permission;
  *
  * @mixin Model&Authorizable
  */
-trait UsesAuthorizations
+trait Authorizations
 {
     public function id(): int|string|Identifier
     {
