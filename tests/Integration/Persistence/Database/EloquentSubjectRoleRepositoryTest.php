@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Tests\Integration\Persistence\Database;
 
+use Illuminate\Support\Facades\DB;
 use Vaened\Authorization\Persistence\Database\EloquentRolePermissionRepository;
 use Vaened\Authorization\Persistence\Database\EloquentSubjectRoleRepository;
 use Vaened\Authorization\Tests\DatabaseTestCase;
@@ -46,7 +47,7 @@ final class EloquentSubjectRoleRepositoryTest extends DatabaseTestCase
         self::assertSame(['editor'], $roles->codes());
     }
 
-    public function test_grants_returns_distinct_permissions_inherited_from_the_subject_roles(): void
+    public function test_grants_distinguishes_all_empty_and_requested_codes(): void
     {
         $subject      = $this->subject();
         $admin        = $this->role('admin', 'Administrator');
@@ -59,10 +60,21 @@ final class EloquentSubjectRoleRepositoryTest extends DatabaseTestCase
         $this->rolePermissions->create($editor, $updateUsers, $deleteUsers);
         $this->repository->create($subject, $admin, $editor);
 
-        $permissions = $this->repository->grants($subject, 'users.read', 'users.update', 'users.delete');
+        $queries = [];
+        DB::listen(static function () use (&$queries): void {
+            $queries[] = true;
+        });
 
-        self::assertCount(3, $permissions);
-        self::assertEqualsCanonicalizing(['users.read', 'users.update', 'users.delete'], $permissions->codes());
+        $none = $this->repository->grants($subject, []);
+        self::assertCount(0, $queries);
+
+        $all = $this->repository->grants($subject);
+        $permissions = $this->repository->grants($subject, ['users.read']);
+
+        self::assertCount(3, $all);
+        self::assertEqualsCanonicalizing(['users.read', 'users.update', 'users.delete'], $all->codes());
+        self::assertCount(0, $none);
+        self::assertSame(['users.read'], $permissions->codes());
     }
 
     public function test_exists_reports_when_a_role_is_assigned_to_any_subject(): void

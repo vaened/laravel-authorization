@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Vaened\Authorization\Configuration\Tables;
 use Vaened\Sentinel\Permission as PermissionContract;
 use Vaened\Sentinel\SubjectPermission as SubjectPermissionContract;
+use Vaened\Sentinel\SubjectPermissionState;
 
 class Permission extends Authorization implements PermissionContract, SubjectPermissionContract
 {
@@ -35,14 +36,14 @@ class Permission extends Authorization implements PermissionContract, SubjectPer
         );
     }
 
-    public function isDenied(): bool
+    public function state(): SubjectPermissionState
     {
         $pivot = $this->getRelationValue('pivot');
 
         if (!$pivot instanceof MorphPivot) {
-            return false;
+            return SubjectPermissionState::Direct;
         }
 
-        return (bool) $pivot->getAttributeValue('denied');
+        return SubjectPermissionState::fromBoolean((bool) $pivot->getAttributeValue('denied'));
     }
 }

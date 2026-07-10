@@ -16,8 +16,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Vaened\Authorization\Configuration\Tables;
 use Vaened\Authorization\Models\Permission as PermissionModel;
-use Vaened\Authorization\Persistence\SubjectRepository;
 use Vaened\Authorization\Models\Role;
+use Vaened\Authorization\Persistence\SubjectRepository;
 use Vaened\Sentinel\Permissions;
 use Vaened\Sentinel\Repositories\SubjectRoleRepository as SubjectRoleRepositoryContract;
 use Vaened\Sentinel\Role as RoleContract;
@@ -40,39 +40,39 @@ final class EloquentSubjectRoleRepository extends SubjectRepository implements S
         );
     }
 
-    public function grants(Subject $subject, string ...$codes): Permissions
+    public function grants(Subject $subject, ?array $codes = null): Permissions
     {
-        if (empty($codes)) {
+        if ($codes === []) {
             return new Permissions([]);
         }
 
-        return new Permissions(
-            PermissionModel::query()
-                           ->select(
-                               Tables::permissions('id'),
-                               Tables::permissions('code'),
-                               Tables::permissions('name'),
-                               Tables::permissions('description'),
-                           )
-                           ->join(
-                               Tables::rolePermissions(),
-                               Tables::rolePermissions('permission_id'),
-                               '=',
-                               Tables::permissions('id'),
-                           )
-                           ->join(
-                               Tables::subjectRoles(),
-                               Tables::subjectRoles('role_id'),
-                               '=',
-                               Tables::rolePermissions('role_id'),
-                           )
-                           ->where(Tables::subjectRoles('authorizable_type'), $this->subjectType($subject))
-                           ->where(Tables::subjectRoles('authorizable_id'), $this->subjectId($subject))
-                           ->whereIn(Tables::permissions('code'), $codes)
-                           ->distinct()
-                           ->get()
-                           ->all()
-        );
+        $query = PermissionModel::query()
+                                ->select(
+                                    Tables::permissions('id'),
+                                    Tables::permissions('code'),
+                                    Tables::permissions('name'),
+                                    Tables::permissions('description'),
+                                )
+                                ->join(
+                                    Tables::rolePermissions(),
+                                    Tables::rolePermissions('permission_id'),
+                                    '=',
+                                    Tables::permissions('id'),
+                                )
+                                ->join(
+                                    Tables::subjectRoles(),
+                                    Tables::subjectRoles('role_id'),
+                                    '=',
+                                    Tables::rolePermissions('role_id'),
+                                )
+                                ->where(Tables::subjectRoles('authorizable_type'), $this->subjectType($subject))
+                                ->where(Tables::subjectRoles('authorizable_id'), $this->subjectId($subject));
+
+        if (null !== $codes) {
+            $query->whereIn(Tables::permissions('code'), $codes);
+        }
+
+        return new Permissions($query->distinct()->get()->all());
     }
 
     public function exists(int|string $roleId): bool

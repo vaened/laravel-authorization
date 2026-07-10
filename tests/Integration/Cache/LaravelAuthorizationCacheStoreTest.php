@@ -52,14 +52,14 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
     {
         $store    = $this->createTaggableStore();
         $subject  = new TestSubject(1);
-        $expected = new SubjectAuthorizationProjection(['admin'], ['users.read' => true]);
+        $expected = self::projection(['admin'], ['users.read' => 2]);
 
         $store->put($subject, $expected);
 
         $actual = $store->get($subject);
         self::assertNotNull($actual);
-        self::assertSame(['admin'], $actual->roles());
-        self::assertSame(['users.read' => true], $actual->permissions());
+        self::assertSame(['admin'], $actual->roles()->codes());
+        self::assertSame(['users.read' => 2], $actual->toArray()['permissions']);
     }
 
     public function test_in_taggable_mode_get_returns_null_when_no_projection_exists(): void
@@ -75,7 +75,7 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
         $store      = $this->createTaggableStore();
         $subject1   = new TestSubject(1);
         $subject2   = new TestSubject(2);
-        $projection = new SubjectAuthorizationProjection(['admin'], ['users.read' => true]);
+        $projection = self::projection(['admin'], ['users.read' => 2]);
 
         $store->put($subject1, $projection);
         $store->put($subject2, $projection);
@@ -89,7 +89,7 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
     {
         $store      = $this->createTaggableStore();
         $subject    = new TestSubject(1);
-        $projection = new SubjectAuthorizationProjection(['admin'], ['users.read' => true]);
+        $projection = self::projection(['admin'], ['users.read' => 2]);
 
         $store->put($subject, $projection);
         self::assertNotNull($store->get($subject));
@@ -125,21 +125,21 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
     {
         $store    = $this->createNonTaggableStore();
         $subject  = new TestSubject(1);
-        $expected = new SubjectAuthorizationProjection(['cashier'], ['users.read' => true]);
+        $expected = self::projection(['cashier'], ['users.read' => 1]);
 
         $store->put($subject, $expected);
 
         $actual = $store->get($subject);
         self::assertNotNull($actual);
-        self::assertSame(['cashier'], $actual->roles());
-        self::assertSame(['users.read' => true], $actual->permissions());
+        self::assertSame(['cashier'], $actual->roles()->codes());
+        self::assertSame(['users.read' => 1], $actual->toArray()['permissions']);
     }
 
     public function test_in_versioned_mode_forget_removes_the_subject_projection(): void
     {
         $store      = $this->createNonTaggableStore();
         $subject    = new TestSubject(1);
-        $projection = new SubjectAuthorizationProjection(['admin'], ['users.read' => true]);
+        $projection = self::projection(['admin'], ['users.read' => 2]);
 
         $store->put($subject, $projection);
         $store->forget($subject);
@@ -151,7 +151,7 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
     {
         $store      = $this->createNonTaggableStore();
         $subject    = new TestSubject(1);
-        $projection = new SubjectAuthorizationProjection(['admin'], ['users.read' => true]);
+        $projection = self::projection(['admin'], ['users.read' => 2]);
 
         $store->put($subject, $projection);
         self::assertSame(1, $store->currentVersion());
@@ -169,7 +169,7 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
     {
         $store      = $this->createNonTaggableStore();
         $subject    = new TestSubject(1);
-        $projection = new SubjectAuthorizationProjection(['admin'], ['users.read' => true]);
+        $projection = self::projection(['admin'], ['users.read' => 2]);
 
         $store->put($subject, $projection);
         $store->invalidate();
@@ -193,5 +193,13 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
                 '',
             )),
         );
+    }
+
+    private static function projection(array $roles, array $permissions): SubjectAuthorizationProjection
+    {
+        return SubjectAuthorizationProjection::fromArray([
+            'roles'       => $roles,
+            'permissions' => $permissions,
+        ]) ?? throw new \LogicException('The projection payload must be valid.');
     }
 }

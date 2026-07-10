@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Vaened\Authorization\Persistence\Database\EloquentSubjectPermissionRepository;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Sentinel\Operators\SubjectPermissionSnapshot;
+use Vaened\Sentinel\SubjectPermissionState;
 
 final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 {
@@ -48,7 +49,7 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
 
         self::assertCount(1, $permissions);
         self::assertSame(['users.update'], $permissions->codes());
-        self::assertTrue($permissions->find('users.update')?->isDenied());
+        self::assertSame(SubjectPermissionState::Denied, $permissions->find('users.update')?->state());
     }
 
     public function test_exists_reports_when_a_permission_is_assigned_to_any_subject(): void
@@ -77,8 +78,8 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
         $permissions = $this->repository->allOf($subject);
 
         self::assertCount(2, $permissions);
-        self::assertFalse($permissions->find('users.read')?->isDenied());
-        self::assertTrue($permissions->find('users.update')?->isDenied());
+        self::assertSame(SubjectPermissionState::Direct, $permissions->find('users.read')?->state());
+        self::assertSame(SubjectPermissionState::Denied, $permissions->find('users.update')?->state());
     }
 
     public function test_create_persists_subject_permissions_with_their_denied_state(): void
