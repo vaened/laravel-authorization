@@ -17,6 +17,7 @@ use Illuminate\Cache\DatabaseStore;
 use Illuminate\Cache\Repository;
 use Illuminate\Support\Facades\DB;
 use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
+use Vaened\Authorization\Configuration\Caching;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
 use Vaened\Sentinel\Projection\SubjectAuthorizationProjection;
@@ -46,6 +47,11 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
         $store = $this->createTaggableStore();
 
         self::assertSame(1, $store->currentVersion());
+    }
+
+    public function test_in_taggable_mode_default_ttl_keeps_projections_permanently(): void
+    {
+        self::assertNull(Caching::ttl(true));
     }
 
     public function test_in_taggable_mode_put_then_get_round_trips_the_projection(): void
@@ -119,6 +125,11 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
         $store = $this->createNonTaggableStore();
 
         self::assertSame(1, $store->currentVersion());
+    }
+
+    public function test_in_versioned_mode_default_ttl_expires_orphaned_projections_after_twelve_hours(): void
+    {
+        self::assertSame(43_200, Caching::ttl(false));
     }
 
     public function test_in_versioned_mode_put_then_get_round_trips_the_projection(): void

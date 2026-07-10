@@ -21,6 +21,10 @@ return [
     | "cache.stores" configuration to use it exclusively for authorization.
     | When null, the package uses your application's default cache store.
     |
+    | A null TTL keeps projections permanently when the selected store supports
+    | cache tags. Stores without tags use a twelve-hour TTL by default, so
+    | projections orphaned after a global invalidation eventually expire.
+    |
     */
 
     'cache' => [
@@ -28,7 +32,7 @@ return [
 
         'prefix' => 'authorization',
 
-        'ttl' => 3600,
+        'ttl' => null,
     ],
 
     /*

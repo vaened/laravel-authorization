@@ -14,6 +14,8 @@ namespace Vaened\Authorization\Configuration;
 
 final class Caching
 {
+    private const int UNTAGGABLE_TTL = 43_200;
+
     public static function store(): string|null
     {
         return config('authorization.cache.store');
@@ -21,13 +23,17 @@ final class Caching
 
     public static function prefix(): string
     {
-        return (string) config('authorization.cache.prefix', 'authorization');
+        return (string)config('authorization.cache.prefix', 'authorization');
     }
 
-    public static function ttl(): int|null
+    public static function ttl(bool $supportsTags): int|null
     {
         $ttl = config('authorization.cache.ttl');
 
-        return null === $ttl ? null : (int) $ttl;
+        if (null !== $ttl) {
+            return (int)$ttl;
+        }
+
+        return $supportsTags ? null : self::UNTAGGABLE_TTL;
     }
 }

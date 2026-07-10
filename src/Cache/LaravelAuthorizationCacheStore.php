@@ -28,7 +28,7 @@ use Vaened\Sentinel\Subject;
  * does not, falls back to the PSR-16 versioning strategy: bump a global counter
  * so old namespaces become unreachable until the TTL expires them.
  *
- * Reads {@see Caching::prefix()} and {@see Caching::ttl()} directly from the
+ * Reads {@see Caching::prefix()} and the configured TTL directly from the
  * Laravel authorization configuration.
  */
 final readonly class LaravelAuthorizationCacheStore implements AuthorizationCacheStore
@@ -57,7 +57,7 @@ final readonly class LaravelAuthorizationCacheStore implements AuthorizationCach
         $this->resolveStore()->put(
             $this->keyOf($subject),
             $projection->toArray(),
-            Caching::ttl(),
+            Caching::ttl($this->taggable),
         );
     }
 

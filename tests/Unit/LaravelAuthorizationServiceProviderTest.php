@@ -67,7 +67,7 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         self::assertSame('authorization.roles', config('authorization.middlewares.roles'));
         self::assertNull(config('authorization.cache.store'));
         self::assertSame('authorization', config('authorization.cache.prefix'));
-        self::assertSame(3600, config('authorization.cache.ttl'));
+        self::assertNull(config('authorization.cache.ttl'));
     }
 
     public function test_it_is_the_registered_package_provider(): void
