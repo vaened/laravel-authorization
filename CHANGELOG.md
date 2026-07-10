@@ -2,6 +2,24 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V4.0.0 - 2026-07-10
+
+### Changed
+- Rebuilt the package for Laravel 12 and PHP 8.4 around the current PHP Sentinel authorization model.
+- Replaced the previous package internals with Eloquent-backed role, permission, role-permission, subject-role, and subject-permission repositories.
+- Made application user models authorizable through the `Authorizable` contract and `Authorizations` trait.
+- Reworked configuration, migrations, middleware aliases, default models, and service provider bindings for the new package architecture.
+
+### Added
+- Support for roles, direct permission grants, explicit permission denials, and inherited permissions from roles.
+- Laravel-native authorization caching with tag-aware invalidation and a bounded fallback for cache stores without tags.
+- `authorization:cache:invalidate` Artisan command for global authorization-cache invalidation.
+- Role and permission catalog management through PHP Sentinel registries.
+
+### Breaking
+- This is a complete rewrite and is not backward compatible with earlier releases.
+- Applications must migrate to the new database schema, configuration structure, authorizable model contract, and PHP Sentinel-based APIs.
+
 ## V2.0.0 - 2022-07-11
 ### Added
 - Support for Laravel 9
