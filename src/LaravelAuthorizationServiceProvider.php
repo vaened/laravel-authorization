@@ -12,7 +12,11 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization;
 
+use Illuminate\Contracts\Cache\Factory;
+use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\ServiceProvider;
+use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
+use Vaened\Authorization\Configuration\Caching;
 use Vaened\Authorization\Configuration\Middlewares;
 use Vaened\Authorization\Middlewares\AuthorizePermissions;
 use Vaened\Authorization\Middlewares\AuthorizeRoles;
@@ -24,6 +28,8 @@ use Vaened\Authorization\Persistence\Database\EloquentSubjectRoleRepository;
 use Vaened\Sentinel\Authorization\Authorizer;
 use Vaened\Sentinel\Authorization\PermissionEntryProvider;
 use Vaened\Sentinel\Authorization\RoleEntryProvider;
+use Vaened\Sentinel\Cache\AuthorizationCacheStore;
+use Vaened\Sentinel\Cache\SentinelCacheFactory;
 use Vaened\Sentinel\Operators\Denier;
 use Vaened\Sentinel\Operators\Granter;
 use Vaened\Sentinel\Operators\Revoker;
@@ -41,11 +47,15 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/authorization.php', 'authorization');
 
-        $this->app->singleton(RoleRepository::class, EloquentRoleRepository::class);
-        $this->app->singleton(PermissionRepository::class, EloquentPermissionRepository::class);
-        $this->app->singleton(RolePermissionRepository::class, EloquentRolePermissionRepository::class);
-        $this->app->singleton(SubjectRoleRepository::class, EloquentSubjectRoleRepository::class);
-        $this->app->singleton(SubjectPermissionRepository::class, EloquentSubjectPermissionRepository::class);
+        $this->app->singleton(EloquentRoleRepository::class);
+        $this->app->singleton(EloquentPermissionRepository::class);
+        $this->app->singleton(EloquentRolePermissionRepository::class);
+        $this->app->singleton(EloquentSubjectRoleRepository::class);
+        $this->app->singleton(EloquentSubjectPermissionRepository::class);
+
+        $this->app->singleton(AuthorizationCacheStore::class,
+            fn() => new LaravelAuthorizationCacheStore($this->resolveLaravelCacheStore()),
+        );
 
         $this->app->singleton(PermissionEntryProvider::class);
         $this->app->singleton(RoleEntryProvider::class);
@@ -61,6 +71,8 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->bindCachedRepositories();
+
         $this->app['router']->aliasMiddleware(Middlewares::permissions(), AuthorizePermissions::class);
         $this->app['router']->aliasMiddleware(Middlewares::roles(), AuthorizeRoles::class);
 
@@ -71,5 +83,34 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
         $this->publishesMigrations([
             __DIR__ . '/../database/migrations' => database_path('migrations'),
         ], 'laravel-authorization-migrations');
+    }
+
+    protected function resolveLaravelCacheStore(): Repository
+    {
+        $factory = $this->app->make(Factory::class);
+        $store   = Caching::store();
+
+        return null === $store
+            ? $factory->store()
+            : $factory->store($store);
+    }
+
+    protected function bindCachedRepositories(): void
+    {
+        $cached = SentinelCacheFactory::as(
+            $this->app->make(AuthorizationCacheStore::class),
+        )->build(
+            $this->app->make(EloquentRoleRepository::class),
+            $this->app->make(EloquentPermissionRepository::class),
+            $this->app->make(EloquentRolePermissionRepository::class),
+            $this->app->make(EloquentSubjectRoleRepository::class),
+            $this->app->make(EloquentSubjectPermissionRepository::class),
+        );
+
+        $this->app->instance(RoleRepository::class, $cached->roleRepository());
+        $this->app->instance(PermissionRepository::class, $cached->permissionRepository());
+        $this->app->instance(RolePermissionRepository::class, $cached->rolePermissionRepository());
+        $this->app->instance(SubjectRoleRepository::class, $cached->subjectRoleRepository());
+        $this->app->instance(SubjectPermissionRepository::class, $cached->subjectPermissionRepository());
     }
 }

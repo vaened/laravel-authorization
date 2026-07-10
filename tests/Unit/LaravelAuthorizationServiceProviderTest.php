@@ -13,15 +13,15 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Tests\Unit;
 
 use Vaened\Authorization\LaravelAuthorizationServiceProvider;
-use Vaened\Authorization\Persistence\Database\EloquentPermissionRepository;
-use Vaened\Authorization\Persistence\Database\EloquentRolePermissionRepository;
-use Vaened\Authorization\Persistence\Database\EloquentRoleRepository;
-use Vaened\Authorization\Persistence\Database\EloquentSubjectPermissionRepository;
-use Vaened\Authorization\Persistence\Database\EloquentSubjectRoleRepository;
 use Vaened\Authorization\Tests\TestCase;
 use Vaened\Sentinel\Authorization\Authorizer;
 use Vaened\Sentinel\Authorization\PermissionEntryProvider;
 use Vaened\Sentinel\Authorization\RoleEntryProvider;
+use Vaened\Sentinel\Cache\CachedPermissionRepository;
+use Vaened\Sentinel\Cache\CachedRolePermissionRepository;
+use Vaened\Sentinel\Cache\CachedRoleRepository;
+use Vaened\Sentinel\Cache\CachedSubjectPermissionRepository;
+use Vaened\Sentinel\Cache\CachedSubjectRoleRepository;
 use Vaened\Sentinel\Operators\Denier;
 use Vaened\Sentinel\Operators\Granter;
 use Vaened\Sentinel\Operators\Revoker;
@@ -37,11 +37,11 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
 {
     public function test_it_registers_the_expected_repositories(): void
     {
-        self::assertInstanceOf(EloquentRoleRepository::class, $this->app->make(RoleRepository::class));
-        self::assertInstanceOf(EloquentPermissionRepository::class, $this->app->make(PermissionRepository::class));
-        self::assertInstanceOf(EloquentRolePermissionRepository::class, $this->app->make(RolePermissionRepository::class));
-        self::assertInstanceOf(EloquentSubjectRoleRepository::class, $this->app->make(SubjectRoleRepository::class));
-        self::assertInstanceOf(EloquentSubjectPermissionRepository::class, $this->app->make(SubjectPermissionRepository::class));
+        self::assertInstanceOf(CachedRoleRepository::class, $this->app->make(RoleRepository::class));
+        self::assertInstanceOf(CachedPermissionRepository::class, $this->app->make(PermissionRepository::class));
+        self::assertInstanceOf(CachedRolePermissionRepository::class, $this->app->make(RolePermissionRepository::class));
+        self::assertInstanceOf(CachedSubjectRoleRepository::class, $this->app->make(SubjectRoleRepository::class));
+        self::assertInstanceOf(CachedSubjectPermissionRepository::class, $this->app->make(SubjectPermissionRepository::class));
     }
 
     public function test_it_registers_the_core_services(): void
@@ -65,6 +65,10 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         self::assertSame('subject_permissions', config('authorization.tables.subject_permissions'));
         self::assertSame('authorization.permissions', config('authorization.middlewares.permissions'));
         self::assertSame('authorization.roles', config('authorization.middlewares.roles'));
+        self::assertSame('database', config('authorization.driver'));
+        self::assertNull(config('authorization.cache.store'));
+        self::assertSame('authorization', config('authorization.cache.prefix'));
+        self::assertSame(3600, config('authorization.cache.ttl'));
     }
 
     public function test_it_is_the_registered_package_provider(): void
