@@ -16,6 +16,7 @@ use Illuminate\Contracts\Cache\Factory;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\ServiceProvider;
 use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
+use Vaened\Authorization\Console\InvalidateAuthorizationCache;
 use Vaened\Authorization\Configuration\Caching;
 use Vaened\Authorization\Configuration\Middlewares;
 use Vaened\Authorization\Middlewares\AuthorizePermissions;
@@ -72,6 +73,7 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->bindCachedRepositories();
+        $this->registerCommands();
 
         $this->app['router']->aliasMiddleware(Middlewares::permissions(), AuthorizePermissions::class);
         $this->app['router']->aliasMiddleware(Middlewares::roles(), AuthorizeRoles::class);
@@ -112,5 +114,16 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
         $this->app->instance(RolePermissionRepository::class, $cached->rolePermissionRepository());
         $this->app->instance(SubjectRoleRepository::class, $cached->subjectRoleRepository());
         $this->app->instance(SubjectPermissionRepository::class, $cached->subjectPermissionRepository());
+    }
+
+    protected function registerCommands(): void
+    {
+        if (!$this->app->runningInConsole()) {
+            return;
+        }
+
+        $this->commands([
+            InvalidateAuthorizationCache::class,
+        ]);
     }
 }

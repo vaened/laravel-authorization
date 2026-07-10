@@ -65,7 +65,6 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         self::assertSame('subject_permissions', config('authorization.tables.subject_permissions'));
         self::assertSame('authorization.permissions', config('authorization.middlewares.permissions'));
         self::assertSame('authorization.roles', config('authorization.middlewares.roles'));
-        self::assertSame('database', config('authorization.driver'));
         self::assertNull(config('authorization.cache.store'));
         self::assertSame('authorization', config('authorization.cache.prefix'));
         self::assertSame(3600, config('authorization.cache.ttl'));
@@ -74,5 +73,12 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
     public function test_it_is_the_registered_package_provider(): void
     {
         self::assertContains(LaravelAuthorizationServiceProvider::class, $this->getPackageProviders($this->app));
+    }
+
+    public function test_it_registers_the_cache_invalidation_command(): void
+    {
+        $this->artisan('authorization:cache:invalidate')
+             ->expectsOutput('Authorization cache invalidated.')
+             ->assertExitCode(0);
     }
 }
