@@ -13,17 +13,23 @@ declare(strict_types=1);
 return [
     /*
     |--------------------------------------------------------------------------
-    | Authorization Driver
+    | Authorization Cache
     |--------------------------------------------------------------------------
     |
-    | Here you may choose how the Laravel adapter resolves authorization
-    | reads. The "database" driver always reads directly from persistence,
-    | while the "cache" driver keeps authorization facts synchronized
-    | through the cache-aware repository implementations.
+    | Here you may configure the Laravel cache store used by the package.
+    | Provide the name of one of the stores configured in your application's
+    | "cache.stores" configuration to use it exclusively for authorization.
+    | When null, the package uses your application's default cache store.
     |
     */
 
-    'driver' => 'database',
+    'cache' => [
+        'store' => null,
+
+        'prefix' => 'authorization',
+
+        'ttl' => 3600,
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -63,25 +69,5 @@ return [
         'permissions' => 'authorization.permissions',
 
         'roles' => 'authorization.roles',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Authorization Cache
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure the cache store used by the package when the
-    | authorization driver is set to "cache". You may point it to a dedicated
-    | store so the package remains isolated from the application's default
-    | cache configuration.
-    |
-    */
-
-    'cache' => [
-        'store' => null,
-
-        'prefix' => 'authorization',
-
-        'ttl' => 3600,
     ],
 ];
