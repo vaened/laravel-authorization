@@ -23,4 +23,9 @@ abstract class DatabaseTestCase extends TestCase
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadMigrationsFrom(__DIR__ . '/Database/migrations');
     }
+
+    protected function defineDatabaseMigrationsAfterDatabaseRefreshed(): void
+    {
+        $this->loadLaravelMigrations();
+    }
 }
