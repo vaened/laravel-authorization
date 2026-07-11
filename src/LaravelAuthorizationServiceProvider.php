@@ -83,7 +83,8 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
         ], 'laravel-authorization-config');
 
         $this->publishesMigrations([
-            __DIR__ . '/../database/migrations' => database_path('migrations'),
+            __DIR__ . '/../database/migrations/create_laravel_authorization_tables.php'
+                => 'create_laravel_authorization_tables.php',
         ], 'laravel-authorization-migrations');
     }
 
