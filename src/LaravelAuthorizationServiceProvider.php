@@ -12,15 +12,15 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization;
 
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Factory;
 use Illuminate\Contracts\Cache\Repository;
-use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
-use Vaened\Authorization\Console\InvalidateAuthorizationCache;
 use Vaened\Authorization\Configuration\Caching;
 use Vaened\Authorization\Configuration\Middlewares;
+use Vaened\Authorization\Console\InvalidateAuthorizationCache;
 use Vaened\Authorization\Middlewares\AuthorizePermissions;
 use Vaened\Authorization\Middlewares\AuthorizeRoles;
 use Vaened\Authorization\Persistence\Database\EloquentPermissionRepository;
@@ -87,8 +87,7 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
         ], 'laravel-authorization-config');
 
         $this->publishesMigrations([
-            __DIR__ . '/../database/migrations/create_laravel_authorization_tables.php'
-                => 'create_laravel_authorization_tables.php',
+            __DIR__ . '/../database/migrations' => database_path('migrations'),
         ], 'laravel-authorization-migrations');
     }
 
@@ -127,11 +126,11 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
             'before' => $this->app->make(Gate::class)->before(
                 fn(mixed $user, string $ability): bool|null => $this->authorizeSubject($user, $ability),
             ),
-            'after' => $this->app->make(Gate::class)->after(
-                fn(mixed $user, string $ability, bool|null $result): bool|null =>
-                    null === $result ? $this->authorizeSubject($user, $ability) : null,
+            'after'  => $this->app->make(Gate::class)->after(
+                fn(mixed $user, string $ability, bool|null $result): bool|null => null === $result ? $this->authorizeSubject($user,
+                    $ability) : null,
             ),
-            default => null,
+            default  => null,
         };
     }
 

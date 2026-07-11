@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Tests\Unit;
 
+use Illuminate\Support\ServiceProvider;
 use Vaened\Authorization\LaravelAuthorizationServiceProvider;
 use Vaened\Authorization\Tests\TestCase;
 use Vaened\Sentinel\Authorization\Authorizer;
@@ -81,5 +82,28 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         $this->artisan('authorization:cache:invalidate')
              ->expectsOutput('Authorization cache invalidated.')
              ->assertExitCode(0);
+    }
+
+    public function test_it_publishes_migrations_to_laravels_migrations_directory(): void
+    {
+        $paths = ServiceProvider::pathsToPublish(
+            LaravelAuthorizationServiceProvider::class,
+            'laravel-authorization-migrations',
+        );
+
+        self::assertCount(1, $paths);
+        self::assertSame(database_path('migrations'), array_values($paths)[0]);
+        self::assertSame(
+            realpath(__DIR__ . '/../../database/migrations'),
+            realpath((string)array_key_first($paths)),
+        );
+
+        $migrationFiles = glob(__DIR__ . '/../../database/migrations/*.php');
+
+        self::assertCount(1, $migrationFiles);
+        self::assertMatchesRegularExpression(
+            '/^\d{4}_\d{2}_\d{2}_\d{6}_create_laravel_authorization_tables\.php$/',
+            basename($migrationFiles[0]),
+        );
     }
 }
