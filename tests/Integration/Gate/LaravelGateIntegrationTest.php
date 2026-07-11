@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Tests\Integration\Gate;
 
 use Illuminate\Contracts\Auth\Access\Gate;
+use Vaened\Authorization\Facades\Granter;
 use Vaened\Authorization\LaravelAuthorizationServiceProvider;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
@@ -75,6 +76,35 @@ final class LaravelGateIntegrationTest extends DatabaseTestCase
         $gate->define('documents.read', static fn(): bool => true);
 
         self::assertTrue($gate->forUser($subject)->check('documents.read'));
+    }
+
+    public function test_it_supports_laravel_gate_authorization_methods(): void
+    {
+        $this->registerGateIntegration('after');
+
+        $subject = $this->subject();
+        $read    = $this->permission('documents.read', 'Read Documents');
+        $edit    = $this->permission('documents.edit', 'Edit Documents');
+        $gate    = $this->app->make(Gate::class)->forUser($subject);
+
+        self::assertFalse($gate->allows('documents.read'));
+        self::assertFalse($gate->allows(['documents.read', 'documents.edit']));
+        self::assertFalse($gate->check(['documents.read', 'documents.edit']));
+        self::assertFalse($gate->any(['documents.read', 'documents.edit']));
+        self::assertTrue($gate->none(['documents.read', 'documents.edit']));
+
+        Granter::grant($subject, $read);
+
+        self::assertTrue($gate->allows('documents.read'));
+        self::assertFalse($gate->allows(['documents.read', 'documents.edit']));
+        self::assertFalse($gate->check(['documents.read', 'documents.edit']));
+        self::assertTrue($gate->any(['documents.read', 'documents.edit']));
+        self::assertFalse($gate->none(['documents.read', 'documents.edit']));
+
+        Granter::grant($subject, $edit);
+
+        self::assertTrue($gate->allows(['documents.read', 'documents.edit']));
+        self::assertTrue($gate->check(['documents.read', 'documents.edit']));
     }
 
     protected function registerGateIntegration(string $strategy): void
