@@ -14,6 +14,8 @@ namespace Vaened\Authorization;
 
 use Illuminate\Contracts\Cache\Factory;
 use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
 use Vaened\Authorization\Console\InvalidateAuthorizationCache;
@@ -41,6 +43,7 @@ use Vaened\Sentinel\Repositories\RolePermissionRepository;
 use Vaened\Sentinel\Repositories\RoleRepository;
 use Vaened\Sentinel\Repositories\SubjectPermissionRepository;
 use Vaened\Sentinel\Repositories\SubjectRoleRepository;
+use Vaened\Sentinel\Subject;
 
 final class LaravelAuthorizationServiceProvider extends ServiceProvider
 {
@@ -73,6 +76,7 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->bindCachedRepositories();
+        $this->registerGateIntegration();
         $this->registerCommands();
 
         $this->app['router']->aliasMiddleware(Middlewares::permissions(), AuthorizePermissions::class);
@@ -115,6 +119,29 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
         $this->app->instance(RolePermissionRepository::class, $cached->rolePermissionRepository());
         $this->app->instance(SubjectRoleRepository::class, $cached->subjectRoleRepository());
         $this->app->instance(SubjectPermissionRepository::class, $cached->subjectPermissionRepository());
+    }
+
+    protected function registerGateIntegration(): void
+    {
+        match (config('authorization.gate')) {
+            'before' => $this->app->make(Gate::class)->before(
+                fn(mixed $user, string $ability): bool|null => $this->authorizeSubject($user, $ability),
+            ),
+            'after' => $this->app->make(Gate::class)->after(
+                fn(mixed $user, string $ability, bool|null $result): bool|null =>
+                    null === $result ? $this->authorizeSubject($user, $ability) : null,
+            ),
+            default => null,
+        };
+    }
+
+    protected function authorizeSubject(mixed $user, string $ability): bool|null
+    {
+        if (!$user instanceof Model || !$user instanceof Subject) {
+            return null;
+        }
+
+        return $this->app->make(Authorizer::class)->can($user, [$ability]);
     }
 
     protected function registerCommands(): void

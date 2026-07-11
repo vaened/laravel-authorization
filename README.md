@@ -144,6 +144,32 @@ If authorization fails, the middleware throws Laravel’s `AuthorizationExceptio
 You can rename these aliases by publishing and editing the `middlewares` array in
 [`config/authorization.php`](config/authorization.php).
 
+## Laravel Gate
+
+Laravel Authorization can connect PHP Sentinel to Laravel's authorization Gate.
+This lets a compatible subject participate in Laravel's standard authorization
+features, including `Gate::allows`, the `can` route middleware, and Blade's
+`@can` directive.
+
+Configure the `gate` option in
+[`config/authorization.php`](config/authorization.php):
+
+```php
+'gate' => null, // null, 'before', or 'after'
+```
+
+By default, no integration is registered. Choose one of these strategies when
+your application needs Sentinel to answer Laravel Gate checks:
+
+| Strategy | Behavior                                                                                                     | Use it when                                                                   |
+|----------|--------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| `before` | Sentinel evaluates the ability before Laravel's own Gates and Policies. Its result always decides the check. | Sentinel is the authoritative authorization system for the application.       |
+| `after`  | Laravel evaluates its own Gates and Policies first. Sentinel evaluates only when Laravel has no result.      | Sentinel should act as a fallback for abilities that Laravel does not handle. |
+
+Sentinel always resolves an ability to `true` or `false`: a subject either has the permission or it does not. It does not return
+Laravel's undecided `null` result. Consequently, `before` also denies abilities that Sentinel does not grant, while `after` preserves
+any explicit allow or denial already returned by Laravel.
+
 ## Cache
 
 Laravel Authorization caches each subject's authorization projection: its roles

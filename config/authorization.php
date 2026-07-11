@@ -13,6 +13,26 @@ declare(strict_types=1);
 return [
     /*
     |--------------------------------------------------------------------------
+    | Laravel Gate Integration
+    |--------------------------------------------------------------------------
+    |
+    | Configure how PHP Sentinel participates in Laravel's authorization Gate.
+    | Set this to "before" when Sentinel should decide before Laravel's own
+    | Gates and Policies. Set it to "after" when Sentinel should only decide
+    | after Laravel cannot determine the result. When null, no Gate integration
+    | is registered.
+    |
+    | Sentinel always returns an allow or denial. With "before", a Sentinel
+    | denial prevents Laravel from evaluating its own authorization rules. With
+    | "after", an existing Laravel decision takes precedence and Sentinel acts
+    | as a fallback.
+    |
+    */
+
+    'gate' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Authorization Cache
     |--------------------------------------------------------------------------
     |

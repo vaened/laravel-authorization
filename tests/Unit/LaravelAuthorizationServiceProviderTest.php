@@ -65,6 +65,7 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         self::assertSame('subject_permissions', config('authorization.tables.subject_permissions'));
         self::assertSame('authorization.permissions', config('authorization.middlewares.permissions'));
         self::assertSame('authorization.roles', config('authorization.middlewares.roles'));
+        self::assertNull(config('authorization.gate'));
         self::assertNull(config('authorization.cache.store'));
         self::assertSame('authorization', config('authorization.cache.prefix'));
         self::assertNull(config('authorization.cache.ttl'));
