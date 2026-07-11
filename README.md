@@ -50,9 +50,11 @@ php artisan migrate
 
 ## Configuration
 
-Laravel Authorization only needs one application-level integration step to work: your user model must become authorizable.
+By default, your user model uses the package's direct authorization API through the `Authorizable` interface and `Authorizations` trait, and
+Sentinel integrates
+with Laravel's Gate using the `after` strategy. See [Advanced usage](#advanced-usage) when you prefer Laravel's native API.
 
-### Making your user model authorizable
+### Using the direct model API
 
 Laravel Authorization does not require you to extend a package-specific user model.
 
@@ -124,7 +126,21 @@ $permission = $this->permissions->find('documents.read');
 
 ## Middleware
 
-Laravel Authorization registers two route middleware aliases that protect routes through permission or role checks.
+When Gate integration is enabled (the default), you can use Laravel's native
+`can` middleware for permission checks:
+
+```php
+Route::middleware('can:posts.edit')->group(function () {
+    // ...
+});
+```
+
+Laravel's `can` middleware uses the Gate integration described in
+[Laravel Gate](#laravel-gate). It is available as long as
+`authorization.gate` is not `null`.
+
+Laravel Authorization also registers two package middleware aliases. They are useful when you want to invoke Sentinel directly,
+including when Gate integration is disabled, and when you need to check roles.
 
 - `authorization.permissions` allows the request only if the current authenticated user can perform at least one of the given permissions.
 - `authorization.roles` allows the request only if the current authenticated user acts as at least one of the given roles.
@@ -155,16 +171,17 @@ Configure the `gate` option in
 [`config/authorization.php`](config/authorization.php):
 
 ```php
-'gate' => null, // null, 'before', or 'after'
+'gate' => 'after', // 'after', 'before', or null
 ```
 
-By default, no integration is registered. Choose one of these strategies when
-your application needs Sentinel to answer Laravel Gate checks:
+The default is `after`. Choose another strategy only when your application
+needs different precedence:
 
-| Strategy | Behavior                                                                                                     | Use it when                                                                   |
-|----------|--------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| `before` | Sentinel evaluates the ability before Laravel's own Gates and Policies. Its result always decides the check. | Sentinel is the authoritative authorization system for the application.       |
-| `after`  | Laravel evaluates its own Gates and Policies first. Sentinel evaluates only when Laravel has no result.      | Sentinel should act as a fallback for abilities that Laravel does not handle. |
+| Strategy | Behavior                                                                                                     | Use it when                                                             |
+|----------|--------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| `before` | Sentinel evaluates the ability before Laravel's own Gates and Policies. Its result always decides the check. | Sentinel is the authoritative authorization system for the application. |
+| `after`  | Laravel evaluates its own Gates and Policies first. Sentinel evaluates only when Laravel has no result.      | Recommended default; Sentinel acts as a fallback.                       |
+| `null`   | No Sentinel callback is registered in Laravel's Gate.                                                        | The application should use Sentinel directly or manage Gate itself.     |
 
 Sentinel always resolves an ability to `true` or `false`: a subject either has the permission or it does not. It does not return
 Laravel's undecided `null` result. Consequently, `before` also denies abilities that Sentinel does not grant, while `after` preserves
@@ -228,9 +245,67 @@ This package provides the Laravel-side infrastructure for [PHP Sentinel](https:/
 - middleware integration
 - service provider wiring
 
-It also includes default models for roles and permissions. Your application user
-model is the authorization subject: implement the `Authorizable` contract and
-use the `Authorizations` trait.
+It also includes default models for roles and permissions. When using the
+direct model API, your application user is the authorization subject: implement
+the `Authorizable` contract and use the `Authorizations` trait.
+
+## Advanced usage
+
+The default setup is documented in [Using the direct model API](#using-the-direct-model-api)
+and [Laravel Gate](#laravel-gate). This section only covers the alternative
+integration where the model uses Laravel's native authorization API.
+
+### Using Laravel's native authorization API
+
+Use this mode when the application should use Laravel's own authorization API and does not need the package's direct model methods. Do
+not use the package's `Authorizable` interface or `Authorizations` trait. The model must implement Sentinel's `Subject` contract:
+
+```php
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Vaened\Sentinel\Identifier;
+use Vaened\Sentinel\Subject;
+
+class User extends Authenticatable implements Subject
+{
+    public function id(): int|string|Identifier
+    {
+        return $this->getKey();
+    }
+}
+```
+
+`Illuminate\\Foundation\\Auth\\User` already includes Laravel's native
+`Authorizable` trait. If your model extends Eloquent's base `Model` directly,
+use [
+`Illuminate\\Foundation\\Auth\\Access\\Authorizable`](https://github.com/laravel/framework/blob/13.x/src/Illuminate/Foundation/Auth/Access/Authorizable.php)
+on the model instead.
+
+Use Laravel's own authorization implementation on the model. Keep
+`gate => 'after'` to let Sentinel serve as a fallback, use `before` only when
+Sentinel must take precedence, or use `null` when Laravel must operate without
+Sentinel Gate integration. See [Laravel Gate](#laravel-gate) for the exact
+precedence rules.
+
+Without the package trait, manage assignments through the package facades:
+
+```php
+use Vaened\Authorization\Facades\Denier;
+use Vaened\Authorization\Facades\Granter;
+use Vaened\Authorization\Facades\Revoker;
+
+Granter::grant($user, $role);
+Denier::deny($user, $permission);
+Revoker::revoke($user, $permission);
+```
+
+> **Custom trait:** If you want to expose these operations as methods on your
+> model, create a custom trait based on
+> [`Authorizations`](src/Authorizations.php) and keep only the methods you
+> need, such as `grant`, `deny`, and `revoke`. Omit `can` because Laravel
+> provides that authorization API in this mode.
+
+Do not combine the package's `Authorizations` trait with Laravel's `Authorizable` trait. Both define `can` and `cannot` with different
+contracts.
 
 ## Errors
 
