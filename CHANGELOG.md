@@ -2,6 +2,15 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V4.1.1 - 2026-07-11
+
+### Fixed
+
+- Corrected migration publishing so the migration is copied to Laravel's
+  `database/migrations` directory instead of the application root.
+- Added the timestamp prefix required for Laravel to refresh the migration
+  timestamp when publishing the package migration.
+
 ## V4.1.0 - 2026-07-11
 
 ### Added
