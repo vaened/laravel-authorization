@@ -10,17 +10,19 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Vaened\Authorization\Models;
+namespace Vaened\Authorization\Tests\Runtime;
 
 use Illuminate\Database\Eloquent\Model;
 use Vaened\Authorization\Authorizable;
 use Vaened\Authorization\Authorizations;
 
-class Subject extends Model implements Authorizable
+final class AuthorizableModel extends Model implements Authorizable
 {
     use Authorizations;
 
     public    $timestamps = false;
+
+    protected $table      = 'subjects';
 
     protected $guarded    = [];
 }

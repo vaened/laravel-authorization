@@ -228,8 +228,9 @@ This package provides the Laravel-side infrastructure for [PHP Sentinel](https:/
 - middleware integration
 - service provider wiring
 
-It also includes default models for roles and permissions, plus a convenience `Subject` model.  
-However, the intended integration point for your application user model is the `Authorizable` contract and `Authorizations` trait.
+It also includes default models for roles and permissions. Your application user
+model is the authorization subject: implement the `Authorizable` contract and
+use the `Authorizations` trait.
 
 ## Errors
 

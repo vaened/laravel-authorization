@@ -16,7 +16,7 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Vaened\Authorization\LaravelAuthorizationServiceProvider;
 use Vaened\Authorization\Models\Permission;
 use Vaened\Authorization\Models\Role;
-use Vaened\Authorization\Models\Subject;
+use Vaened\Authorization\Tests\Runtime\AuthorizableModel;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -36,9 +36,9 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('authorization.middlewares.roles', 'authorization.roles');
     }
 
-    protected function subject(array $attributes = []): Subject
+    protected function subject(array $attributes = []): AuthorizableModel
     {
-        return Subject::query()->create($attributes);
+        return AuthorizableModel::query()->create($attributes);
     }
 
     protected function role(
