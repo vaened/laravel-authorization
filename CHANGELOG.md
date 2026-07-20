@@ -2,6 +2,19 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V4.3.0 - 2026-07-20
+
+### Added
+
+- Added independent control over permission and role synchronization. Set a
+  section to `false` or `null` to manage it externally, such as through an
+  administration panel.
+
+### Changed
+
+- Updated `authorization:sync --prune` to skip disabled sections, preventing
+  externally managed roles or permissions from being removed.
+
 ## V4.2.0 - 2026-07-20
 
 ### Added
