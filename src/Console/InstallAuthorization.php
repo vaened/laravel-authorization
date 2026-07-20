@@ -57,19 +57,19 @@ final class InstallAuthorization extends Command
         return [
             'config'      => [
                 'name'        => 'Package configuration',
-                'description' => 'Runtime settings for tables, cache, middleware, and Laravel Gate integration.',
+                'description' => 'Package settings for tables, cache, middleware, and Gate.',
                 'tag'         => 'laravel-authorization-config',
                 'exists'      => is_file(config_path('authorization.php')),
             ],
             'definitions' => [
                 'name'        => 'Authorization definitions',
-                'description' => 'Application roles and permissions used by authorization:sync.',
+                'description' => 'Roles and permissions used by authorization:sync.',
                 'tag'         => 'laravel-authorization-definitions',
                 'exists'      => is_file(config_path(Synchronization::filename() . '.php')),
             ],
             'migrations'  => [
                 'name'        => 'Database migrations',
-                'description' => 'Tables required to store roles, permissions, and their assignments.',
+                'description' => 'Database tables for roles, permissions, and assignments.',
                 'tag'         => 'laravel-authorization-migrations',
                 'exists'      => $this->hasAuthorizationMigration(),
             ],
