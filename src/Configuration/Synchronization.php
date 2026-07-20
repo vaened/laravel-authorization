@@ -16,7 +16,7 @@ use function trim;
 
 final class Synchronization
 {
-    public static function config(): string
+    public static function filename(): string
     {
         $key = config('authorization.synchronization.config', 'authorizations');
 
@@ -26,6 +26,12 @@ final class Synchronization
             );
         }
 
+        return $key;
+    }
+
+    public static function config(): string
+    {
+        $key           = self::filename();
         $configuration = config($key);
 
         if ($configuration === null) {

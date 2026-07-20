@@ -35,10 +35,25 @@ Laravel Authorization requires PHP 8.4 or higher and can be installed via Compos
 composer require vaened/laravel-authorization
 ```
 
-Publish the package resources:
+Publish the package resources with the installer:
+
+```bash
+php artisan authorization:install
+```
+
+The installer can publish three resources:
+
+- **Package configuration** — runtime settings for tables, cache, middleware, and Laravel Gate integration.
+- **Authorization definitions** — the application's roles and permissions used by `authorization:sync`.
+- **Database migrations** — the tables required to store roles, permissions, and their assignments.
+
+Existing configuration files and migrations are skipped and never overwritten.
+
+You can also publish each resource independently with its `vendor:publish` tag:
 
 ```bash
 php artisan vendor:publish --tag=laravel-authorization-config
+php artisan vendor:publish --tag=laravel-authorization-definitions
 php artisan vendor:publish --tag=laravel-authorization-migrations
 ```
 
@@ -224,6 +239,34 @@ You can rename any of these tables by publishing and editing the `tables` array 
 [`config/authorization.php`](config/authorization.php). Each key corresponds to a table above.
 
 ## Commands
+
+### `authorization:install`
+
+Publishes the package configuration, authorization definitions, and database migrations.
+It lets you select the resources interactively and skips any resource that already
+exists. Use the arrow keys to navigate, space to select, and Enter to confirm.
+
+```bash
+php artisan authorization:install
+```
+
+### `authorization:sync`
+
+The package can synchronize application roles and permissions from
+`config/authorizations.php`:
+
+```bash
+php artisan authorization:sync
+```
+
+The file can be renamed by changing `authorization.synchronization.config` in
+`config/authorization.php`; use the configuration key without the `.php`
+extension.
+
+The command creates and updates configured permissions and roles, and
+reconciles the permissions assigned to each configured role. Use `--prune` to
+remove roles and permissions that are no longer present in the configuration.
+Pruning is disabled by default and never removes entries that are still in use.
 
 ### `authorization:cache:invalidate`
 

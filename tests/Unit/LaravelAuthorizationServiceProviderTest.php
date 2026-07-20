@@ -85,6 +85,13 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
              ->assertExitCode(0);
     }
 
+    public function test_it_registers_the_installation_command(): void
+    {
+        $this->artisan('list')
+             ->expectsOutputToContain('authorization:install')
+             ->assertSuccessful();
+    }
+
     public function test_it_publishes_migrations_to_laravels_migrations_directory(): void
     {
         $paths = ServiceProvider::pathsToPublish(

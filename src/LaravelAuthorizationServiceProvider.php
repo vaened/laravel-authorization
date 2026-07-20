@@ -20,6 +20,8 @@ use Illuminate\Support\ServiceProvider;
 use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
 use Vaened\Authorization\Configuration\Caching;
 use Vaened\Authorization\Configuration\Middlewares;
+use Vaened\Authorization\Configuration\Synchronization;
+use Vaened\Authorization\Console\InstallAuthorization;
 use Vaened\Authorization\Console\InvalidateAuthorizationCache;
 use Vaened\Authorization\Console\SyncAuthorizations;
 use Vaened\Authorization\Middlewares\AuthorizePermissions;
@@ -88,8 +90,8 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
         ], 'laravel-authorization-config');
 
         $this->publishes([
-            __DIR__ . '/../config/authorizations.php' => config_path('authorizations.php'),
-        ], 'laravel-authorization-authorizations');
+            __DIR__ . '/../config/authorizations.php' => config_path(Synchronization::filename() . '.php'),
+        ], 'laravel-authorization-definitions');
 
         $this->publishesMigrations([
             __DIR__ . '/../database/migrations' => database_path('migrations'),
@@ -155,6 +157,7 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
         }
 
         $this->commands([
+            InstallAuthorization::class,
             InvalidateAuthorizationCache::class,
             SyncAuthorizations::class,
         ]);
