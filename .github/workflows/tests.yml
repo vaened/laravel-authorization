@@ -6,8 +6,15 @@ on:
 
 jobs:
   tests:
-    name: PHP 8.4 / Laravel 12
+    name: PHP 8.4 / Laravel ${{ matrix.laravel }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - laravel: 12
+            testbench: "^10.5"
+          - laravel: 13
+            testbench: "^11.0"
 
     steps:
       - name: Checkout code
@@ -21,7 +28,14 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer update --no-interaction --no-progress --prefer-dist
+        run: >-
+          composer update
+          --with "laravel/framework:^${{ matrix.laravel }}.0"
+          --with "orchestra/testbench:${{ matrix.testbench }}"
+          --with-all-dependencies
+          --no-interaction
+          --no-progress
+          --prefer-dist
 
       - name: Run tests
         run: vendor/bin/phpunit

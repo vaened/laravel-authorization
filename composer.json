@@ -19,13 +19,13 @@
   ],
   "require": {
     "php": "^8.4",
-    "laravel/framework": "^12.0",
+    "laravel/framework": "^12.0 || ^13.0",
     "psr/log": "^3.0",
     "vaened/php-sentinel": "^0.7.0",
     "psr/simple-cache": "^3.0"
   },
   "require-dev": {
-    "orchestra/testbench": "^10.5",
+    "orchestra/testbench": "^10.5 || ^11.0",
     "phpunit/phpunit": "^11.5"
   },
   "autoload": {
