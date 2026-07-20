@@ -2,6 +2,17 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V4.2.0 - 2026-07-20
+
+### Added
+
+- Added Laravel 13 support while retaining compatibility with Laravel 12.
+- Added the authorization definitions file and `authorization:sync` command for
+  declaratively creating, updating, and reconciling application roles and
+  permissions, with optional pruning of unused entries.
+- Added the interactive `authorization:install` command for publishing the
+  package configuration, authorization definitions, and database migrations.
+
 ## V4.1.1 - 2026-07-11
 
 ### Fixed
