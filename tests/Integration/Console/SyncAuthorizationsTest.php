@@ -120,6 +120,49 @@ final class SyncAuthorizationsTest extends DatabaseTestCase
         self::assertDatabaseCount('roles', 0);
     }
 
+    public function test_it_does_not_sync_or_prune_disabled_roles(): void
+    {
+        DB::table(Tables::roles())->insert([
+            'code' => 'dynamic.role',
+            'name' => 'Dynamic role',
+        ]);
+
+        $this->setAuthorizationsConfig([
+            'permissions' => [],
+            'roles'       => false,
+        ]);
+
+        $this->artisan('authorization:sync', ['--prune' => true])
+             ->assertSuccessful();
+
+        self::assertDatabaseHas('roles', [
+            'code' => 'dynamic.role',
+        ]);
+    }
+
+    public function test_it_treats_null_sections_as_disabled(): void
+    {
+        DB::table(Tables::permissions())->insert([
+            'code' => 'dynamic.permission',
+            'name' => 'Dynamic permission',
+        ]);
+        DB::table(Tables::roles())->insert([
+            'code' => 'dynamic.role',
+            'name' => 'Dynamic role',
+        ]);
+
+        $this->setAuthorizationsConfig([
+            'permissions' => null,
+            'roles'       => null,
+        ]);
+
+        $this->artisan('authorization:sync', ['--prune' => true])
+             ->assertSuccessful();
+
+        self::assertDatabaseHas('permissions', ['code' => 'dynamic.permission']);
+        self::assertDatabaseHas('roles', ['code' => 'dynamic.role']);
+    }
+
     public function test_it_warns_when_pruning_entries_that_are_in_use(): void
     {
         $subject    = $this->subject();
@@ -221,7 +264,7 @@ final class SyncAuthorizationsTest extends DatabaseTestCase
     }
 
     /**
-     * @param array{permissions?: array<string, mixed>, roles?: array<string, mixed>} $config
+     * @param array{permissions?: array<string, mixed>|null|false, roles?: array<string, mixed>|null|false} $config
      */
     private function setAuthorizationsConfig(array $config): void
     {

@@ -306,6 +306,21 @@ return [
 ];
 ```
 
+Each section can be disabled independently with `false` (or `null`):
+
+```php
+return [
+    'permissions' => [
+        // Application permissions...
+    ],
+    'roles' => false,
+];
+```
+
+In this example, permissions are synchronized while roles remain managed externally, such as through an administration panel. A section
+set to `false`, `null`, or omitted is not synchronized and is never pruned. An empty array is different: it enables synchronization and
+declares that no entries are expected for that section.
+
 Run the [`authorization:sync`](#authorizationsync) command after changing the file. It creates missing entries, updates their metadata, and
 reconciles the permissions assigned to each role.
 
@@ -315,8 +330,7 @@ Use the optional `--prune` flag to remove roles and permissions that are no long
 php artisan authorization:sync --prune
 ```
 
-Pruning is disabled by default and does not remove entries that are still in
-use.
+> Pruning is disabled by default and does not remove entries that are still in use.
 
 ## Default models and repositories
 

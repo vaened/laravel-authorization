@@ -51,10 +51,10 @@ final class SyncAuthorizations extends Command
         RolePermissionRepository $rolePermissions,
     ): int
     {
-        /** @var array<string, array{name?: string, description?: string|null}> $permissionsConfig */
+        /** @var array<string, array{name?: string, description?: string|null}>|false $permissionsConfig */
         $permissionsConfig = Synchronization::permissions();
 
-        /** @var array<string, array{name?: string, description?: string|null, permissions?: list<string>}> $rolesConfig */
+        /** @var array<string, array{name?: string, description?: string|null, permissions?: list<string>}>|false $rolesConfig */
         $rolesConfig = Synchronization::roles();
 
         $this->validateRolePermissions($permissionsConfig, $rolesConfig);
@@ -66,8 +66,13 @@ final class SyncAuthorizations extends Command
             $permissionsConfig,
             $rolesConfig,
         ): void {
-            $this->syncPermissions($permissionRegistry, $permissionsConfig);
-            $this->syncRoles($permissionRegistry, $roleRegistry, $rolePermissions, $rolesConfig);
+            if ($permissionsConfig !== false) {
+                $this->syncPermissions($permissionRegistry, $permissionsConfig);
+            }
+
+            if ($rolesConfig !== false) {
+                $this->syncRoles($permissionRegistry, $roleRegistry, $rolePermissions, $rolesConfig);
+            }
 
             if ($this->option('prune')) {
                 $this->prune($permissionRegistry, $roleRegistry, $permissionsConfig, $rolesConfig);
@@ -80,11 +85,21 @@ final class SyncAuthorizations extends Command
     }
 
     /**
-     * @param array<string, array{name?: string, description?: string|null}> $permissionsConfig
-     * @param array<string, array{name?: string, description?: string|null, permissions?: list<string>}> $rolesConfig
+     * @param array<string, array{name?: string, description?: string|null}>|false $permissionsConfig
+     * @param array<string, array{name?: string, description?: string|null, permissions?: list<string>}>|false $rolesConfig
      */
-    private function validateRolePermissions(array $permissionsConfig, array $rolesConfig): void
+    private function validateRolePermissions(array|false $permissionsConfig, array|false $rolesConfig): void
     {
+        if ($rolesConfig === false || $rolesConfig === []) {
+            return;
+        }
+
+        if ($permissionsConfig === false) {
+            throw new InvalidArgumentException(
+                'Role synchronization requires permission definitions to be enabled.',
+            );
+        }
+
         $permissionCodes = array_keys($permissionsConfig);
 
         foreach ($rolesConfig as $roleCode => $roleConfig) {
@@ -195,48 +210,53 @@ final class SyncAuthorizations extends Command
     }
 
     /**
-     * @param array<string, array{name?: string, description?: string|null}> $permissionsConfig
-     * @param array<string, array{name?: string, description?: string|null, permissions?: list<string>}> $rolesConfig
+     * @param array<string, array{name?: string, description?: string|null}>|false $permissionsConfig
+     * @param array<string, array{name?: string, description?: string|null, permissions?: list<string>}>|false $rolesConfig
      */
     private function prune(
         PermissionRegistry $permissionRegistry,
         RoleRegistry       $roleRegistry,
-        array              $permissionsConfig,
-        array              $rolesConfig,
+        array|false        $permissionsConfig,
+        array|false        $rolesConfig,
     ): void
     {
-        $expectedRoleCodes       = array_keys($rolesConfig);
-        $expectedPermissionCodes = array_keys($permissionsConfig);
+        if ($rolesConfig !== false) {
+            $expectedRoleCodes = array_keys($rolesConfig);
 
-        foreach ($this->orphanCodes(Tables::roles(), $expectedRoleCodes) as $code) {
-            $role = $roleRegistry->find($code);
+            foreach ($this->orphanCodes(Tables::roles(), $expectedRoleCodes) as $code) {
+                $role = $roleRegistry->find($code);
 
-            if ($role === null) {
-                continue;
-            }
+                if ($role === null) {
+                    continue;
+                }
 
-            try {
-                $roleRegistry->remove($role->id());
-                $this->stats['roles_pruned']++;
-                $this->components->twoColumnDetail("role $code", '<fg=red>pruned</>');
-            } catch (RoleInUse) {
-                $this->warn("Role [$code] is in use; skipped.");
+                try {
+                    $roleRegistry->remove($role->id());
+                    $this->stats['roles_pruned']++;
+                    $this->components->twoColumnDetail("role $code", '<fg=red>pruned</>');
+                } catch (RoleInUse) {
+                    $this->warn("Role [$code] is in use; skipped.");
+                }
             }
         }
 
-        foreach ($this->orphanCodes(Tables::permissions(), $expectedPermissionCodes) as $code) {
-            $permission = $permissionRegistry->find($code);
+        if ($permissionsConfig !== false) {
+            $expectedPermissionCodes = array_keys($permissionsConfig);
 
-            if ($permission === null) {
-                continue;
-            }
+            foreach ($this->orphanCodes(Tables::permissions(), $expectedPermissionCodes) as $code) {
+                $permission = $permissionRegistry->find($code);
 
-            try {
-                $permissionRegistry->remove($permission->id());
-                $this->stats['permissions_pruned']++;
-                $this->components->twoColumnDetail("permission $code", '<fg=red>pruned</>');
-            } catch (PermissionInUse) {
-                $this->warn("Permission [$code] is in use; skipped.");
+                if ($permission === null) {
+                    continue;
+                }
+
+                try {
+                    $permissionRegistry->remove($permission->id());
+                    $this->stats['permissions_pruned']++;
+                    $this->components->twoColumnDetail("permission $code", '<fg=red>pruned</>');
+                } catch (PermissionInUse) {
+                    $this->warn("Permission [$code] is in use; skipped.");
+                }
             }
         }
     }

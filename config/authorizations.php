@@ -26,11 +26,14 @@ return [
     |--------------------------------------------------------------------------
     |
     | Define the roles that belong to your application and the permission codes
-    | assigned to each role. Run authorization:sync after changing this file.
+    | assigned to each role. Set this to false when roles are managed outside
+    | this file, such as through an administration panel. Run authorization:sync
+    | after changing this file.
     |
     */
 
     'roles' => [
+        // Set to false to disable role synchronization.
         // 'administrator' => [
         //     'name' => 'Administrator',
         //     'description' => 'Full access to the application.',

@@ -52,11 +52,15 @@ final class Synchronization
     }
 
     /**
-     * @return array<string, array<string, mixed>>
+     * @return array<string, array<string, mixed>>|false
      */
-    public static function permissions(): array
+    public static function permissions(): array|false
     {
-        $permissions = config(self::config() . '.permissions', []);
+        $permissions = config(self::config() . '.permissions', false);
+
+        if ($permissions === null || $permissions === false) {
+            return false;
+        }
 
         self::validatePermissions($permissions);
 
@@ -64,11 +68,15 @@ final class Synchronization
     }
 
     /**
-     * @return array<string, array<string, mixed>>
+     * @return array<string, array<string, mixed>>|false
      */
-    public static function roles(): array
+    public static function roles(): array|false
     {
-        $roles = config(self::config() . '.roles', []);
+        $roles = config(self::config() . '.roles', false);
+
+        if ($roles === null || $roles === false) {
+            return false;
+        }
 
         self::validateRoles($roles);
 
