@@ -21,6 +21,7 @@ use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
 use Vaened\Authorization\Configuration\Caching;
 use Vaened\Authorization\Configuration\Middlewares;
 use Vaened\Authorization\Console\InvalidateAuthorizationCache;
+use Vaened\Authorization\Console\SyncAuthorizations;
 use Vaened\Authorization\Middlewares\AuthorizePermissions;
 use Vaened\Authorization\Middlewares\AuthorizeRoles;
 use Vaened\Authorization\Persistence\Database\EloquentPermissionRepository;
@@ -85,6 +86,10 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/authorization.php' => config_path('authorization.php'),
         ], 'laravel-authorization-config');
+
+        $this->publishes([
+            __DIR__ . '/../config/authorizations.php' => config_path('authorizations.php'),
+        ], 'laravel-authorization-authorizations');
 
         $this->publishesMigrations([
             __DIR__ . '/../database/migrations' => database_path('migrations'),
@@ -151,6 +156,7 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
 
         $this->commands([
             InvalidateAuthorizationCache::class,
+            SyncAuthorizations::class,
         ]);
     }
 }

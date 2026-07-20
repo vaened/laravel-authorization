@@ -57,6 +57,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Authorization Synchronization
+    |--------------------------------------------------------------------------
+    |
+    | Configure the application authorization file used by the
+    | authorization:sync command. The value is the configuration key without
+    | the .php extension. The default points to config/authorizations.php.
+    |
+    */
+
+    'synchronization' => [
+        'config' => 'authorizations',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Authorization Tables
     |--------------------------------------------------------------------------
     |
