@@ -252,21 +252,12 @@ php artisan authorization:install
 
 ### `authorization:sync`
 
-The package can synchronize application roles and permissions from
-`config/authorizations.php`:
+Synchronizes the application's configured roles and permissions. See
+[Authorization synchronization](#authorization-synchronization) for details.
 
 ```bash
 php artisan authorization:sync
 ```
-
-The file can be renamed by changing `authorization.synchronization.config` in
-`config/authorization.php`; use the configuration key without the `.php`
-extension.
-
-The command creates and updates configured permissions and roles, and
-reconciles the permissions assigned to each configured role. Use `--prune` to
-remove roles and permissions that are no longer present in the configuration.
-Pruning is disabled by default and never removes entries that are still in use.
 
 ### `authorization:cache:invalidate`
 
@@ -276,8 +267,56 @@ Invalidates every authorization projection managed by the package:
 php artisan authorization:cache:invalidate
 ```
 
-Use it after authorization data is changed outside Laravel Authorization, such
-as through a direct database operation or an external integration.
+Use it after authorization data is changed outside Laravel Authorization, such as through a direct database operation or an external
+integration.
+
+## Authorization synchronization
+
+Authorization synchronization lets you define the application's roles and permissions in a configuration file and reconcile that
+definition with the authorization database through the [`authorization:sync`](#authorizationsync) command.
+
+This feature is optional. Use it when you want to define application roles and permissions in code and synchronize them with the database.
+If your application manages authorization records through seeders, registries, or an administrative interface, you can omit this file and
+the synchronization command.
+
+The definitions file is the source of truth for the permissions and roles that belong to the application. By default, it is:
+
+```text
+config/authorizations.php
+```
+
+You can change the filename through `authorization.synchronization.config` in [`config/authorization.php`](config/authorization.php).
+Use the configuration key without the `.php` extension.
+
+The file defines permissions by code and roles with their assigned permission codes:
+
+```php
+return [
+    'permissions' => [
+        'users.read' => [
+            'name' => 'Read users',
+        ],
+    ],
+    'roles' => [
+        'editor' => [
+            'name'        => 'Editor',
+            'permissions' => ['users.read'],
+        ],
+    ],
+];
+```
+
+Run the [`authorization:sync`](#authorizationsync) command after changing the file. It creates missing entries, updates their metadata, and
+reconciles the permissions assigned to each role.
+
+Use the optional `--prune` flag to remove roles and permissions that are no longer present in the file:
+
+```bash
+php artisan authorization:sync --prune
+```
+
+Pruning is disabled by default and does not remove entries that are still in
+use.
 
 ## Default models and repositories
 
@@ -288,15 +327,13 @@ This package provides the Laravel-side infrastructure for [PHP Sentinel](https:/
 - middleware integration
 - service provider wiring
 
-It also includes default models for roles and permissions. When using the
-direct model API, your application user is the authorization subject: implement
-the `Authorizable` contract and use the `Authorizations` trait.
+It also includes default models for roles and permissions. When using the direct model API, your application user is the authorization
+subject: implement the `Authorizable` contract and use the `Authorizations` trait.
 
 ## Advanced usage
 
-The default setup is documented in [Using the direct model API](#using-the-direct-model-api)
-and [Laravel Gate](#laravel-gate). This section only covers the alternative
-integration where the model uses Laravel's native authorization API.
+The default setup is documented in [Using the direct model API](#using-the-direct-model-api) and [Laravel Gate](#laravel-gate). This
+section only covers the alternative integration where the model uses Laravel's native authorization API.
 
 ### Using Laravel's native authorization API
 
