@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V4.3.1 - 2026-08-24
+
+### Fixed
+
+- Updated PHP Sentinel to `0.7.1`, including fixes for inherited permission
+  handling and stale cache namespace reuse.
+
 ## V4.3.0 - 2026-07-20
 
 ### Added
