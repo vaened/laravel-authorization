@@ -65,9 +65,10 @@ php artisan migrate
 
 ## Configuration
 
-By default, your user model uses the package's direct authorization API through the `Authorizable` interface and `Authorizations` trait, and
-Sentinel integrates
-with Laravel's Gate using the `after` strategy. See [Advanced usage](#advanced-usage) when you prefer Laravel's native API.
+By default, your Laravel user model uses Laravel's native authorization checks
+and the package's direct assignment API through the `Authorizable` interface
+and `Authorize` trait. Sentinel integrates with Laravel's Gate using the
+`after` strategy.
 
 ### Using the direct model API
 
@@ -76,30 +77,47 @@ Laravel Authorization does not require you to extend a package-specific user mod
 Instead, the user model you want to make authorizable only needs to:
 
 - implement [`Authorizable`](src/Authorizable.php)
-- use [`Authorizations`](src/Authorizations.php)
+- use [`Authorize`](src/Authorize.php) for grants, denials, and revocations
 
 ```php
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Vaened\Authorization\Authorizable;
-use Vaened\Authorization\Authorizations;
+use Vaened\Authorization\Authorize;
 
 class User extends Authenticatable implements Authorizable
 {
-    use Authorizations;
+    use Authorize;
 }
 ```
 
-Once your user model uses the contract and trait above, it gains these capabilities:
+The Laravel `Authenticatable` base model already provides Laravel's native
+`can` and `cannot` methods. If the model extends Eloquent's base `Model`
+directly and should expose Sentinel's checks instead, use
+[`Abilities`](src/Abilities.php) in addition to `Authorize`.
 
-| Method                                           | Description                                                        |
-|--------------------------------------------------|--------------------------------------------------------------------|
-| `can(string ...$permissions): bool`              | Checks whether the user has at least one of the given permissions. |
-| `cannot(string ...$permissions): bool`           | Inverse of `can`.                                                  |
-| `actsAs(string ...$roles): bool`                 | Checks whether the user has at least one of the given roles.       |
-| `actsNotAs(string ...$roles): bool`              | Inverse of `actsAs`.                                               |
-| `grant(Authorization ...$authorizations): void`  | Grants roles or permissions to the user.                           |
-| `deny(Permission ...$permissions): void`         | Explicitly denies permissions to the user.                         |
-| `revoke(Authorization ...$authorizations): void` | Removes a previous grant or denial from the user.                  |
+```php
+use Illuminate\Database\Eloquent\Model;
+use Vaened\Authorization\Abilities;
+use Vaened\Authorization\Authorizable;
+use Vaened\Authorization\Authorize;
+
+class User extends Model implements Authorizable
+{
+    use Authorize, Abilities;
+}
+```
+
+The available methods depend on the model and traits in use. Laravel's native
+authorization API and `Abilities` are alternative APIs; do not use both on the
+same model.
+
+| Method                                           | Laravel native                         | `Abilities`                | `Authorize`                   |
+|--------------------------------------------------|----------------------------------------|----------------------------|-------------------------------|
+| `can` / `cannot`                                 | Laravel abilities, arguments, policies | Sentinel permission checks | —                             |
+| `actsAs` / `actsNotAs`                           | —                                      | Sentinel role checks       | —                             |
+| `grant(Authorization ...$authorizations): void`  | —                                      | —                          | Grants roles or permissions   |
+| `deny(Permission ...$permissions): void`         | —                                      | —                          | Explicitly denies permissions |
+| `revoke(Authorization ...$authorizations): void` | —                                      | —                          | Removes a grant or denial     |
 
 ## Authorization management
 
@@ -341,25 +359,29 @@ This package provides the Laravel-side infrastructure for [PHP Sentinel](https:/
 - middleware integration
 - service provider wiring
 
-It also includes default models for roles and permissions. When using the direct model API, your application user is the authorization
-subject: implement the `Authorizable` contract and use the `Authorizations` trait.
+It also includes default models for roles and permissions. Your application user is the authorization subject: implement the `Authorizable`
+contract and use the `Authorize` trait. Use `Abilities` only when you need the package's additional role and permission checks on a model
+that does not already expose Laravel's authorization methods.
 
 ## Advanced usage
 
 The default setup is documented in [Using the direct model API](#using-the-direct-model-api) and [Laravel Gate](#laravel-gate). This
-section only covers the alternative integration where the model uses Laravel's native authorization API.
+section covers the less common case where authorization is integrated
+manually through Sentinel's `Subject` contract.
 
-### Using Laravel's native authorization API
+### Keeping authorization out of the model
 
-Use this mode when the application should use Laravel's own authorization API and does not need the package's direct model methods. Do
-not use the package's `Authorizable` interface or `Authorizations` trait. The model must implement Sentinel's `Subject` contract:
+Use this mode when you want to keep authorization operations out of your
+aggregate or application model. The model can still be a normal Eloquent
+model; it only needs to implement Sentinel's `Subject` contract and expose its
+identifier:
 
 ```php
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Vaened\Sentinel\Identifier;
 use Vaened\Sentinel\Subject;
 
-class User extends Authenticatable implements Subject
+final class User extends Model implements Subject
 {
     public function id(): int|string|Identifier
     {
@@ -368,17 +390,9 @@ class User extends Authenticatable implements Subject
 }
 ```
 
-`Illuminate\\Foundation\\Auth\\User` already includes Laravel's native
-`Authorizable` trait. If your model extends Eloquent's base `Model` directly,
-use [
-`Illuminate\\Foundation\\Auth\\Access\\Authorizable`](https://github.com/laravel/framework/blob/13.x/src/Illuminate/Foundation/Auth/Access/Authorizable.php)
-on the model instead.
-
-Use Laravel's own authorization implementation on the model. Keep
-`gate => 'after'` to let Sentinel serve as a fallback, use `before` only when
-Sentinel must take precedence, or use `null` when Laravel must operate without
-Sentinel Gate integration. See [Laravel Gate](#laravel-gate) for the exact
-precedence rules.
+If the identifier is a value object, that value object must implement
+Sentinel's [`Identifier`](https://github.com/vaened/php-sentinel/blob/master/src/Identifier.php)
+contract. No other authorization methods are required on the model.
 
 Without the package trait, manage assignments through the package facades:
 
@@ -393,13 +407,14 @@ Revoker::revoke($user, $permission);
 ```
 
 > **Custom trait:** If you want to expose these operations as methods on your
-> model, create a custom trait based on
-> [`Authorizations`](src/Authorizations.php) and keep only the methods you
-> need, such as `grant`, `deny`, and `revoke`. Omit `can` because Laravel
-> provides that authorization API in this mode.
+> model, create a custom trait based on [`Authorize`](src/Authorize.php) and
+> keep only the methods you need, such as `grant`, `deny`, and `revoke`.
 
-Do not combine the package's `Authorizations` trait with Laravel's `Authorizable` trait. Both define `can` and `cannot` with different
-contracts.
+Do not combine [`Abilities`](src/Abilities.php) with Laravel's native
+`Authorizable` trait. Both define `can` and `cannot`, but with incompatible
+signatures and different semantics. Use Laravel's native API on an
+`Authenticatable` model, or use `Abilities` on a plain Eloquent model when you
+want Sentinel's direct permission and role checks.
 
 ## Errors
 
