@@ -137,16 +137,22 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
 
         $key = $store->keyOf($subject);
 
-        self::assertStringContainsString('authorization:v1:', $key);
+        self::assertStringContainsString(
+            sprintf('authorization:v%s:', $store->currentVersion()),
+            $key,
+        );
         self::assertStringContainsString('subject:', $key);
         self::assertStringContainsString(':7:projection', $key);
     }
 
-    public function test_in_versioned_mode_current_version_reads_from_cache_and_defaults_to_one(): void
+    public function test_in_versioned_mode_current_version_creates_a_random_namespace_when_missing(): void
     {
         $store = $this->createNonTaggableStore();
 
-        self::assertSame(1, $store->currentVersion());
+        $version = $store->currentVersion();
+
+        self::assertGreaterThan(0, $version);
+        self::assertSame($version, $store->currentVersion());
     }
 
     public function test_in_versioned_mode_default_ttl_expires_orphaned_projections_after_twelve_hours(): void
@@ -187,11 +193,11 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
         $projection = self::projection(['admin'], ['users.read' => 2]);
 
         $store->put($subject, $projection);
-        self::assertSame(1, $store->currentVersion());
+        $version = $store->currentVersion();
 
         $store->invalidate();
 
-        self::assertSame(2, $store->currentVersion());
+        self::assertSame($version + 1, $store->currentVersion());
         self::assertNull(
             $store->get($subject),
             'After bump, the old version is unreachable so get() must return null',
@@ -205,11 +211,12 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
         $projection = self::projection(['admin'], ['users.read' => 2]);
 
         $store->put($subject, $projection);
+        $version = $store->currentVersion();
         $store->invalidate();
 
         $store->put($subject, $projection);
 
-        self::assertSame(2, $store->currentVersion());
+        self::assertSame($version + 1, $store->currentVersion());
     }
 
     public function test_concurrent_version_invalidations_are_not_lost(): void
@@ -222,6 +229,11 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
         mkdir($barrier, 0777, true);
 
         try {
+            $store          = new LaravelAuthorizationCacheStore(
+                new Repository(new FileStore(new Filesystem(), $cachePath)),
+            );
+            $initialVersion = $store->currentVersion();
+
             Concurrency::driver('fork')->run([
                 fn() => new LaravelAuthorizationCacheStore(
                     new Repository(new BlockingFileStore($cachePath, $barrier)),
@@ -231,11 +243,7 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
                 )->invalidate(),
             ]);
 
-            $store = new LaravelAuthorizationCacheStore(
-                new Repository(new FileStore(new Filesystem(), $cachePath)),
-            );
-
-            self::assertSame(3, $store->currentVersion());
+            self::assertSame($initialVersion + 2, $store->currentVersion());
         } finally {
             new Filesystem()->deleteDirectory($directory);
         }

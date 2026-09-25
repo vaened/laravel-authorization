@@ -97,9 +97,16 @@ final readonly class LaravelAuthorizationCacheStore implements AuthorizationCach
             return 1;
         }
 
-        $value = $this->cache->get($this->versionKey(), 1);
+        $value = $this->cache->get($this->versionKey());
 
-        return is_int($value) && $value > 0 ? $value : 1;
+        if (is_int($value) && $value > 0) {
+            return $value;
+        }
+
+        $value = random_int(1, PHP_INT_MAX - 1);
+        $this->cache->forever($this->versionKey(), $value);
+
+        return $value;
     }
 
     public function keyOf(Subject $subject): string
