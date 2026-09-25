@@ -18,7 +18,6 @@ $cashier->grant($createDocuments, $annulDocuments);
 $user->grant($cashier);
 
 // Evaluation
-$user->actsAs('cashier');             // true
 $user->can('documents.create');       // true
 $user->can('documents.annul');        // true
 
