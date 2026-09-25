@@ -16,18 +16,19 @@ use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Vaened\Authorization\Authorizable;
+use Vaened\Authorization\Facades\Authorizer;
+use Vaened\Sentinel\Subject;
 
 final class AuthorizePermissions
 {
     /**
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param Closure(Request): (Response) $next
      */
     public function handle(Request $request, Closure $next, string ...$permissions): Response
     {
         $user = $request->user();
 
-        if (!$user instanceof Authorizable || !$user->can(...$permissions)) {
+        if (!$user instanceof Subject || !Authorizer::can($user, $permissions)) {
             throw new AuthorizationException();
         }
 
