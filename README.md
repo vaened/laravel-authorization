@@ -255,6 +255,17 @@ The package ships with five tables that back the entire authorization model:
 You can rename any of these tables by publishing and editing the `tables` array in
 [`config/authorization.php`](config/authorization.php). Each key corresponds to a table above.
 
+### Subject identifiers
+
+The polymorphic `authorizable` columns use Laravel's `morphs()` method and
+respect Laravel's configured morph key type.
+
+If your subjects use UUIDs or ULIDs, configure Laravel before running the
+migrations, or replace `morphs()` in the published migration with
+`uuidMorphs()` or `ulidMorphs()`. If your application mixes identifier types,
+define the `authorizable_type` and `authorizable_id` columns manually using a
+compatible string type.
+
 ## Commands
 
 ### `authorization:install`
