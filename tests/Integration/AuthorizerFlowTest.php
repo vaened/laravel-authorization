@@ -60,7 +60,7 @@ final class AuthorizerFlowTest extends DatabaseTestCase
         $projection = $cache->get($subject);
         self::assertNotNull($projection);
         self::assertSame(['admin'], $projection->roles()->codes());
-        self::assertSame(SubjectPermissionState::Denied, $projection->permissions()->find('users.read')?->state());
+        self::assertSame(SubjectPermissionState::DeniedInherited, $projection->permissions()->find('users.read')?->state());
 
         $subject->revoke($permission);
 
