@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Persistence;
 
-use Illuminate\Database\Eloquent\Relations\Relation;
+use Vaened\Authorization\SubjectType;
 use Vaened\Sentinel\Identifiers;
 use Vaened\Sentinel\Subject;
 
@@ -25,10 +25,6 @@ abstract class SubjectRepository
 
     protected function subjectType(Subject $subject): string
     {
-        if (is_callable([$subject, 'getMorphClass'])) {
-            return $subject->getMorphClass();
-        }
-
-        return (string)Relation::getMorphAlias($subject::class);
+        return SubjectType::resolve($subject);
     }
 }

@@ -16,6 +16,7 @@ use Illuminate\Cache\ArrayStore;
 use Illuminate\Cache\DatabaseStore;
 use Illuminate\Cache\FileStore;
 use Illuminate\Cache\Repository;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Concurrency;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,7 @@ use LogicException;
 use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
 use Vaened\Authorization\Configuration\Caching;
 use Vaened\Authorization\Tests\DatabaseTestCase;
+use Vaened\Authorization\Tests\Runtime\AuthorizableModel;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
 use Vaened\Authorization\Tests\Support\Cache\BlockingFileStore;
 use Vaened\Sentinel\Projection\SubjectAuthorizationProjection;
@@ -45,6 +47,21 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
         $key = $store->keyOf($subject);
 
         self::assertSame(sprintf('subject:%s:%s:projection', TestSubject::class, $subject->id()), $key);
+    }
+
+    public function test_cache_key_uses_the_subject_morph_alias(): void
+    {
+        $morphMap = Relation::morphMap();
+        Relation::morphMap(['subjects' => AuthorizableModel::class]);
+
+        try {
+            $subject = new AuthorizableModel(['id' => 7]);
+            $store   = $this->createTaggableStore();
+
+            self::assertSame('subject:subjects:7:projection', $store->keyOf($subject));
+        } finally {
+            Relation::morphMap($morphMap, false);
+        }
     }
 
     public function test_in_taggable_mode_current_version_is_always_one(): void

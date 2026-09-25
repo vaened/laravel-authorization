@@ -16,6 +16,7 @@ use Illuminate\Cache\TaggableStore;
 use Illuminate\Contracts\Cache\LockProvider;
 use Illuminate\Contracts\Cache\Repository as LaravelRepository;
 use Vaened\Authorization\Configuration\Caching;
+use Vaened\Authorization\SubjectType;
 use Vaened\Sentinel\Cache\AuthorizationCacheStore;
 use Vaened\Sentinel\Identifiers;
 use Vaened\Sentinel\Projection\SubjectAuthorizationProjection;
@@ -106,7 +107,7 @@ final readonly class LaravelAuthorizationCacheStore implements AuthorizationCach
         if ($this->taggable) {
             return sprintf(
                 'subject:%s:%s:projection',
-                $subject::class,
+                SubjectType::resolve($subject),
                 Identifiers::value($subject->id()),
             );
         }
@@ -115,7 +116,7 @@ final readonly class LaravelAuthorizationCacheStore implements AuthorizationCach
             '%s:v%s:subject:%s:%s:projection',
             Caching::prefix(),
             $this->currentVersion(),
-            $subject::class,
+            SubjectType::resolve($subject),
             Identifiers::value($subject->id()),
         );
     }
