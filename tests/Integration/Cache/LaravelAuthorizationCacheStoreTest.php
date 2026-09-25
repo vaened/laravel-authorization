@@ -14,12 +14,17 @@ namespace Vaened\Authorization\Tests\Integration\Cache;
 
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Cache\DatabaseStore;
+use Illuminate\Cache\FileStore;
 use Illuminate\Cache\Repository;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Concurrency;
 use Illuminate\Support\Facades\DB;
+use LogicException;
 use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
 use Vaened\Authorization\Configuration\Caching;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
+use Vaened\Authorization\Tests\Support\Cache\BlockingFileStore;
 use Vaened\Sentinel\Projection\SubjectAuthorizationProjection;
 
 /**
@@ -190,6 +195,35 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
         self::assertSame(2, $store->currentVersion());
     }
 
+    public function test_concurrent_version_invalidations_are_not_lost(): void
+    {
+        $directory = sys_get_temp_dir() . '/authorization-cache-' . bin2hex(random_bytes(8));
+        $cachePath = $directory . '/cache';
+        $barrier   = $directory . '/barrier';
+
+        mkdir($cachePath, 0777, true);
+        mkdir($barrier, 0777, true);
+
+        try {
+            Concurrency::driver('fork')->run([
+                fn() => new LaravelAuthorizationCacheStore(
+                    new Repository(new BlockingFileStore($cachePath, $barrier)),
+                )->invalidate(),
+                fn() => new LaravelAuthorizationCacheStore(
+                    new Repository(new BlockingFileStore($cachePath, $barrier)),
+                )->invalidate(),
+            ]);
+
+            $store = new LaravelAuthorizationCacheStore(
+                new Repository(new FileStore(new Filesystem(), $cachePath)),
+            );
+
+            self::assertSame(3, $store->currentVersion());
+        } finally {
+            new Filesystem()->deleteDirectory($directory);
+        }
+    }
+
     private function createTaggableStore(): LaravelAuthorizationCacheStore
     {
         return new LaravelAuthorizationCacheStore(new Repository(new ArrayStore()));
@@ -211,6 +245,6 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
         return SubjectAuthorizationProjection::fromArray([
             'roles'       => $roles,
             'permissions' => $permissions,
-        ]) ?? throw new \LogicException('The projection payload must be valid.');
+        ]) ?? throw new LogicException('The projection payload must be valid.');
     }
 }

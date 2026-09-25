@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Cache;
 
 use Illuminate\Cache\TaggableStore;
+use Illuminate\Contracts\Cache\LockProvider;
 use Illuminate\Contracts\Cache\Repository as LaravelRepository;
 use Vaened\Authorization\Configuration\Caching;
 use Vaened\Sentinel\Cache\AuthorizationCacheStore;
@@ -33,11 +34,16 @@ use Vaened\Sentinel\Subject;
  */
 final readonly class LaravelAuthorizationCacheStore implements AuthorizationCacheStore
 {
+    private const int VERSION_LOCK_TTL = 10;
+
+    private const int VERSION_LOCK_WAIT = 5;
+
     private bool $taggable;
 
     public function __construct(
         private LaravelRepository $cache,
-    ) {
+    )
+    {
         $this->taggable = $this->cache->getStore() instanceof TaggableStore;
     }
 
@@ -73,7 +79,15 @@ final readonly class LaravelAuthorizationCacheStore implements AuthorizationCach
             return;
         }
 
-        $this->cache->forever($this->versionKey(), $this->currentVersion() + 1);
+        $store = $this->cache->getStore();
+
+        if (!$store instanceof LockProvider) {
+            $this->incrementVersion();
+            return;
+        }
+
+        $store->lock($this->versionKey() . ':lock', self::VERSION_LOCK_TTL)
+              ->block(self::VERSION_LOCK_WAIT, fn() => $this->incrementVersion());
     }
 
     public function currentVersion(): int
@@ -118,5 +132,10 @@ final readonly class LaravelAuthorizationCacheStore implements AuthorizationCach
     private function versionKey(): string
     {
         return sprintf('%s:version', Caching::prefix());
+    }
+
+    private function incrementVersion(): void
+    {
+        $this->cache->forever($this->versionKey(), $this->currentVersion() + 1);
     }
 }
