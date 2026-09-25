@@ -18,17 +18,9 @@ use Vaened\Sentinel\Subject;
 
 interface Authorizable extends Subject
 {
-    public function can(string ...$permissions): bool;
-
-    public function cannot(string ...$permissions): bool;
-
     public function grant(Authorization ...$authorizations): void;
 
     public function deny(Permission ...$permissions): void;
 
     public function revoke(Authorization ...$authorizations): void;
-
-    public function actsAs(string ...$roles): bool;
-
-    public function actsNotAs(string ...$roles): bool;
 }

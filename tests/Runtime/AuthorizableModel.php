@@ -13,12 +13,14 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Tests\Runtime;
 
 use Illuminate\Database\Eloquent\Model;
+use Vaened\Authorization\Abilities;
 use Vaened\Authorization\Authorizable;
-use Vaened\Authorization\Authorizations;
+use Vaened\Authorization\Authorize;
 
 final class AuthorizableModel extends Model implements Authorizable
 {
-    use Authorizations;
+    use Abilities;
+    use Authorize;
 
     public    $timestamps = false;
 
