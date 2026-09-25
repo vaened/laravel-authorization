@@ -1,7 +1,7 @@
 {
   "name": "vaened/laravel-authorization",
   "description": "Package to manage the permissions in a laravel application",
-  "type": "package",
+  "type": "library",
   "license": "MIT",
   "authors": [
     {
@@ -20,7 +20,6 @@
   "require": {
     "php": "^8.4",
     "laravel/framework": "^12.0 || ^13.0",
-    "psr/log": "^3.0",
     "vaened/php-sentinel": "^0.8",
     "psr/simple-cache": "^3.0"
   },
