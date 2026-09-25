@@ -37,15 +37,18 @@ final class LaravelGateIntegrationTest extends DatabaseTestCase
         self::assertTrue($gate->forUser($subject)->check('documents.read'));
     }
 
-    public function test_it_ignores_subjects_that_are_not_eloquent_models(): void
+    public function test_it_authorizes_non_eloquent_subjects_through_sentinel(): void
     {
         $this->registerGateIntegration('before');
 
-        $gate = $this->app->make(Gate::class);
+        $subject    = new TestSubject(1);
+        $permission = $this->permission('documents.read', 'Read Documents');
+        $gate       = $this->app->make(Gate::class);
 
-        $gate->define('documents.read', static fn(): bool => true);
+        $gate->define('documents.read', static fn(): bool => false);
+        Granter::grant($subject, $permission);
 
-        self::assertTrue($gate->forUser(new TestSubject(1))->check('documents.read'));
+        self::assertTrue($gate->forUser($subject)->check('documents.read'));
     }
 
     public function test_it_uses_sentinel_only_when_laravel_has_no_decision(): void

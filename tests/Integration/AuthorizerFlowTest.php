@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Tests\Integration;
 
-use Vaened\Authorization\Errors\UnsupportedSubject;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
 use Vaened\Sentinel\Cache\AuthorizationCacheStore;
@@ -98,13 +97,10 @@ final class AuthorizerFlowTest extends DatabaseTestCase
         self::assertSame([], $projection->permissions()->codes());
     }
 
-    public function test_it_rejects_subjects_that_do_not_extend_eloquent_models(): void
+    public function test_it_supports_subjects_that_do_not_extend_eloquent_models(): void
     {
         $repository = $this->app->make(SubjectRoleRepository::class);
 
-        $this->expectException(UnsupportedSubject::class);
-        $this->expectExceptionMessage(TestSubject::class);
-
-        $repository->allOf(new TestSubject(1));
+        self::assertSame([], $repository->allOf(new TestSubject(1))->codes());
     }
 }

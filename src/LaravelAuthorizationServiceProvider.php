@@ -15,7 +15,6 @@ namespace Vaened\Authorization;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Factory;
 use Illuminate\Contracts\Cache\Repository;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
 use Vaened\Authorization\Configuration\Caching;
@@ -143,7 +142,7 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
 
     protected function authorizeSubject(mixed $user, string $ability): bool|null
     {
-        if (!$user instanceof Model || !$user instanceof Subject) {
+        if (!$user instanceof Subject) {
             return null;
         }
 

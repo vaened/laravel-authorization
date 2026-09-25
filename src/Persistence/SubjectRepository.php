@@ -12,8 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Persistence;
 
-use Illuminate\Database\Eloquent\Model;
-use Vaened\Authorization\Errors\UnsupportedSubject;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Vaened\Sentinel\Identifiers;
 use Vaened\Sentinel\Subject;
 
@@ -26,15 +25,10 @@ abstract class SubjectRepository
 
     protected function subjectType(Subject $subject): string
     {
-        return $this->subject($subject)->getMorphClass();
-    }
-
-    protected function subject(Subject $subject): Model
-    {
-        if ($subject instanceof Model) {
-            return $subject;
+        if (is_callable([$subject, 'getMorphClass'])) {
+            return $subject->getMorphClass();
         }
 
-        throw UnsupportedSubject::becauseItDoesNotExtendModel($subject::class);
+        return (string)Relation::getMorphAlias($subject::class);
     }
 }

@@ -15,7 +15,9 @@ namespace Vaened\Authorization\Tests\Integration\Middlewares;
 use Illuminate\Auth\Access\AuthorizationException;
 use stdClass;
 use Symfony\Component\HttpFoundation\Response;
+use Vaened\Authorization\Facades\Granter;
 use Vaened\Authorization\Middlewares\AuthorizeRoles;
+use Vaened\Authorization\Tests\Runtime\TestSubject;
 
 final class AuthorizeRolesTest extends AuthorizeMiddlewareTestCase
 {
@@ -25,6 +27,22 @@ final class AuthorizeRolesTest extends AuthorizeMiddlewareTestCase
         $role    = $this->role('admin', 'Administrator');
 
         $subject->grant($role);
+
+        $response = new AuthorizeRoles()->handle(
+            $this->requestFor($subject),
+            static fn(): Response => new Response('ok'),
+            'admin',
+        );
+
+        self::assertSame('ok', $response->getContent());
+    }
+
+    public function test_it_allows_a_non_eloquent_subject_with_the_required_role(): void
+    {
+        $subject = new TestSubject(1);
+        $role    = $this->role('admin', 'Administrator');
+
+        Granter::grant($subject, $role);
 
         $response = new AuthorizeRoles()->handle(
             $this->requestFor($subject),

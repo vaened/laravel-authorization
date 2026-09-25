@@ -15,7 +15,9 @@ namespace Vaened\Authorization\Tests\Integration\Middlewares;
 use Illuminate\Auth\Access\AuthorizationException;
 use stdClass;
 use Symfony\Component\HttpFoundation\Response;
+use Vaened\Authorization\Facades\Granter;
 use Vaened\Authorization\Middlewares\AuthorizePermissions;
+use Vaened\Authorization\Tests\Runtime\TestSubject;
 
 final class AuthorizePermissionsTest extends AuthorizeMiddlewareTestCase
 {
@@ -25,6 +27,22 @@ final class AuthorizePermissionsTest extends AuthorizeMiddlewareTestCase
         $permission = $this->permission('users.read', 'Read Users');
 
         $subject->grant($permission);
+
+        $response = new AuthorizePermissions()->handle(
+            $this->requestFor($subject),
+            static fn(): Response => new Response('ok'),
+            'users.read',
+        );
+
+        self::assertSame('ok', $response->getContent());
+    }
+
+    public function test_it_allows_a_non_eloquent_subject_with_the_required_permission(): void
+    {
+        $subject    = new TestSubject(1);
+        $permission = $this->permission('users.read', 'Read Users');
+
+        Granter::grant($subject, $permission);
 
         $response = new AuthorizePermissions()->handle(
             $this->requestFor($subject),

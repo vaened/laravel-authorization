@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Vaened\Authorization\Facades\Authorizer;
 
 /**
- * Provides authorization and role checks for an authorizable Eloquent model.
+ * Provides permission and role checks for an authorizable Eloquent model.
  *
  * @mixin Model&Authorizable
  */

@@ -421,10 +421,6 @@ want Sentinel's direct permission and role checks.
 Adapter-specific errors extend Sentinel’s base [
 `AuthorizationError`](https://github.com/vaened/php-sentinel/blob/master/src/Errors/AuthorizationError.php).
 
-For example, if a subject used by the Laravel adapter does not extend Eloquent `Model`, the package throws:
-
-- `UnsupportedSubject`
-
 Middleware authorization failures continue to use Laravel’s own `AuthorizationException`.
 
 ## Development
