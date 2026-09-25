@@ -1,7 +1,7 @@
 # Laravel Authorization
 
 [![Tests](https://github.com/vaened/laravel-authorization/actions/workflows/tests.yml/badge.svg)](https://github.com/vaened/laravel-authorization/actions/workflows/tests.yml)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
 Roles, permissions, explicit denials, and route middleware for Laravel applications.
 
