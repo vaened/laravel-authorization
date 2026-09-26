@@ -2,6 +2,73 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V5.0.0 - 2026-09-26
+
+### Upgrade notes
+
+- Run `php artisan authorization:cache:invalidate` during deployment. The cached
+  projection format changed with PHP Sentinel `0.8`, and cache keys now use the
+  subject's morph type.
+- Replace the `Authorizations` trait with `Authorize`. Models that extend
+  Eloquent's base `Model` and need Sentinel permission and role checks should
+  also use `Abilities`. Models that extend Laravel's `Authenticatable` keep
+  Laravel's native `can` and `cannot` methods.
+- Remove any handling of `UnsupportedSubject`; subjects no longer need to be
+  Eloquent models.
+- Authorization services are now bound as `scoped` instances. Do not inject them
+  into your own singletons or long-lived services.
+
+### Added
+
+- Added `Revoker::purge()` to remove every role assignment, direct permission,
+  and explicit denial from a subject while keeping the global role and
+  permission definitions.
+- Added a request-scoped in-memory projection layer, so each subject's
+  projection is read from the cache store at most once per request or job.
+- Added support for non-Eloquent subjects, such as Doctrine entities, in the
+  Gate integration, route middleware, and repositories.
+- Added the `Abilities` trait with `can`, `cannot`, `actsAs`, and `actsNotAs`
+  for plain Eloquent models.
+- Added lock-protected version increments for cache stores without tag support.
+- Documented single-subject cache invalidation through
+  `AuthorizationCacheStore::forget()`.
+
+### Changed
+
+- Split the `Authorizations` trait into `Authorize` (`grant`, `deny`, `revoke`)
+  and `Abilities` (`can`, `cannot`, `actsAs`, `actsNotAs`).
+- Removed `can`, `cannot`, `actsAs`, and `actsNotAs` from the `Authorizable`
+  contract.
+- Route middleware now authorizes any PHP Sentinel `Subject`.
+- `authorization:sync` now invalidates the authorization cache after its
+  transaction commits, and only when the synchronization applied changes.
+- Repository bindings are now registered during the service provider's
+  `register` phase.
+- Updated PHP Sentinel to `^0.9`.
+- Changed the Composer package type to `library` and removed the unused
+  `psr/log` dependency.
+
+### Fixed
+
+- Fixed the default README setup, which triggered a fatal error on models that
+  extend Laravel's `Authenticatable`.
+- Inherited permission checks no longer query the database on every call.
+- Cache keys and persisted assignments now resolve the subject type the same
+  way, preventing stale grants when several classes share a morph type.
+- Losing the cache version key no longer revives projections from a previous
+  cache namespace.
+- Concurrent cache invalidations are no longer lost in versioned cache mode.
+- Subjects with a magic `__call` method no longer persist an invalid
+  `authorizable_type`.
+- Requests running during `authorization:sync` can no longer cache
+  pre-synchronization projections indefinitely.
+
+### Removed
+
+- Removed the `Authorizations` trait.
+- Removed the `UnsupportedSubject` error.
+-
+
 ## V4.3.1 - 2026-08-24
 
 ### Fixed
