@@ -81,11 +81,12 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
 
         $this->app->scoped(RoleRegistry::class);
         $this->app->scoped(PermissionRegistry::class);
+
+        $this->bindCachedRepositories();
     }
 
     public function boot(): void
     {
-        $this->bindCachedRepositories();
         $this->registerGateIntegration();
         $this->registerCommands();
 
