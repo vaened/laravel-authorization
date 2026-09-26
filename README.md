@@ -240,6 +240,30 @@ You can configure it through the `cache` array in
   tag support use a twelve-hour TTL by default, so projections orphaned after a
   global invalidation eventually expire. Set an integer TTL to override it.
 
+Most applications do not need to access the cache store directly. The package
+uses [`AuthorizationCacheStore`](https://github.com/vaened/php-sentinel/blob/master/src/Cache/AuthorizationCacheStore.php)
+to manage subject authorization projections. It can read, store, forget a
+single subject's projection, or invalidate every projection. If authorization
+data for one subject is changed outside the package, you can forget only that
+subject's projection:
+
+```php
+use Vaened\Sentinel\Cache\AuthorizationCacheStore;
+
+app(AuthorizationCacheStore::class)->forget($user);
+```
+
+For a global invalidation, call the store directly:
+
+```php
+app(AuthorizationCacheStore::class)->invalidate();
+```
+
+The [`authorization:cache:invalidate`](#authorizationcacheinvalidate) command
+is the console convenience wrapper around that same operation. Assignments
+should still be changed through the package operators or registries, not by
+writing projections directly.
+
 ## Database
 
 The package ships with five tables that back the entire authorization model:
