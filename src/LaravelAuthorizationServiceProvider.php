@@ -16,6 +16,7 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Factory;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\ServiceProvider;
+use Vaened\Authorization\Cache\InMemoryAuthorizationCacheStore;
 use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
 use Vaened\Authorization\Configuration\Caching;
 use Vaened\Authorization\Configuration\Middlewares;
@@ -34,6 +35,7 @@ use Vaened\Sentinel\Authorization\Authorizer;
 use Vaened\Sentinel\Authorization\PermissionEntryProvider;
 use Vaened\Sentinel\Authorization\RoleEntryProvider;
 use Vaened\Sentinel\Cache\AuthorizationCacheStore;
+use Vaened\Sentinel\Cache\CachedRepositories;
 use Vaened\Sentinel\Cache\SentinelCacheFactory;
 use Vaened\Sentinel\Operators\Denier;
 use Vaened\Sentinel\Operators\Granter;
@@ -59,20 +61,26 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
         $this->app->singleton(EloquentSubjectRoleRepository::class);
         $this->app->singleton(EloquentSubjectPermissionRepository::class);
 
-        $this->app->singleton(AuthorizationCacheStore::class,
+        $this->app->singleton(LaravelAuthorizationCacheStore::class,
             fn() => new LaravelAuthorizationCacheStore($this->resolveLaravelCacheStore()),
         );
 
-        $this->app->singleton(PermissionEntryProvider::class);
-        $this->app->singleton(RoleEntryProvider::class);
-        $this->app->singleton(Authorizer::class);
+        $this->app->scoped(AuthorizationCacheStore::class,
+            fn($app) => new InMemoryAuthorizationCacheStore(
+                $app->make(LaravelAuthorizationCacheStore::class),
+            ),
+        );
 
-        $this->app->singleton(Granter::class);
-        $this->app->singleton(Denier::class);
-        $this->app->singleton(Revoker::class);
+        $this->app->scoped(PermissionEntryProvider::class);
+        $this->app->scoped(RoleEntryProvider::class);
+        $this->app->scoped(Authorizer::class);
 
-        $this->app->singleton(RoleRegistry::class);
-        $this->app->singleton(PermissionRegistry::class);
+        $this->app->scoped(Granter::class);
+        $this->app->scoped(Denier::class);
+        $this->app->scoped(Revoker::class);
+
+        $this->app->scoped(RoleRegistry::class);
+        $this->app->scoped(PermissionRegistry::class);
     }
 
     public function boot(): void
@@ -109,21 +117,33 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
 
     protected function bindCachedRepositories(): void
     {
-        $cached = SentinelCacheFactory::as(
-            $this->app->make(AuthorizationCacheStore::class),
-        )->build(
-            $this->app->make(EloquentRoleRepository::class),
-            $this->app->make(EloquentPermissionRepository::class),
-            $this->app->make(EloquentRolePermissionRepository::class),
-            $this->app->make(EloquentSubjectRoleRepository::class),
-            $this->app->make(EloquentSubjectPermissionRepository::class),
-        );
+        $this->app->scoped(CachedRepositories::class, function ($app): CachedRepositories {
+            return SentinelCacheFactory::as(
+                $app->make(AuthorizationCacheStore::class),
+            )->build(
+                $app->make(EloquentRoleRepository::class),
+                $app->make(EloquentPermissionRepository::class),
+                $app->make(EloquentRolePermissionRepository::class),
+                $app->make(EloquentSubjectRoleRepository::class),
+                $app->make(EloquentSubjectPermissionRepository::class),
+            );
+        });
 
-        $this->app->instance(RoleRepository::class, $cached->roleRepository());
-        $this->app->instance(PermissionRepository::class, $cached->permissionRepository());
-        $this->app->instance(RolePermissionRepository::class, $cached->rolePermissionRepository());
-        $this->app->instance(SubjectRoleRepository::class, $cached->subjectRoleRepository());
-        $this->app->instance(SubjectPermissionRepository::class, $cached->subjectPermissionRepository());
+        $this->app->scoped(RoleRepository::class,
+            fn($app) => $app->make(CachedRepositories::class)->roleRepository(),
+        );
+        $this->app->scoped(PermissionRepository::class,
+            fn($app) => $app->make(CachedRepositories::class)->permissionRepository(),
+        );
+        $this->app->scoped(RolePermissionRepository::class,
+            fn($app) => $app->make(CachedRepositories::class)->rolePermissionRepository(),
+        );
+        $this->app->scoped(SubjectRoleRepository::class,
+            fn($app) => $app->make(CachedRepositories::class)->subjectRoleRepository(),
+        );
+        $this->app->scoped(SubjectPermissionRepository::class,
+            fn($app) => $app->make(CachedRepositories::class)->subjectPermissionRepository(),
+        );
     }
 
     protected function registerGateIntegration(): void

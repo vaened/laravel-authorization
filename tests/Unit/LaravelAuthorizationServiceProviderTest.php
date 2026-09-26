@@ -13,11 +13,13 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Tests\Unit;
 
 use Illuminate\Support\ServiceProvider;
+use Vaened\Authorization\Cache\InMemoryAuthorizationCacheStore;
 use Vaened\Authorization\LaravelAuthorizationServiceProvider;
 use Vaened\Authorization\Tests\TestCase;
 use Vaened\Sentinel\Authorization\Authorizer;
 use Vaened\Sentinel\Authorization\PermissionEntryProvider;
 use Vaened\Sentinel\Authorization\RoleEntryProvider;
+use Vaened\Sentinel\Cache\AuthorizationCacheStore;
 use Vaened\Sentinel\Cache\CachedPermissionRepository;
 use Vaened\Sentinel\Cache\CachedRolePermissionRepository;
 use Vaened\Sentinel\Cache\CachedRoleRepository;
@@ -55,6 +57,18 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         self::assertInstanceOf(Revoker::class, $this->app->make(Revoker::class));
         self::assertInstanceOf(RoleRegistry::class, $this->app->make(RoleRegistry::class));
         self::assertInstanceOf(PermissionRegistry::class, $this->app->make(PermissionRegistry::class));
+    }
+
+    public function test_the_in_memory_cache_store_is_scoped_to_the_application_lifecycle(): void
+    {
+        $first = $this->app->make(AuthorizationCacheStore::class);
+
+        self::assertInstanceOf(InMemoryAuthorizationCacheStore::class, $first);
+        self::assertSame($first, $this->app->make(AuthorizationCacheStore::class));
+
+        $this->app->forgetScopedInstances();
+
+        self::assertNotSame($first, $this->app->make(AuthorizationCacheStore::class));
     }
 
     public function test_it_merges_the_authorization_configuration(): void
