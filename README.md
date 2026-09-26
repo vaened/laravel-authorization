@@ -420,6 +420,22 @@ Revoker::revoke($user, $permission);
 > model, create a custom trait based on [`Authorize`](src/Authorize.php) and
 > keep only the methods you need, such as `grant`, `deny`, and `revoke`.
 
+### Purging subject assignments
+
+For exceptional cleanup workflows, remove every role assignment, direct
+permission, and explicit denial from a subject without deleting the subject or
+the global role and permission definitions:
+
+```php
+use Vaened\Authorization\Facades\Revoker;
+
+Revoker::purge($user);
+```
+
+`purge()` is intentionally not part of the `Authorizable` contract or the
+`Authorize` trait because it is an aggregate cleanup operation rather than a
+regular model assignment operation.
+
 Do not combine [`Abilities`](src/Abilities.php) with Laravel's native
 `Authorizable` trait. Both define `can` and `cannot`, but with incompatible
 signatures and different semantics. Use Laravel's native API on an

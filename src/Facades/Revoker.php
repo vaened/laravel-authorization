@@ -20,6 +20,7 @@ use Vaened\Sentinel\Subject;
 
 /**
  * @method static void revoke(Subject|Role $owner, Authorization ...$authorizations)
+ * @method static void purge(Subject $subject)
  *
  * @see RevokerService
  */

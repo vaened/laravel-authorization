@@ -20,7 +20,7 @@
   "require": {
     "php": "^8.4",
     "laravel/framework": "^12.0 || ^13.0",
-    "vaened/php-sentinel": "^0.8",
+    "vaened/php-sentinel": "^0.9",
     "psr/simple-cache": "^3.0"
   },
   "require-dev": {

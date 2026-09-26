@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Tests\Integration;
 
+use Vaened\Authorization\Facades\Revoker;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
 use Vaened\Sentinel\Cache\AuthorizationCacheStore;
@@ -102,5 +103,42 @@ final class AuthorizerFlowTest extends DatabaseTestCase
         $repository = $this->app->make(SubjectRoleRepository::class);
 
         self::assertSame([], $repository->allOf(new TestSubject(1))->codes());
+    }
+
+    public function test_it_purges_all_subject_assignments_and_invalidates_its_projection(): void
+    {
+        $cache     = $this->app->make(AuthorizationCacheStore::class);
+        $subject   = $this->subject();
+        $role      = $this->role('admin', 'Administrator');
+        $inherited = $this->permission('users.read', 'Read Users');
+        $direct    = $this->permission('users.update', 'Update Users');
+        $denied    = $this->permission('users.delete', 'Delete Users');
+
+        $role->grant($inherited);
+        $subject->grant($role, $direct);
+        $subject->deny($denied);
+
+        self::assertTrue($subject->can('users.read'));
+        self::assertTrue($subject->can('users.update'));
+        self::assertFalse($subject->can('users.delete'));
+
+        Revoker::purge($subject);
+
+        self::assertNull($cache->get($subject));
+        self::assertFalse($subject->can('users.read'));
+        self::assertFalse($subject->can('users.update'));
+        self::assertFalse($subject->can('users.delete'));
+        self::assertFalse($subject->actsAs('admin'));
+        self::assertDatabaseMissing('subject_roles', [
+            'role_id'           => $role->id(),
+            'authorizable_type' => $subject->getMorphClass(),
+            'authorizable_id'   => $subject->id(),
+        ]);
+        self::assertDatabaseMissing('subject_permissions', [
+            'authorizable_type' => $subject->getMorphClass(),
+            'authorizable_id'   => $subject->id(),
+        ]);
+        self::assertDatabaseHas('roles', ['id' => $role->id()]);
+        self::assertDatabaseHas('permissions', ['id' => $inherited->id()]);
     }
 }

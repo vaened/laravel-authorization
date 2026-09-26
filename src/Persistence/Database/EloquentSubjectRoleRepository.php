@@ -121,6 +121,14 @@ final class EloquentSubjectRoleRepository extends SubjectRepository implements S
           ->delete();
     }
 
+    public function purge(Subject $subject): void
+    {
+        DB::table(Tables::subjectRoles())
+          ->where('authorizable_type', $this->subjectType($subject))
+          ->where('authorizable_id', $this->subjectId($subject))
+          ->delete();
+    }
+
     protected function rolesOf(Subject $subject): Builder
     {
         return Role::query()

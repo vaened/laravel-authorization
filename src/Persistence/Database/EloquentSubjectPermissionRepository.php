@@ -109,6 +109,14 @@ final class EloquentSubjectPermissionRepository extends SubjectRepository implem
           ->delete();
     }
 
+    public function purge(Subject $subject): void
+    {
+        DB::table(Tables::subjectPermissions())
+          ->where('authorizable_type', $this->subjectType($subject))
+          ->where('authorizable_id', $this->subjectId($subject))
+          ->delete();
+    }
+
     protected function subjectPermissionsOf(Subject $subject, array $codes = []): SubjectPermissions
     {
         $query = PermissionModel::query()
