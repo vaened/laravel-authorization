@@ -18,6 +18,7 @@ use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\ServiceProvider;
 use Vaened\Authorization\Cache\InMemoryAuthorizationCacheStore;
 use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
+use Vaened\Authorization\Cache\TransactionAwareAuthorizationCacheStore;
 use Vaened\Authorization\Configuration\Caching;
 use Vaened\Authorization\Configuration\Middlewares;
 use Vaened\Authorization\Configuration\Synchronization;
@@ -66,8 +67,11 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
         );
 
         $this->app->scoped(AuthorizationCacheStore::class,
-            fn($app) => new InMemoryAuthorizationCacheStore(
-                $app->make(LaravelAuthorizationCacheStore::class),
+            fn($app) => new TransactionAwareAuthorizationCacheStore(
+                new InMemoryAuthorizationCacheStore(
+                    $app->make(LaravelAuthorizationCacheStore::class),
+                ),
+                $app->make('db')->connection(),
             ),
         );
 
