@@ -21,6 +21,8 @@ final class SpyAuthorizationCacheStore implements AuthorizationCacheStore
 {
     public int $getCalls        = 0;
 
+    public int $keyCalls        = 0;
+
     public int $putCalls        = 0;
 
     public int $forgetCalls     = 0;
@@ -34,19 +36,19 @@ final class SpyAuthorizationCacheStore implements AuthorizationCacheStore
     {
         $this->getCalls++;
 
-        return $this->values[$this->keyOf($subject)] ?? null;
+        return $this->values[$this->storageKey($subject)] ?? null;
     }
 
     public function put(Subject $subject, SubjectAuthorizationProjection $projection): void
     {
         $this->putCalls++;
-        $this->values[$this->keyOf($subject)] = $projection;
+        $this->values[$this->storageKey($subject)] = $projection;
     }
 
     public function forget(Subject $subject): void
     {
         $this->forgetCalls++;
-        unset($this->values[$this->keyOf($subject)]);
+        unset($this->values[$this->storageKey($subject)]);
     }
 
     public function invalidate(): void
@@ -61,6 +63,13 @@ final class SpyAuthorizationCacheStore implements AuthorizationCacheStore
     }
 
     public function keyOf(Subject $subject): string
+    {
+        $this->keyCalls++;
+
+        return $this->storageKey($subject);
+    }
+
+    private function storageKey(Subject $subject): string
     {
         return sprintf('subject:%s', Identifiers::value($subject->id()));
     }

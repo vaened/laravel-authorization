@@ -33,6 +33,18 @@ final class InMemoryAuthorizationCacheStoreTest extends TestCase
         self::assertSame(1, $persistent->getCalls);
     }
 
+    public function test_it_does_not_ask_the_persistent_store_for_a_memory_key(): void
+    {
+        $persistent = new SpyAuthorizationCacheStore();
+        $store      = new InMemoryAuthorizationCacheStore($persistent);
+        $subject    = new TestSubject(1);
+
+        $store->get($subject);
+        $store->get($subject);
+
+        self::assertSame(0, $persistent->keyCalls);
+    }
+
     public function test_put_updates_the_memory_layer(): void
     {
         $persistent = new SpyAuthorizationCacheStore();

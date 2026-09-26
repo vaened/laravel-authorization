@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Cache;
 
+use Vaened\Authorization\SubjectType;
 use Vaened\Sentinel\Cache\AuthorizationCacheStore;
+use Vaened\Sentinel\Identifiers;
 use Vaened\Sentinel\Projection\SubjectAuthorizationProjection;
 use Vaened\Sentinel\Subject;
 
@@ -35,7 +37,7 @@ final class InMemoryAuthorizationCacheStore implements AuthorizationCacheStore
 
     public function get(Subject $subject): ?SubjectAuthorizationProjection
     {
-        $key = $this->store->keyOf($subject);
+        $key = $this->memoryKey($subject);
 
         if (array_key_exists($key, $this->projections)) {
             return $this->projections[$key];
@@ -47,13 +49,13 @@ final class InMemoryAuthorizationCacheStore implements AuthorizationCacheStore
     public function put(Subject $subject, SubjectAuthorizationProjection $projection): void
     {
         $this->store->put($subject, $projection);
-        $this->projections[$this->store->keyOf($subject)] = $projection;
+        $this->projections[$this->memoryKey($subject)] = $projection;
     }
 
     public function forget(Subject $subject): void
     {
         $this->store->forget($subject);
-        unset($this->projections[$this->store->keyOf($subject)]);
+        unset($this->projections[$this->memoryKey($subject)]);
     }
 
     public function invalidate(): void
@@ -70,5 +72,14 @@ final class InMemoryAuthorizationCacheStore implements AuthorizationCacheStore
     public function keyOf(Subject $subject): string
     {
         return $this->store->keyOf($subject);
+    }
+
+    private function memoryKey(Subject $subject): string
+    {
+        return sprintf(
+            '%s:%s',
+            SubjectType::resolve($subject),
+            Identifiers::value($subject->id()),
+        );
     }
 }
