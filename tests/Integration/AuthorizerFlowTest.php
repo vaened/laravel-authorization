@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Tests\Integration;
 
+use Vaened\Authorization\Facades\Authorizer;
+use Vaened\Authorization\Facades\Denier;
+use Vaened\Authorization\Facades\Granter;
 use Vaened\Authorization\Facades\Revoker;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
@@ -109,6 +112,8 @@ final class AuthorizerFlowTest extends DatabaseTestCase
     {
         $cache     = $this->app->make(AuthorizationCacheStore::class);
         $subject   = $this->subject();
+        $other     = $this->subject();
+        $sameId    = new TestSubject((int)$subject->id());
         $role      = $this->role('admin', 'Administrator');
         $inherited = $this->permission('users.read', 'Read Users');
         $direct    = $this->permission('users.update', 'Update Users');
@@ -117,6 +122,10 @@ final class AuthorizerFlowTest extends DatabaseTestCase
         $role->grant($inherited);
         $subject->grant($role, $direct);
         $subject->deny($denied);
+        $other->grant($role, $direct);
+        $other->deny($denied);
+        Granter::grant($sameId, $role, $direct);
+        Denier::deny($sameId, $denied);
 
         self::assertTrue($subject->can('users.read'));
         self::assertTrue($subject->can('users.update'));
@@ -140,5 +149,41 @@ final class AuthorizerFlowTest extends DatabaseTestCase
         ]);
         self::assertDatabaseHas('roles', ['id' => $role->id()]);
         self::assertDatabaseHas('permissions', ['id' => $inherited->id()]);
+
+        self::assertDatabaseHas('subject_roles', [
+            'role_id'           => $role->id(),
+            'authorizable_type' => $other->getMorphClass(),
+            'authorizable_id'   => $other->id(),
+        ]);
+        self::assertDatabaseHas('subject_permissions', [
+            'permission_id'     => $direct->id(),
+            'authorizable_type' => $other->getMorphClass(),
+            'authorizable_id'   => $other->id(),
+        ]);
+        self::assertDatabaseHas('subject_permissions', [
+            'permission_id'     => $denied->id(),
+            'authorizable_type' => $other->getMorphClass(),
+            'authorizable_id'   => $other->id(),
+        ]);
+
+        self::assertDatabaseHas('subject_roles', [
+            'role_id'           => $role->id(),
+            'authorizable_type' => TestSubject::class,
+            'authorizable_id'   => $sameId->id(),
+        ]);
+        self::assertDatabaseHas('subject_permissions', [
+            'permission_id'     => $direct->id(),
+            'authorizable_type' => TestSubject::class,
+            'authorizable_id'   => $sameId->id(),
+        ]);
+
+        $cache->invalidate();
+
+        self::assertTrue($other->can('users.read'));
+        self::assertTrue($other->can('users.update'));
+        self::assertFalse($other->can('users.delete'));
+        self::assertTrue(Authorizer::can($sameId, ['users.read']));
+        self::assertTrue(Authorizer::can($sameId, ['users.update']));
+        self::assertFalse(Authorizer::can($sameId, ['users.delete']));
     }
 }
