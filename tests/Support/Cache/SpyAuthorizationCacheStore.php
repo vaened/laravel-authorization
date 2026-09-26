@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Tests\Support\Cache;
 
+use Illuminate\Support\Facades\DB;
 use Vaened\Sentinel\Cache\AuthorizationCacheStore;
 use Vaened\Sentinel\Identifiers;
 use Vaened\Sentinel\Projection\SubjectAuthorizationProjection;
@@ -28,6 +29,9 @@ final class SpyAuthorizationCacheStore implements AuthorizationCacheStore
     public int $forgetCalls     = 0;
 
     public int $invalidateCalls = 0;
+
+    /** @var list<int> */
+    public array $invalidationTransactionLevels = [];
 
     /** @var array<string, SubjectAuthorizationProjection> */
     private array $values = [];
@@ -53,6 +57,7 @@ final class SpyAuthorizationCacheStore implements AuthorizationCacheStore
 
     public function invalidate(): void
     {
+        $this->invalidationTransactionLevels[] = DB::transactionLevel();
         $this->invalidateCalls++;
         $this->values = [];
     }

@@ -19,6 +19,7 @@ use Vaened\Authorization\Configuration\Synchronization;
 use Vaened\Authorization\Configuration\Tables;
 use Vaened\Authorization\Facades\Granter;
 use Vaened\Authorization\Facades\Revoker;
+use Vaened\Sentinel\Cache\AuthorizationCacheStore;
 use Vaened\Sentinel\Errors\PermissionInUse;
 use Vaened\Sentinel\Errors\RoleInUse;
 use Vaened\Sentinel\Registry\PermissionRegistry;
@@ -57,6 +58,7 @@ final class SyncAuthorizations extends Command
         PermissionRegistry       $permissionRegistry,
         RoleRegistry             $roleRegistry,
         RolePermissionRepository $rolePermissions,
+        AuthorizationCacheStore  $cache,
     ): int
     {
         /** @var array<string, array{name?: string, description?: string|null}>|false $permissionsConfig */
@@ -87,9 +89,18 @@ final class SyncAuthorizations extends Command
             }
         });
 
+        if ($this->hasChanges()) {
+            $cache->invalidate();
+        }
+
         $this->summary();
 
         return self::SUCCESS;
+    }
+
+    private function hasChanges(): bool
+    {
+        return array_sum($this->stats) > 0;
     }
 
     /**

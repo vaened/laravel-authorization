@@ -10,6 +10,8 @@ use InvalidArgumentException;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Vaened\Authorization\Configuration\Tables;
 use Vaened\Authorization\Tests\DatabaseTestCase;
+use Vaened\Authorization\Tests\Support\Cache\SpyAuthorizationCacheStore;
+use Vaened\Sentinel\Cache\AuthorizationCacheStore;
 
 final class SyncAuthorizationsTest extends DatabaseTestCase
 {
@@ -92,6 +94,43 @@ final class SyncAuthorizationsTest extends DatabaseTestCase
             'name' => 'Content editor',
         ]);
         self::assertDatabaseCount('role_permissions', 1);
+    }
+
+    public function test_it_invalidates_the_cache_after_the_sync_transaction_commits(): void
+    {
+        $this->setAuthorizationsConfig([
+            'permissions' => [
+                'users.read' => ['name' => 'Read users'],
+            ],
+            'roles'       => [
+                'editor' => [
+                    'name'        => 'Editor',
+                    'permissions' => ['users.read'],
+                ],
+            ],
+        ]);
+
+        $cache = new SpyAuthorizationCacheStore();
+        $this->app->instance(AuthorizationCacheStore::class, $cache);
+        $transactionLevel = DB::transactionLevel();
+
+        $this->artisan('authorization:sync')->assertSuccessful();
+
+        self::assertNotEmpty($cache->invalidationTransactionLevels);
+        self::assertGreaterThan($transactionLevel, max($cache->invalidationTransactionLevels));
+        self::assertSame($transactionLevel, $cache->invalidationTransactionLevels[array_key_last($cache->invalidationTransactionLevels)]);
+    }
+
+    public function test_it_does_not_invalidate_the_cache_when_sync_makes_no_changes(): void
+    {
+        $this->setAuthorizationsConfig([]);
+
+        $cache = new SpyAuthorizationCacheStore();
+        $this->app->instance(AuthorizationCacheStore::class, $cache);
+
+        $this->artisan('authorization:sync')->assertSuccessful();
+
+        self::assertSame([], $cache->invalidationTransactionLevels);
     }
 
     public function test_it_only_prunes_entries_when_requested(): void
