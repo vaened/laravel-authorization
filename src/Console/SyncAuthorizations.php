@@ -100,7 +100,10 @@ final class SyncAuthorizations extends Command
 
     private function hasChanges(): bool
     {
-        return array_sum($this->stats) > 0;
+        return $this->stats['permissions_granted'] > 0
+            || $this->stats['permissions_revoked'] > 0
+            || $this->stats['permissions_pruned'] > 0
+            || $this->stats['roles_pruned'] > 0;
     }
 
     /**
