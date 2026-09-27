@@ -410,12 +410,12 @@ When a user belongs to one organization only, the user can remain the
 authorization subject:
 
 ```php
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Vaened\Authorization\Authorizable;
 use Vaened\Authorization\Authorize;
 use Vaened\Sentinel\Subject;
 
-final class User extends Authenticatable implements Authorizable
+final class User extends Model implements Authorizable
 {
     use Authorize;
 
@@ -543,7 +543,9 @@ If a scope validation fails, the complete operation is rejected and no partial a
 
 ### Permission evaluation
 
-When evaluating:
+When evaluating through the package's `Abilities` trait or `Authorizer` facade,
+the resolved subject is evaluated against its direct permissions, inherited
+permissions, and applicable scopes:
 
 ```php
 $user->can('documents.read');
@@ -563,7 +565,14 @@ An explicit denial overrides any direct or inherited grant.
 
 ### `OR` and `AND`
 
-Checks can receive multiple permissions or roles. They use `OR` by default.
+The package's `Abilities` methods accept multiple permissions or roles and use
+`OR` by default.
+
+This is separate from Laravel's native `can()` and Gate API. Laravel's
+`Gate::allows()` and `Gate::check()` require every ability in an array to be
+allowed; use `Gate::any()` when any one of the abilities is enough. Do not
+combine Laravel's native `can()` with the package's `Abilities` trait on the
+same model.
 
 | Operator | Result                                       |
 |----------|----------------------------------------------|
@@ -581,8 +590,8 @@ With `OR`, the check succeeds if the user can perform at least one of the two ac
 With `AND`, both actions must be allowed:
 
 ```php
+use Vaened\Authorization\Facades\Authorizer;
 use Vaened\Sentinel\Authorization\Junction;
-use Vaened\Sentinel\Authorization\Authorizer;
 
 Authorizer::can(
     $user,
@@ -600,7 +609,7 @@ helpers `can()` and `actsAs()` use `OR` by default and do not expose a junction
 argument. Use the `Authorizer` directly when an `AND` role check is required:
 
 ```php
-use Vaened\Sentinel\Authorization\Authorizer;
+use Vaened\Authorization\Facades\Authorizer;
 use Vaened\Sentinel\Authorization\Junction;
 
 Authorizer::is(
