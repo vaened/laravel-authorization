@@ -2,6 +2,102 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V6.0.0 - 2026-09-27
+
+### Upgrade notes
+
+- Update the roles table manually; the package migration was changed in place
+  and is not run again on existing installations:
+    - add nullable `scope_type` (string) and `scope_id` columns, with the same
+      key type as your scope models, and an index on both;
+    - replace the unique index on `code` with a unique index on
+      `code`, `scope_type`, and `scope_id`.
+
+  Existing roles keep a `null` scope and remain global roles; assignments are
+  not modified.
+- Subjects that implement Sentinel's `Subject` contract without the `Authorize`
+  trait must add `scope(): Subject|null`. Returning `null` keeps the `V5`
+  behavior.
+- `RoleRegistry::find()` and `RoleRegistry::lookup()` now require a scope as
+  their first argument. Pass `null` for global roles, for example
+  `$roles->find(null, 'admin')`.
+- Custom repository implementations must follow the PHP Sentinel `0.10`
+  contracts: `RoleRepository::lookup()` receives the scope first,
+  `RoleRepository::create()` accepts an optional scope, `RoleRepository` adds
+  `match()`, and `RolePermissionRepository` adds `grants()`. Applications that
+  construct Sentinel's `Granter` or `CachedSubjectRoleRepository` manually must
+  follow their new constructor signatures.
+- Published configuration files are merged only at the top level, so a
+  published `cache` section keeps `'ttl' => null` and continues to store
+  projections permanently on stores with tag support. Set `'ttl' => 43_200` to
+  adopt the new default. The new `subject` and `propagation` sections use their
+  defaults when they are missing from the published file.
+- The cached projection format did not change, so invalidating the cache is not
+  required. If you adopt a TTL, run `php artisan authorization:cache:invalidate`
+  so projections cached permanently under `V5` are rebuilt with it.
+- Route middleware now resolves the subject through the configured resolver.
+  With the default resolver, an authenticated user that does not implement
+  `Subject` raises `InvalidAuthorizationSubject` instead of an
+  `AuthorizationException` (403).
+
+### Added
+
+- Added scoped authorization. Subjects expose `scope()`, roles can belong to a
+  scope through `RoleRegistry::create($code, $name, $description, $scope)`,
+  and permission checks evaluate the subject together with its scope chain.
+- Added the `authorization.propagation` configuration.
+  `TransitiveScopePropagationPolicy` (default) evaluates the direct scope and
+  all of its ancestors; `DirectScopePropagationPolicy` evaluates only the
+  immediate scope.
+- Added the `authorization.subject.resolver` configuration and the
+  `AuthorizationSubjectResolver` contract, so the Gate integration and route
+  middleware can authorize a subject other than the authenticated user, such
+  as an organization membership. The default `AuthenticatedUserSubjectResolver`
+  keeps the `V5` behavior. Resolutions are cached per user for the current
+  request or job.
+- Added `AuthorizationSubjectProvider::current()` to retrieve the resolved
+  subject of the current request, and the `AuthorizationSubjectNotFound` error.
+- Added the `InvalidAuthorizationSubject` error.
+- Added `Role::scope()` and the `Role::context()` morph relation. A scope that
+  does not implement `Subject` raises `InvalidAuthorizationScope`.
+- Added a default `scope()` implementation, returning `null`, to the
+  `Authorize` trait.
+- Added `TransactionAwareAuthorizationCacheStore`, registered by default. It
+  observes transactions on the default database connection.
+- Added `EloquentRoleRepository::match()` and
+  `EloquentRolePermissionRepository::grants()`, which loads the permissions of
+  several roles in one query.
+- Documented multitenancy: one organization per user, memberships as subjects,
+  custom subject resolvers, roles and scopes, and scope propagation.
+
+### Changed
+
+- Updated PHP Sentinel to `^0.10`.
+- Roles now store an optional `scope_type` and `scope_id`. Role codes are
+  unique per scope instead of globally.
+- Global and scoped roles share one code namespace: creating a scoped role with
+  the code of a global role, or the reverse, raises `RoleAlreadyExists`.
+- Granting a role or permission now validates scope compatibility before
+  writing. A rejected request raises `InvalidAuthorization` and stores none of
+  the requested assignments.
+- The default `authorization.cache.ttl` is now `43_200` seconds (twelve hours)
+  instead of `null`.
+- The Gate integration evaluates the subject returned by the configured
+  resolver. It still abstains when no subject is resolved, including for users
+  that do not implement `Subject`.
+- `authorization:sync` now creates, updates, and prunes only global roles;
+  scoped roles are never pruned.
+
+### Fixed
+
+- Authorization projections read while a database transaction is open are no
+  longer written to the shared cache. Previously, a projection built from
+  uncommitted data could be served to other requests, including after a
+  rollback.
+- Cache invalidations issued inside a transaction are now applied immediately
+  and again after the transaction commits, so concurrent requests can no longer
+  keep a projection from before the commit.
+
 ## V5.0.0 - 2026-09-26
 
 ### Upgrade notes
