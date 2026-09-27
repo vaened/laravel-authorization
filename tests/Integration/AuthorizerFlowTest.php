@@ -20,7 +20,6 @@ use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
 use Vaened\Sentinel\Cache\AuthorizationCacheStore;
 use Vaened\Sentinel\Repositories\SubjectRoleRepository;
-use Vaened\Sentinel\SubjectPermissionState;
 
 final class AuthorizerFlowTest extends DatabaseTestCase
 {
@@ -45,10 +44,7 @@ final class AuthorizerFlowTest extends DatabaseTestCase
             'authorizable_id'   => $subject->id(),
         ]);
 
-        $projection = $cache->get($subject);
-        self::assertNotNull($projection);
-        self::assertSame(['admin'], $projection->roles()->codes());
-        self::assertSame(SubjectPermissionState::Inherited, $projection->permissions()->find('users.read')?->state());
+        self::assertNull($cache->get($subject));
 
         $subject->deny($permission);
 
@@ -60,10 +56,7 @@ final class AuthorizerFlowTest extends DatabaseTestCase
             'denied'            => true,
         ]);
 
-        $projection = $cache->get($subject);
-        self::assertNotNull($projection);
-        self::assertSame(['admin'], $projection->roles()->codes());
-        self::assertSame(SubjectPermissionState::DeniedInherited, $projection->permissions()->find('users.read')?->state());
+        self::assertNull($cache->get($subject));
 
         $subject->revoke($permission);
 
@@ -74,10 +67,7 @@ final class AuthorizerFlowTest extends DatabaseTestCase
 
         self::assertTrue($subject->can('users.read'));
 
-        $projection = $cache->get($subject);
-        self::assertNotNull($projection);
-        self::assertSame(['admin'], $projection->roles()->codes());
-        self::assertSame(SubjectPermissionState::Inherited, $projection->permissions()->find('users.read')?->state());
+        self::assertNull($cache->get($subject));
 
         $subject->revoke($role);
 
@@ -95,10 +85,7 @@ final class AuthorizerFlowTest extends DatabaseTestCase
             'authorizable_id'   => $subject->id(),
         ]);
 
-        $projection = $cache->get($subject);
-        self::assertNotNull($projection);
-        self::assertSame([], $projection->roles()->codes());
-        self::assertSame([], $projection->permissions()->codes());
+        self::assertNull($cache->get($subject));
     }
 
     public function test_it_supports_subjects_that_do_not_extend_eloquent_models(): void

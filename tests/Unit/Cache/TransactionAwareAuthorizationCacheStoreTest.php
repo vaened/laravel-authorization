@@ -24,19 +24,14 @@ use Vaened\Sentinel\Projection\SubjectAuthorizationProjection;
 
 final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
 {
-    public function test_it_does_not_store_a_projection_in_memory_before_commit(): void
+    public function test_it_does_not_store_a_projection_inside_a_transaction(): void
     {
         $persistent = new SpyAuthorizationCacheStore();
         $memory     = new InMemoryAuthorizationCacheStore($persistent);
         $connection = Mockery::mock(Connection::class);
-        $callback   = null;
 
         $connection->allows('transactionLevel')->andReturn(1);
-        $connection->expects('afterCommit')
-                   ->with(Mockery::type('callable'))
-                   ->andReturnUsing(static function (callable $afterCommit) use (&$callback): void {
-                       $callback = $afterCommit;
-                   });
+        $connection->shouldNotReceive('afterCommit');
 
         $store = new TransactionAwareAuthorizationCacheStore(
             $memory,
@@ -49,12 +44,6 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
 
         self::assertSame(0, $persistent->putCalls);
         self::assertNull($memory->get($subject));
-
-        self::assertNotNull($callback);
-        $callback();
-
-        self::assertSame(1, $persistent->putCalls);
-        self::assertSame($projection, $memory->get($subject));
     }
 
     public function test_a_rolled_back_transaction_does_not_publish_its_projection(): void
@@ -64,7 +53,7 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
         $connection = Mockery::mock(Connection::class);
 
         $connection->allows('transactionLevel')->andReturn(1);
-        $connection->expects('afterCommit')->with(Mockery::type('callable'));
+        $connection->shouldNotReceive('afterCommit');
 
         $store = new TransactionAwareAuthorizationCacheStore($memory, $connection);
         $store->put(new TestSubject(1), self::projection());
@@ -90,7 +79,7 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
         self::assertSame(1, $persistent->putCalls);
     }
 
-    public function test_it_forgets_only_after_commit(): void
+    public function test_it_forgets_immediately_and_after_commit(): void
     {
         $persistent = new SpyAuthorizationCacheStore();
         $memory     = new InMemoryAuthorizationCacheStore($persistent);
@@ -110,17 +99,17 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
         $store = new TransactionAwareAuthorizationCacheStore($memory, $connection);
         $store->forget($subject);
 
-        self::assertSame($projection, $memory->get($subject));
-        self::assertSame(0, $persistent->forgetCalls);
+        self::assertNull($memory->get($subject));
+        self::assertSame(1, $persistent->forgetCalls);
 
         self::assertNotNull($callback);
         $callback();
 
         self::assertNull($memory->get($subject));
-        self::assertSame(1, $persistent->forgetCalls);
+        self::assertSame(2, $persistent->forgetCalls);
     }
 
-    public function test_it_invalidates_only_after_commit(): void
+    public function test_it_invalidates_immediately_and_after_commit(): void
     {
         $persistent = new SpyAuthorizationCacheStore();
         $memory     = new InMemoryAuthorizationCacheStore($persistent);
@@ -139,16 +128,16 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
         $store = new TransactionAwareAuthorizationCacheStore($memory, $connection);
         $store->invalidate();
 
-        self::assertNotNull($memory->get(new TestSubject(1)));
-        self::assertNotNull($memory->get(new TestSubject(2)));
-        self::assertSame(0, $persistent->invalidateCalls);
+        self::assertNull($memory->get(new TestSubject(1)));
+        self::assertNull($memory->get(new TestSubject(2)));
+        self::assertSame(1, $persistent->invalidateCalls);
 
         self::assertNotNull($callback);
         $callback();
 
         self::assertNull($memory->get(new TestSubject(1)));
         self::assertNull($memory->get(new TestSubject(2)));
-        self::assertSame(1, $persistent->invalidateCalls);
+        self::assertSame(2, $persistent->invalidateCalls);
     }
 
     public function test_it_delegates_forget_and_invalidate_immediately_without_a_transaction(): void

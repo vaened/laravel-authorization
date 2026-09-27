@@ -38,32 +38,29 @@ final readonly class TransactionAwareAuthorizationCacheStore implements Authoriz
 
     public function put(Subject $subject, SubjectAuthorizationProjection $projection): void
     {
-        if (!$this->inTransaction()) {
-            $this->store->put($subject, $projection);
+        if ($this->inTransaction()) {
             return;
         }
 
-        $this->connection->afterCommit(fn() => $this->store->put($subject, $projection));
+        $this->store->put($subject, $projection);
     }
 
     public function forget(Subject $subject): void
     {
-        if (!$this->inTransaction()) {
-            $this->store->forget($subject);
-            return;
-        }
+        $this->store->forget($subject);
 
-        $this->connection->afterCommit(fn() => $this->store->forget($subject));
+        if ($this->inTransaction()) {
+            $this->connection->afterCommit(fn() => $this->store->forget($subject));
+        }
     }
 
     public function invalidate(): void
     {
-        if (!$this->inTransaction()) {
-            $this->store->invalidate();
-            return;
-        }
+        $this->store->invalidate();
 
-        $this->connection->afterCommit(fn() => $this->store->invalidate());
+        if ($this->inTransaction()) {
+            $this->connection->afterCommit(fn() => $this->store->invalidate());
+        }
     }
 
     public function currentVersion(): int
