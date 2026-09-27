@@ -26,6 +26,7 @@ use Vaened\Authorization\Configuration\Synchronization;
 use Vaened\Authorization\Console\InstallAuthorization;
 use Vaened\Authorization\Console\InvalidateAuthorizationCache;
 use Vaened\Authorization\Console\SyncAuthorizations;
+use Vaened\Authorization\Errors\InvalidAuthorizationSubject;
 use Vaened\Authorization\Middlewares\AuthorizePermissions;
 use Vaened\Authorization\Middlewares\AuthorizeRoles;
 use Vaened\Authorization\Persistence\Database\EloquentPermissionRepository;
@@ -192,10 +193,15 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
     protected function authorizeSubject(mixed $user, string $ability): bool|null
     {
         $gateUser = is_object($user) ? $user : null;
-        $subject  = $this->app->make(AuthorizationSubjectResolver::class)->resolve(
-            $gateUser,
-            $this->app->make(Request::class),
-        );
+
+        try {
+            $subject = $this->app->make(AuthorizationSubjectResolver::class)->resolve(
+                $gateUser,
+                $this->app->make(Request::class),
+            );
+        } catch (InvalidAuthorizationSubject) {
+            return null;
+        }
 
         if (null === $subject) {
             return null;

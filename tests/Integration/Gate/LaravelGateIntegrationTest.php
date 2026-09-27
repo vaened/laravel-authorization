@@ -76,6 +76,28 @@ final class LaravelGateIntegrationTest extends DatabaseTestCase
         );
     }
 
+    public function test_it_abstains_in_before_mode_when_the_gate_user_is_not_a_subject(): void
+    {
+        $this->registerGateIntegration('before');
+
+        $gate = $this->app->make(Gate::class);
+        $gate->define('documents.read', static fn(): bool => true);
+
+        self::assertTrue($gate->forUser(new stdClass())->check('documents.read'));
+        self::assertFalse($gate->forUser(new stdClass())->check('documents.write'));
+    }
+
+    public function test_it_abstains_in_after_mode_when_the_gate_user_is_not_a_subject(): void
+    {
+        $this->registerGateIntegration('after');
+
+        $gate = $this->app->make(Gate::class);
+        $gate->define('documents.read', static fn(): bool => true);
+
+        self::assertTrue($gate->forUser(new stdClass())->check('documents.read'));
+        self::assertFalse($gate->forUser(new stdClass())->check('documents.write'));
+    }
+
     public function test_gate_reuses_the_resolved_subject_during_the_same_scope(): void
     {
         $this->app['config']->set(
