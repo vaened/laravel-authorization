@@ -484,9 +484,15 @@ final class Membership extends Model implements Authorizable
 
 The application must resolve the membership for the current request. Configure
 an `AuthorizationSubjectResolver` when the authenticated user is not itself
-the subject:
+the subject. The tenant can come from any source defined by the application,
+such as a route parameter, route model binding, a request header, a subdomain,
+or a dedicated tenancy service.
+
+This example accepts either a route value or an `X-Organization-Id` header. Use
+the source that matches your application's tenancy model:
 
 ```php
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
 use Vaened\Sentinel\Subject;
@@ -499,7 +505,16 @@ final class MembershipSubjectResolver implements AuthorizationSubjectResolver
             return null;
         }
 
-        $organizationId = $request->route('organization');
+        $organization = $request->route('organization')
+            ?? $request->header('X-Organization-Id');
+
+        $organizationId = $organization instanceof Model
+            ? $organization->getKey()
+            : $organization;
+
+        if ($organizationId === null) {
+            return null;
+        }
 
         return $user->memberships()
             ->where('organization_id', $organizationId)
