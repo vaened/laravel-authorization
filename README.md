@@ -398,6 +398,223 @@ It also includes default models for roles and permissions. Your application user
 is the authorization subject: implement the `Authorizable` contract and use the `Authorize` trait. Use `Abilities` only when you need the
 package's additional role and permission checks on a model that does not already expose Laravel's authorization methods.
 
+## Multitenancy
+
+Laravel Authorization can scope authorizations to an organization, tenant, team, or any other entity that implements `Subject`.
+
+The authenticated user can remain the authorization subject:
+
+```php
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Vaened\Authorization\Authorizable;
+use Vaened\Authorization\Authorize;
+use Vaened\Sentinel\Subject;
+
+final class User extends Authenticatable implements Authorizable
+{
+    use Authorize;
+
+    public function scope(): Subject|null
+    {
+        return $this->currentOrganization;
+    }
+}
+```
+
+The `Authorize` trait already provides:
+
+- `id()`, using the model's primary key.
+- `scope()`, returning `null` by default.
+- `grant()`.
+- `deny()`.
+- `revoke()`.
+
+Therefore, a non-multitenant application does not need to override `scope()`.
+
+When a user belongs to an organization, `scope()` should return the active organization. The organization must also implement `Subject`,
+normally through `Authorizable` and `Authorize`:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Vaened\Authorization\Authorizable;
+use Vaened\Authorization\Authorize;
+
+final class Organization extends Model implements Authorizable
+{
+    use Authorize;
+}
+```
+
+The active organization can be determined from the route, domain, request header, session, or any other application-specific mechanism.
+
+### Roles and scopes
+
+A role can be global or associated with a specific scope.
+
+| Subject        | Role           | Result   |
+|----------------|----------------|----------|
+| No scope       | Global         | Allowed  |
+| No scope       | Organization A | Rejected |
+| Organization A | Global         | Allowed  |
+| Organization A | Organization A | Allowed  |
+| Organization A | Organization B | Rejected |
+
+A global role can be assigned to any subject. A role associated with an organization can only be assigned to subjects in the same scope.
+
+The scope also limits which permissions can be assigned:
+
+- A direct permission must be compatible with the subject's scope.
+- A permission assigned to a role must be compatible with the role's scope.
+- A role must be compatible with the subject's scope before it can be assigned.
+- An explicit denial does not require scope approval because it only reduces access.
+- `revoke()` can remove old or invalid assignments even when they are no longer scope-compatible.
+
+If a scope validation fails, the complete operation is rejected and no partial authorization is stored.
+
+### Permission evaluation
+
+When evaluating:
+
+```php
+$user->can('documents.read');
+```
+
+Sentinel evaluates:
+
+1. The subject's direct permissions.
+2. Permissions inherited through the subject's roles.
+3. Permissions from the direct scope.
+4. Permissions from higher-level scopes, according to the configured propagation policy.
+
+Roles are reduced to the permissions they contain. The check does not authorize a role by itself; it determines whether one of the role's
+permissions allows the requested action.
+
+An explicit denial overrides any direct or inherited grant.
+
+### `OR` and `AND`
+
+Checks can receive multiple permissions or roles. They use `OR` by default.
+
+| Operator | Result                                       |
+|----------|----------------------------------------------|
+| `OR`     | At least one requested code must be allowed. |
+| `AND`    | Every requested code must be allowed.        |
+
+For example:
+
+```php
+$user->can('documents.read', 'documents.update');
+```
+
+With `OR`, the check succeeds if the user can perform at least one of the two actions.
+
+With `AND`, both actions must be allowed:
+
+```php
+use Vaened\Sentinel\Authorization\Junction;
+use Vaened\Sentinel\Authorization\Authorizer;
+
+Authorizer::can(
+    $user,
+    ['documents.read', 'documents.update'],
+    Junction::And,
+);
+```
+
+Scope evaluation applies the same authorization rule at every participating level. Sentinel does not combine different permissions from
+different levels to produce a valid result. For example, if the user has `documents.read` and the organization has `documents.update`, that
+does not satisfy an `OR` check when neither same permission is allowed at every evaluated level.
+
+The Sentinel `Authorizer` applies the same operators to role checks. The model
+helpers `can()` and `actsAs()` use `OR` by default and do not expose a junction
+argument. Use the `Authorizer` directly when an `AND` role check is required:
+
+```php
+use Vaened\Sentinel\Authorization\Authorizer;
+use Vaened\Sentinel\Authorization\Junction;
+
+Authorizer::is(
+    $user,
+    ['editor', 'reviewer'],
+    Junction::And,
+);
+```
+
+### Scope propagation
+
+Propagation determines which scopes participate in permission evaluation.
+
+Configure it in `config/authorization.php`:
+
+```php
+'propagation' => \Vaened\Sentinel\Propagation\TransitiveScopePropagationPolicy::class,
+```
+
+#### Transitive propagation
+
+This is the default policy. It evaluates the direct scope and all of its ancestors.
+
+With this hierarchy:
+
+```text
+User → Team → Organization
+```
+
+Sentinel evaluates:
+
+1. The user.
+2. The team.
+3. The organization.
+
+Use it when permissions should be inherited through the entire hierarchy.
+
+#### Direct propagation
+
+This policy evaluates only the immediate scope:
+
+```php
+'propagation' => \Vaened\Sentinel\Propagation\DirectScopePropagationPolicy::class,
+```
+
+With the same hierarchy, Sentinel evaluates:
+
+1. The user.
+2. The team.
+
+The organization does not participate directly in the user's evaluation.
+
+Use it when permissions should only be inherited from the immediate tenant or scope.
+
+Propagation affects permission checks through `can()` and `cannot()`. `actsAs()` and `actsNotAs()` check whether the subject has the role;
+they do not automatically traverse the scope hierarchy to find roles.
+
+### Scope errors
+
+`scope()` must return a `Subject` or use the `null` default provided by `Authorize`.
+
+If the hierarchy contains a cycle, for example:
+
+```text
+Organization A → Organization B → Organization A
+```
+
+transitive propagation throws `ScopeCycleDetected`.
+
+The cycle is not silently converted to `false`, because it represents a configuration error that must be fixed.
+
+### Scope changes and cache
+
+Authorization projections are stored per subject. If the active organization is changed outside Laravel Authorization, invalidate the
+subject's projection:
+
+```php
+use Vaened\Sentinel\Cache\AuthorizationCacheStore;
+
+app(AuthorizationCacheStore::class)->forget($user);
+```
+
+Operations executed through Sentinel manage the corresponding invalidation automatically.
+
 ## Advanced usage
 
 The default setup is documented in [Using the direct model API](#using-the-direct-model-api) and [Laravel Gate](#laravel-gate). This
