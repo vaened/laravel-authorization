@@ -175,7 +175,7 @@ final class SyncAuthorizations extends Command
         foreach ($rolesConfig as $code => $meta) {
             $name        = (string)($meta['name'] ?? $code);
             $description = $meta['description'] ?? null;
-            $role        = $roleRegistry->find($code);
+            $role        = $roleRegistry->find(null, $code);
 
             if ($role === null) {
                 $role = $roleRegistry->create($code, $name, $description);
@@ -245,8 +245,8 @@ final class SyncAuthorizations extends Command
         if ($rolesConfig !== false) {
             $expectedRoleCodes = array_keys($rolesConfig);
 
-            foreach ($this->orphanCodes(Tables::roles(), $expectedRoleCodes) as $code) {
-                $role = $roleRegistry->find($code);
+            foreach ($this->orphanGlobalRoleCodes($expectedRoleCodes) as $code) {
+                $role = $roleRegistry->find(null, $code);
 
                 if ($role === null) {
                     continue;
@@ -291,6 +291,22 @@ final class SyncAuthorizations extends Command
     {
         return array_values(array_diff(
             DB::table($table)->pluck('code')->all(),
+            $expectedCodes,
+        ));
+    }
+
+    /**
+     * @param list<string> $expectedCodes
+     * @return list<string>
+     */
+    private function orphanGlobalRoleCodes(array $expectedCodes): array
+    {
+        return array_values(array_diff(
+            DB::table(Tables::roles())
+              ->whereNull('scope_type')
+              ->whereNull('scope_id')
+              ->pluck('code')
+              ->all(),
             $expectedCodes,
         ));
     }

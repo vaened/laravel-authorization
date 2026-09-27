@@ -68,6 +68,21 @@ final class EloquentRolePermissionRepositoryTest extends DatabaseTestCase
         self::assertSame(['users.read', 'users.update'], $permissions->codes());
     }
 
+    public function test_grants_returns_the_deduplicated_permissions_of_multiple_roles(): void
+    {
+        $admin       = $this->role('admin', 'Administrator');
+        $editor      = $this->role('editor', 'Editor');
+        $readUsers   = $this->permission('users.read', 'Read Users');
+        $updateUsers = $this->permission('users.update', 'Update Users');
+
+        $this->repository->create($admin, $readUsers, $updateUsers);
+        $this->repository->create($editor, $readUsers);
+
+        $permissions = $this->repository->grants($admin, $editor);
+
+        self::assertEqualsCanonicalizing(['users.read', 'users.update'], $permissions->codes());
+    }
+
     public function test_create_persists_role_permission_bindings(): void
     {
         $role       = $this->role('admin', 'Administrator');

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Tests\Integration\Persistence\Database;
 
+use Illuminate\Database\QueryException;
 use Vaened\Authorization\Persistence\Database\EloquentRoleRepository;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 
@@ -32,7 +33,7 @@ final class EloquentRoleRepositoryTest extends DatabaseTestCase
         $this->role('editor', 'Editor');
         $this->role('auditor', 'Auditor');
 
-        $roles = $this->repository->lookup('editor', 'auditor');
+        $roles = $this->repository->lookup(null, 'editor', 'auditor');
 
         self::assertCount(2, $roles);
         self::assertEqualsCanonicalizing(['editor', 'auditor'], $roles->codes());
@@ -40,10 +41,42 @@ final class EloquentRoleRepositoryTest extends DatabaseTestCase
 
     public function test_lookup_returns_an_empty_collection_when_no_codes_are_provided(): void
     {
-        $roles = $this->repository->lookup();
+        $roles = $this->repository->lookup(null);
 
         self::assertCount(0, $roles);
         self::assertSame([], $roles->codes());
+    }
+
+    public function test_match_returns_roles_across_all_scopes(): void
+    {
+        $this->role('admin', 'Administrator');
+        $this->role('editor', 'Editor');
+
+        $roles = $this->repository->match('admin', 'editor');
+
+        self::assertCount(2, $roles);
+        self::assertEqualsCanonicalizing(['admin', 'editor'], $roles->codes());
+    }
+
+    public function test_lookup_and_create_support_scoped_roles(): void
+    {
+        $scope = $this->subject();
+        $this->repository->create('admin', 'Global Administrator');
+        $local = $this->repository->create('admin', 'Tenant Administrator', scope: $scope);
+
+        self::assertSame($scope->getKey(), $local->scope()?->id());
+        self::assertSame(['admin'], $this->repository->lookup($scope, 'admin')->codes());
+        self::assertSame(['admin'], $this->repository->lookup(null, 'admin')->codes());
+    }
+
+    public function test_a_role_code_is_unique_within_the_same_scope(): void
+    {
+        $scope = $this->subject();
+        $this->repository->create('admin', 'Tenant Administrator', scope: $scope);
+
+        $this->expectException(QueryException::class);
+
+        $this->repository->create('admin', 'Duplicate Tenant Administrator', scope: $scope);
     }
 
     public function test_exists_returns_true_only_for_persisted_roles(): void

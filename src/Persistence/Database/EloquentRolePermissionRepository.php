@@ -49,6 +49,35 @@ final class EloquentRolePermissionRepository implements RolePermissionRepository
         return new Permissions($this->permissionsOf($role)->get()->all());
     }
 
+    public function grants(Role ...$roles): Permissions
+    {
+        if (empty($roles)) {
+            return new Permissions([]);
+        }
+
+        $roleIds = array_map(static fn(Role $role): int|string => $role->id(), $roles);
+
+        return new Permissions(
+            PermissionModel::query()
+                           ->select(
+                               Tables::permissions('id'),
+                               Tables::permissions('code'),
+                               Tables::permissions('name'),
+                               Tables::permissions('description'),
+                           )
+                           ->join(
+                               Tables::rolePermissions(),
+                               Tables::rolePermissions('permission_id'),
+                               '=',
+                               Tables::permissions('id'),
+                           )
+                           ->whereIn(Tables::rolePermissions('role_id'), $roleIds)
+                           ->distinct()
+                           ->get()
+                           ->all(),
+        );
+    }
+
     public function create(Role $role, PermissionContract ...$permissions): void
     {
         if (empty($permissions)) {
@@ -58,7 +87,7 @@ final class EloquentRolePermissionRepository implements RolePermissionRepository
         DB::table(Tables::rolePermissions())->insert(
             array_map(
                 static fn(PermissionContract $permission): array => [
-                    'role_id' => $role->id(),
+                    'role_id'       => $role->id(),
                     'permission_id' => $permission->id(),
                 ],
                 $permissions

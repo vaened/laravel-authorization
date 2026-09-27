@@ -123,9 +123,9 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         $migrationFiles = glob(__DIR__ . '/../../database/migrations/*.php');
 
         self::assertCount(1, $migrationFiles);
-        self::assertMatchesRegularExpression(
-            '/^\d{4}_\d{2}_\d{2}_\d{6}_create_laravel_authorization_tables\.php$/',
-            basename($migrationFiles[0]),
+        self::assertContains(
+            '2026_07_11_000000_create_laravel_authorization_tables.php',
+            array_map('basename', $migrationFiles),
         );
     }
 }

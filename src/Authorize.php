@@ -19,6 +19,7 @@ use Vaened\Authorization\Facades\Revoker;
 use Vaened\Sentinel\Authorization as AuthorizationContract;
 use Vaened\Sentinel\Identifier;
 use Vaened\Sentinel\Permission;
+use Vaened\Sentinel\Subject;
 
 /**
  * Provides authorization assignment operations for an authorizable Eloquent model.
@@ -30,6 +31,11 @@ trait Authorize
     public function id(): int|string|Identifier
     {
         return $this->getKey();
+    }
+
+    public function scope(): Subject|null
+    {
+        return null;
     }
 
     public function grant(AuthorizationContract ...$authorizations): void

@@ -12,6 +12,7 @@ use Vaened\Authorization\Configuration\Tables;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Authorization\Tests\Support\Cache\SpyAuthorizationCacheStore;
 use Vaened\Sentinel\Cache\AuthorizationCacheStore;
+use Vaened\Sentinel\Registry\RoleRegistry;
 
 final class SyncAuthorizationsTest extends DatabaseTestCase
 {
@@ -176,6 +177,27 @@ final class SyncAuthorizationsTest extends DatabaseTestCase
 
         self::assertDatabaseHas('roles', [
             'code' => 'dynamic.role',
+        ]);
+    }
+
+    public function test_it_prunes_only_global_roles(): void
+    {
+        $scope = $this->subject();
+        $this->role('legacy.global', 'Legacy global');
+        app(RoleRegistry::class)->create('dynamic.role', 'Dynamic role', scope: $scope);
+
+        $this->setAuthorizationsConfig([
+            'permissions' => [],
+            'roles'       => [],
+        ]);
+
+        $this->artisan('authorization:sync', ['--prune' => true])->assertSuccessful();
+
+        self::assertDatabaseMissing('roles', ['code' => 'legacy.global']);
+        self::assertDatabaseHas('roles', [
+            'code'       => 'dynamic.role',
+            'scope_type' => $scope->getMorphClass(),
+            'scope_id'   => $scope->getKey(),
         ]);
     }
 

@@ -25,4 +25,9 @@ final readonly class TestSubject implements Subject
     {
         return $this->id;
     }
+
+    public function scope(): Subject|null
+    {
+        return null;
+    }
 }

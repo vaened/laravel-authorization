@@ -136,7 +136,9 @@ final class EloquentSubjectRoleRepository extends SubjectRepository implements S
                        Tables::roles('id'),
                        Tables::roles('code'),
                        Tables::roles('name'),
-                       Tables::roles('description')
+                       Tables::roles('description'),
+                       Tables::roles('scope_type'),
+                       Tables::roles('scope_id'),
                    )
                    ->join(
                        Tables::subjectRoles(),

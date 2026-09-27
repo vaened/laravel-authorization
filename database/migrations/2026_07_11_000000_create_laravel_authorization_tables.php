@@ -18,7 +18,7 @@ use Vaened\Authorization\Configuration\Tables;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create(Tables::roles(), self::authorization());
+        Schema::create(Tables::roles(), self::role());
         Schema::create(Tables::permissions(), self::authorization());
 
         Schema::create(Tables::rolePermissions(), function (Blueprint $table): void {
@@ -71,6 +71,18 @@ return new class extends Migration {
             $table->string('code')->unique();
             $table->string('name');
             $table->text('description')->nullable();
+        };
+    }
+
+    protected static function role(): callable
+    {
+        return static function (Blueprint $table): void {
+            $table->id();
+            $table->string('code');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->nullableMorphs('scope');
+            $table->unique(['code', 'scope_type', 'scope_id']);
         };
     }
 };
