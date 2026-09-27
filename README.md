@@ -400,9 +400,14 @@ package's additional role and permission checks on a model that does not already
 
 ## Multitenancy
 
-Laravel Authorization can scope authorizations to an organization, tenant, team, or any other entity that implements `Subject`.
+Every authorization `Subject` has exactly one direct scope or no scope. A
+subject cannot represent multiple organizations at the same time. The correct
+model depends on whether a user belongs to one organization or to many.
 
-The authenticated user can remain the authorization subject:
+### One organization per user
+
+When a user belongs to one organization only, the user can remain the
+authorization subject:
 
 ```php
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -416,7 +421,7 @@ final class User extends Authenticatable implements Authorizable
 
     public function scope(): Subject|null
     {
-        return $this->currentOrganization;
+        return $this->organization;
     }
 }
 ```
@@ -430,9 +435,9 @@ The `Authorize` trait already provides:
 - `revoke()`.
 
 Therefore, a non-multitenant application does not need to override `scope()`.
-
-When a user belongs to an organization, `scope()` should return the active organization. The organization must also implement `Subject`,
-normally through `Authorizable` and `Authorize`:
+An organization can implement `Authorizable` and use `Authorize` without
+overriding `scope()`, because the default `null` scope is correct for the
+root of the hierarchy:
 
 ```php
 use Illuminate\Database\Eloquent\Model;
@@ -445,7 +450,72 @@ final class Organization extends Model implements Authorizable
 }
 ```
 
-The active organization can be determined from the route, domain, request header, session, or any other application-specific mechanism.
+### Multiple organizations per user
+
+When a user can belong to multiple organizations, the user cannot be the
+authorization subject: one user cannot return multiple scopes from
+`scope()`. The membership between the user and an organization becomes the
+subject instead.
+
+```text
+User 10
+├── Membership 100 → Organization A
+└── Membership 200 → Organization B
+```
+
+Each membership has exactly one organization and therefore exactly one scope:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Vaened\Authorization\Authorizable;
+use Vaened\Authorization\Authorize;
+use Vaened\Sentinel\Subject;
+
+final class Membership extends Model implements Authorizable
+{
+    use Authorize;
+
+    public function scope(): Subject|null
+    {
+        return $this->organization;
+    }
+}
+```
+
+The application must resolve the membership for the current request. Configure
+an `AuthorizationSubjectResolver` when the authenticated user is not itself
+the subject:
+
+```php
+use Illuminate\Http\Request;
+use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
+use Vaened\Sentinel\Subject;
+
+final class MembershipSubjectResolver implements AuthorizationSubjectResolver
+{
+    public function resolve(object|null $user, Request $request): Subject|null
+    {
+        if (!$user instanceof User) {
+            return null;
+        }
+
+        $organizationId = $request->route('organization');
+
+        return $user->memberships()
+            ->where('organization_id', $organizationId)
+            ->first();
+    }
+}
+```
+
+```php
+'subject' => [
+    'resolver' => MembershipSubjectResolver::class,
+],
+```
+
+Gate, middleware, and package authorization services then evaluate the
+resolved membership rather than the authenticated user.
 
 ### Roles and scopes
 
