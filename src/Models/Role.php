@@ -15,6 +15,7 @@ namespace Vaened\Authorization\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Vaened\Authorization\Configuration\Tables;
+use Vaened\Authorization\Errors\InvalidAuthorizationScope;
 use Vaened\Authorization\Facades\Granter;
 use Vaened\Authorization\Facades\Revoker;
 use Vaened\Sentinel\Permission as PermissionContract;
@@ -35,9 +36,17 @@ class Role extends Authorization implements RoleContract
 
     public function scope(): Subject|null
     {
-        $scope = $this->context()->getResults();
+        $scope = $this->context;
 
-        return $scope instanceof Subject ? $scope : null;
+        if (null === $scope) {
+            return null;
+        }
+
+        if (!$scope instanceof Subject) {
+            throw InvalidAuthorizationScope::forRole($this, $scope);
+        }
+
+        return $scope;
     }
 
     public function context(): MorphTo

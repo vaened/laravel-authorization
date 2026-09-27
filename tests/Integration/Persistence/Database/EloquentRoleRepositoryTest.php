@@ -13,8 +13,12 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Tests\Integration\Persistence\Database;
 
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
+use Vaened\Authorization\Errors\InvalidAuthorizationScope;
+use Vaened\Authorization\Models\Role as RoleModel;
 use Vaened\Authorization\Persistence\Database\EloquentRoleRepository;
 use Vaened\Authorization\Tests\DatabaseTestCase;
+use Vaened\Authorization\Tests\Runtime\NonSubjectModel;
 
 final class EloquentRoleRepositoryTest extends DatabaseTestCase
 {
@@ -67,6 +71,38 @@ final class EloquentRoleRepositoryTest extends DatabaseTestCase
         self::assertSame($scope->getKey(), $local->scope()?->id());
         self::assertSame(['admin'], $this->repository->lookup($scope, 'admin')->codes());
         self::assertSame(['admin'], $this->repository->lookup(null, 'admin')->codes());
+    }
+
+    public function test_a_role_scope_is_loaded_only_once(): void
+    {
+        $scope      = $this->subject();
+        $role       = $this->repository->create('admin', 'Tenant Administrator', scope: $scope);
+        $queryCount = 0;
+
+        DB::listen(static function () use (&$queryCount): void {
+            $queryCount++;
+        });
+
+        self::assertSame($scope->getKey(), $role->scope()?->id());
+        self::assertSame($scope->getKey(), $role->scope()?->id());
+
+        self::assertSame(1, $queryCount);
+    }
+
+    public function test_a_role_with_a_non_subject_scope_throws(): void
+    {
+        $scope = NonSubjectModel::query()->create(['name' => 'Invalid scope']);
+        $role  = RoleModel::query()->create([
+            'code'       => 'admin',
+            'name'       => 'Administrator',
+            'scope_type' => $scope->getMorphClass(),
+            'scope_id'   => $scope->getKey(),
+        ]);
+
+        $this->expectException(InvalidAuthorizationScope::class);
+        $this->expectExceptionMessage('Expected an instance of [Vaened\\Sentinel\\Subject].');
+
+        $role->scope();
     }
 
     public function test_a_role_code_is_unique_within_the_same_scope(): void
