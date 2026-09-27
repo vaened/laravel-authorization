@@ -71,9 +71,9 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
         self::assertSame(1, $store->currentVersion());
     }
 
-    public function test_in_taggable_mode_default_ttl_keeps_projections_permanently(): void
+    public function test_in_taggable_mode_default_ttl_expires_projections_after_twelve_hours(): void
     {
-        self::assertNull(Caching::ttl(true));
+        self::assertSame(43_200, Caching::ttl(true));
     }
 
     public function test_in_taggable_mode_put_then_get_round_trips_the_projection(): void

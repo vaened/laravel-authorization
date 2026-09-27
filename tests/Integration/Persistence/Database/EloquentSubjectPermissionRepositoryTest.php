@@ -97,6 +97,18 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
         ]);
     }
 
+    public function test_create_is_idempotent_when_the_same_binding_is_inserted_twice(): void
+    {
+        $subject    = $this->subject();
+        $permission = $this->permission('users.read', 'Read Users');
+        $snapshot   = SubjectPermissionSnapshot::from($permission);
+
+        $this->repository->create($subject, $snapshot);
+        $this->repository->create($subject, $snapshot);
+
+        self::assertSame(1, DB::table('subject_permissions')->count());
+    }
+
     public function test_update_changes_only_the_requested_denied_flags(): void
     {
         $subject     = $this->subject();

@@ -19,7 +19,8 @@ use Vaened\Authorization\Tests\DatabaseTestCase;
 
 final class EloquentSubjectRoleRepositoryTest extends DatabaseTestCase
 {
-    private EloquentSubjectRoleRepository $repository;
+    private EloquentSubjectRoleRepository    $repository;
+
     private EloquentRolePermissionRepository $rolePermissions;
 
     protected function setUp(): void
@@ -49,12 +50,12 @@ final class EloquentSubjectRoleRepositoryTest extends DatabaseTestCase
 
     public function test_grants_distinguishes_all_empty_and_requested_codes(): void
     {
-        $subject      = $this->subject();
-        $admin        = $this->role('admin', 'Administrator');
-        $editor       = $this->role('editor', 'Editor');
-        $readUsers    = $this->permission('users.read', 'Read Users');
-        $updateUsers  = $this->permission('users.update', 'Update Users');
-        $deleteUsers  = $this->permission('users.delete', 'Delete Users');
+        $subject     = $this->subject();
+        $admin       = $this->role('admin', 'Administrator');
+        $editor      = $this->role('editor', 'Editor');
+        $readUsers   = $this->permission('users.read', 'Read Users');
+        $updateUsers = $this->permission('users.update', 'Update Users');
+        $deleteUsers = $this->permission('users.delete', 'Delete Users');
 
         $this->rolePermissions->create($admin, $readUsers, $updateUsers);
         $this->rolePermissions->create($editor, $updateUsers, $deleteUsers);
@@ -68,7 +69,7 @@ final class EloquentSubjectRoleRepositoryTest extends DatabaseTestCase
         $none = $this->repository->grants($subject, []);
         self::assertCount(0, $queries);
 
-        $all = $this->repository->grants($subject);
+        $all         = $this->repository->grants($subject);
         $permissions = $this->repository->grants($subject, ['users.read']);
 
         self::assertCount(3, $all);
@@ -114,6 +115,17 @@ final class EloquentSubjectRoleRepositoryTest extends DatabaseTestCase
             'authorizable_type' => $subject->getMorphClass(),
             'authorizable_id'   => $subject->id(),
         ]);
+    }
+
+    public function test_create_is_idempotent_when_the_same_binding_is_inserted_twice(): void
+    {
+        $subject = $this->subject();
+        $role    = $this->role('admin', 'Administrator');
+
+        $this->repository->create($subject, $role);
+        $this->repository->create($subject, $role);
+
+        self::assertSame(1, DB::table('subject_roles')->count());
     }
 
     public function test_remove_deletes_only_the_requested_subject_role_bindings(): void
