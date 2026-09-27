@@ -19,7 +19,7 @@ abstract class AuthorizeMiddlewareTestCase extends DatabaseTestCase
 {
     protected function requestFor(mixed $user = null): Request
     {
-        $request = Request::create('/');
+        $request = $this->app->make(Request::class);
         $request->setUserResolver(static fn() => $user);
 
         return $request;

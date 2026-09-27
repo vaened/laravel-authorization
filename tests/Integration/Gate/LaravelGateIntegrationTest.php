@@ -13,10 +13,13 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Tests\Integration\Gate;
 
 use Illuminate\Contracts\Auth\Access\Gate;
+use stdClass;
 use Vaened\Authorization\Facades\Granter;
 use Vaened\Authorization\LaravelAuthorizationServiceProvider;
+use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
+use Vaened\Authorization\Tests\Support\Resolvers\CountingSubjectResolver;
 
 final class LaravelGateIntegrationTest extends DatabaseTestCase
 {
@@ -49,6 +52,47 @@ final class LaravelGateIntegrationTest extends DatabaseTestCase
         Granter::grant($subject, $permission);
 
         self::assertTrue($gate->forUser($subject)->check('documents.read'));
+    }
+
+    public function test_it_uses_the_configured_subject_resolver(): void
+    {
+        $this->registerGateIntegration('before');
+
+        $subject    = new TestSubject(99);
+        $permission = $this->permission('documents.read', 'Read Documents');
+        $resolver   = $this->createMock(AuthorizationSubjectResolver::class);
+
+        $resolver->expects(self::once())
+                 ->method('resolve')
+                 ->willReturn($subject);
+
+        $this->app->instance(AuthorizationSubjectResolver::class, $resolver);
+        Granter::grant($subject, $permission);
+
+        self::assertTrue(
+            $this->app->make(Gate::class)
+                      ->forUser(new stdClass())
+                      ->check('documents.read'),
+        );
+    }
+
+    public function test_gate_reuses_the_resolved_subject_during_the_same_scope(): void
+    {
+        $this->app['config']->set(
+            'authorization.subject.resolver',
+            CountingSubjectResolver::class,
+        );
+        $this->app->forgetScopedInstances();
+        CountingSubjectResolver::reset();
+        $this->registerGateIntegration('before');
+
+        $subject = new TestSubject(99);
+        $gate    = $this->app->make(Gate::class)->forUser($subject);
+
+        $gate->check('documents.read');
+        $gate->check('documents.read');
+
+        self::assertSame(1, CountingSubjectResolver::$calls);
     }
 
     public function test_it_uses_sentinel_only_when_laravel_has_no_decision(): void

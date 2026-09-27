@@ -15,6 +15,7 @@ namespace Vaened\Authorization\Tests\Integration\Middlewares;
 use Illuminate\Auth\Access\AuthorizationException;
 use stdClass;
 use Symfony\Component\HttpFoundation\Response;
+use Vaened\Authorization\Errors\InvalidAuthorizationSubject;
 use Vaened\Authorization\Facades\Granter;
 use Vaened\Authorization\Middlewares\AuthorizeRoles;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
@@ -28,7 +29,7 @@ final class AuthorizeRolesTest extends AuthorizeMiddlewareTestCase
 
         $subject->grant($role);
 
-        $response = new AuthorizeRoles()->handle(
+        $response = $this->app->make(AuthorizeRoles::class)->handle(
             $this->requestFor($subject),
             static fn(): Response => new Response('ok'),
             'admin',
@@ -44,7 +45,7 @@ final class AuthorizeRolesTest extends AuthorizeMiddlewareTestCase
 
         Granter::grant($subject, $role);
 
-        $response = new AuthorizeRoles()->handle(
+        $response = $this->app->make(AuthorizeRoles::class)->handle(
             $this->requestFor($subject),
             static fn(): Response => new Response('ok'),
             'admin',
@@ -57,7 +58,7 @@ final class AuthorizeRolesTest extends AuthorizeMiddlewareTestCase
     {
         $this->expectException(AuthorizationException::class);
 
-        new AuthorizeRoles()->handle(
+        $this->app->make(AuthorizeRoles::class)->handle(
             $this->requestFor(),
             static fn(): Response => new Response('ok'),
             'admin',
@@ -66,9 +67,9 @@ final class AuthorizeRolesTest extends AuthorizeMiddlewareTestCase
 
     public function test_it_throws_when_the_user_is_not_authorizable(): void
     {
-        $this->expectException(AuthorizationException::class);
+        $this->expectException(InvalidAuthorizationSubject::class);
 
-        new AuthorizeRoles()->handle(
+        $this->app->make(AuthorizeRoles::class)->handle(
             $this->requestFor(new stdClass()),
             static fn(): Response => new Response('ok'),
             'admin',
@@ -79,7 +80,7 @@ final class AuthorizeRolesTest extends AuthorizeMiddlewareTestCase
     {
         $this->expectException(AuthorizationException::class);
 
-        new AuthorizeRoles()->handle(
+        $this->app->make(AuthorizeRoles::class)->handle(
             $this->requestFor($this->subject()),
             static fn(): Response => new Response('ok'),
             'admin',

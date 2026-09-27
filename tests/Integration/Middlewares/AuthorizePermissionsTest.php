@@ -15,8 +15,10 @@ namespace Vaened\Authorization\Tests\Integration\Middlewares;
 use Illuminate\Auth\Access\AuthorizationException;
 use stdClass;
 use Symfony\Component\HttpFoundation\Response;
+use Vaened\Authorization\Errors\InvalidAuthorizationSubject;
 use Vaened\Authorization\Facades\Granter;
 use Vaened\Authorization\Middlewares\AuthorizePermissions;
+use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
 
 final class AuthorizePermissionsTest extends AuthorizeMiddlewareTestCase
@@ -28,7 +30,7 @@ final class AuthorizePermissionsTest extends AuthorizeMiddlewareTestCase
 
         $subject->grant($permission);
 
-        $response = new AuthorizePermissions()->handle(
+        $response = $this->app->make(AuthorizePermissions::class)->handle(
             $this->requestFor($subject),
             static fn(): Response => new Response('ok'),
             'users.read',
@@ -44,8 +46,29 @@ final class AuthorizePermissionsTest extends AuthorizeMiddlewareTestCase
 
         Granter::grant($subject, $permission);
 
-        $response = new AuthorizePermissions()->handle(
+        $response = $this->app->make(AuthorizePermissions::class)->handle(
             $this->requestFor($subject),
+            static fn(): Response => new Response('ok'),
+            'users.read',
+        );
+
+        self::assertSame('ok', $response->getContent());
+    }
+
+    public function test_it_uses_the_configured_subject_resolver(): void
+    {
+        $subject  = new TestSubject(99);
+        $resolver = $this->createMock(AuthorizationSubjectResolver::class);
+
+        $resolver->expects(self::once())
+                 ->method('resolve')
+                 ->willReturn($subject);
+
+        $this->app->instance(AuthorizationSubjectResolver::class, $resolver);
+        Granter::grant($subject, $this->permission('users.read', 'Read Users'));
+
+        $response = $this->app->make(AuthorizePermissions::class)->handle(
+            $this->requestFor(new stdClass()),
             static fn(): Response => new Response('ok'),
             'users.read',
         );
@@ -57,7 +80,7 @@ final class AuthorizePermissionsTest extends AuthorizeMiddlewareTestCase
     {
         $this->expectException(AuthorizationException::class);
 
-        new AuthorizePermissions()->handle(
+        $this->app->make(AuthorizePermissions::class)->handle(
             $this->requestFor(),
             static fn(): Response => new Response('ok'),
             'users.read',
@@ -66,9 +89,9 @@ final class AuthorizePermissionsTest extends AuthorizeMiddlewareTestCase
 
     public function test_it_throws_when_the_user_is_not_authorizable(): void
     {
-        $this->expectException(AuthorizationException::class);
+        $this->expectException(InvalidAuthorizationSubject::class);
 
-        new AuthorizePermissions()->handle(
+        $this->app->make(AuthorizePermissions::class)->handle(
             $this->requestFor(new stdClass()),
             static fn(): Response => new Response('ok'),
             'users.read',
@@ -79,7 +102,7 @@ final class AuthorizePermissionsTest extends AuthorizeMiddlewareTestCase
     {
         $this->expectException(AuthorizationException::class);
 
-        new AuthorizePermissions()->handle(
+        $this->app->make(AuthorizePermissions::class)->handle(
             $this->requestFor($this->subject()),
             static fn(): Response => new Response('ok'),
             'users.read',

@@ -13,8 +13,12 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Tests\Unit;
 
 use Illuminate\Support\ServiceProvider;
+use Vaened\Authorization\AuthorizationSubjectProvider;
 use Vaened\Authorization\Cache\TransactionAwareAuthorizationCacheStore;
 use Vaened\Authorization\LaravelAuthorizationServiceProvider;
+use Vaened\Authorization\Resolvers\AuthenticatedUserSubjectResolver;
+use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
+use Vaened\Authorization\Resolvers\CachedAuthorizationSubjectResolver;
 use Vaened\Authorization\Tests\TestCase;
 use Vaened\Sentinel\Authorization\Authorizer;
 use Vaened\Sentinel\Authorization\PermissionEntryProvider;
@@ -57,6 +61,8 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         self::assertInstanceOf(Revoker::class, $this->app->make(Revoker::class));
         self::assertInstanceOf(RoleRegistry::class, $this->app->make(RoleRegistry::class));
         self::assertInstanceOf(PermissionRegistry::class, $this->app->make(PermissionRegistry::class));
+        self::assertInstanceOf(AuthorizationSubjectProvider::class, $this->app->make(AuthorizationSubjectProvider::class));
+        self::assertInstanceOf(AuthorizationSubjectResolver::class, $this->app->make(AuthorizationSubjectResolver::class));
     }
 
     public function test_the_in_memory_cache_store_is_scoped_to_the_application_lifecycle(): void
@@ -71,6 +77,18 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         self::assertNotSame($first, $this->app->make(AuthorizationCacheStore::class));
     }
 
+    public function test_the_subject_resolver_decorator_is_scoped_to_the_application_lifecycle(): void
+    {
+        $first = $this->app->make(AuthorizationSubjectResolver::class);
+
+        self::assertInstanceOf(CachedAuthorizationSubjectResolver::class, $first);
+        self::assertSame($first, $this->app->make(AuthorizationSubjectResolver::class));
+
+        $this->app->forgetScopedInstances();
+
+        self::assertNotSame($first, $this->app->make(AuthorizationSubjectResolver::class));
+    }
+
     public function test_it_merges_the_authorization_configuration(): void
     {
         self::assertSame('roles', config('authorization.tables.roles'));
@@ -81,6 +99,10 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         self::assertSame('authorization.permissions', config('authorization.middlewares.permissions'));
         self::assertSame('authorization.roles', config('authorization.middlewares.roles'));
         self::assertSame('after', config('authorization.gate'));
+        self::assertSame(
+            AuthenticatedUserSubjectResolver::class,
+            config('authorization.subject.resolver'),
+        );
         self::assertSame('authorizations', config('authorization.synchronization.config'));
         self::assertNull(config('authorization.cache.store'));
         self::assertSame('authorization', config('authorization.cache.prefix'));

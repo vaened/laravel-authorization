@@ -15,6 +15,7 @@ namespace Vaened\Authorization;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Factory;
 use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Vaened\Authorization\Cache\InMemoryAuthorizationCacheStore;
 use Vaened\Authorization\Cache\LaravelAuthorizationCacheStore;
@@ -32,6 +33,9 @@ use Vaened\Authorization\Persistence\Database\EloquentRolePermissionRepository;
 use Vaened\Authorization\Persistence\Database\EloquentRoleRepository;
 use Vaened\Authorization\Persistence\Database\EloquentSubjectPermissionRepository;
 use Vaened\Authorization\Persistence\Database\EloquentSubjectRoleRepository;
+use Vaened\Authorization\Resolvers\AuthenticatedUserSubjectResolver;
+use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
+use Vaened\Authorization\Resolvers\CachedAuthorizationSubjectResolver;
 use Vaened\Sentinel\Authorization\Authorizer;
 use Vaened\Sentinel\Authorization\PermissionEntryProvider;
 use Vaened\Sentinel\Authorization\RoleEntryProvider;
@@ -48,13 +52,22 @@ use Vaened\Sentinel\Repositories\RolePermissionRepository;
 use Vaened\Sentinel\Repositories\RoleRepository;
 use Vaened\Sentinel\Repositories\SubjectPermissionRepository;
 use Vaened\Sentinel\Repositories\SubjectRoleRepository;
-use Vaened\Sentinel\Subject;
 
 final class LaravelAuthorizationServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/authorization.php', 'authorization');
+
+        $this->app->scoped(AuthorizationSubjectResolver::class, function ($app): AuthorizationSubjectResolver {
+            return new CachedAuthorizationSubjectResolver(
+                $app->make(config(
+                    'authorization.subject.resolver',
+                    AuthenticatedUserSubjectResolver::class,
+                )),
+            );
+        });
+        $this->app->scoped(AuthorizationSubjectProvider::class);
 
         $this->app->singleton(EloquentRoleRepository::class);
         $this->app->singleton(EloquentPermissionRepository::class);
@@ -167,11 +180,17 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
 
     protected function authorizeSubject(mixed $user, string $ability): bool|null
     {
-        if (!$user instanceof Subject) {
+        $gateUser = is_object($user) ? $user : null;
+        $subject  = $this->app->make(AuthorizationSubjectResolver::class)->resolve(
+            $gateUser,
+            $this->app->make(Request::class),
+        );
+
+        if (null === $subject) {
             return null;
         }
 
-        return $this->app->make(Authorizer::class)->can($user, [$ability]);
+        return $this->app->make(Authorizer::class)->can($subject, [$ability]);
     }
 
     protected function registerCommands(): void

@@ -13,6 +13,22 @@ declare(strict_types=1);
 return [
     /*
     |--------------------------------------------------------------------------
+    | Authorization Subject
+    |--------------------------------------------------------------------------
+    |
+    | Configure the resolver used to identify the subject whose roles and
+    | permissions are evaluated. The default resolver uses the authenticated
+    | user when it implements Sentinel's Subject contract. Applications that
+    | authorize through memberships may provide their own resolver class.
+    |
+    */
+
+    'subject' => [
+        'resolver' => \Vaened\Authorization\Resolvers\AuthenticatedUserSubjectResolver::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Laravel Gate Integration
     |--------------------------------------------------------------------------
     |

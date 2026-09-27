@@ -17,18 +17,24 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Vaened\Authorization\Facades\Authorizer;
-use Vaened\Sentinel\Subject;
+use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
 
 final class AuthorizeRoles
 {
+    public function __construct(private readonly AuthorizationSubjectResolver $resolver)
+    {
+    }
+
     /**
      * @param Closure(Request): (Response) $next
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        $user = $request->user();
+        $user    = $request->user();
+        $user    = is_object($user) ? $user : null;
+        $subject = $this->resolver->resolve($user, $request);
 
-        if (!$user instanceof Subject || !Authorizer::is($user, $roles)) {
+        if (null === $subject || !Authorizer::is($subject, $roles)) {
             throw new AuthorizationException();
         }
 
