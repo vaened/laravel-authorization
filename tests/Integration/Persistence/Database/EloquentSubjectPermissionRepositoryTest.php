@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Tests\Integration\Persistence\Database;
 
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Vaened\Authorization\Persistence\Database\EloquentSubjectPermissionRepository;
 use Vaened\Authorization\Tests\DatabaseTestCase;
@@ -97,16 +98,17 @@ final class EloquentSubjectPermissionRepositoryTest extends DatabaseTestCase
         ]);
     }
 
-    public function test_create_is_idempotent_when_the_same_binding_is_inserted_twice(): void
+    public function test_create_rejects_a_duplicate_binding(): void
     {
         $subject    = $this->subject();
         $permission = $this->permission('users.read', 'Read Users');
         $snapshot   = SubjectPermissionSnapshot::from($permission);
 
         $this->repository->create($subject, $snapshot);
-        $this->repository->create($subject, $snapshot);
 
-        self::assertSame(1, DB::table('subject_permissions')->count());
+        $this->expectException(UniqueConstraintViolationException::class);
+
+        $this->repository->create($subject, $snapshot);
     }
 
     public function test_update_changes_only_the_requested_denied_flags(): void

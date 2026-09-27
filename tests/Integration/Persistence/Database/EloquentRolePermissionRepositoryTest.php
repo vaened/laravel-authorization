@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Tests\Integration\Persistence\Database;
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Vaened\Authorization\Persistence\Database\EloquentRolePermissionRepository;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 
@@ -97,15 +97,16 @@ final class EloquentRolePermissionRepositoryTest extends DatabaseTestCase
         ]);
     }
 
-    public function test_create_is_idempotent_when_the_same_binding_is_inserted_twice(): void
+    public function test_create_rejects_a_duplicate_binding(): void
     {
         $role       = $this->role('admin', 'Administrator');
         $permission = $this->permission('users.read', 'Read Users');
 
         $this->repository->create($role, $permission);
-        $this->repository->create($role, $permission);
 
-        self::assertSame(1, DB::table('role_permissions')->count());
+        $this->expectException(UniqueConstraintViolationException::class);
+
+        $this->repository->create($role, $permission);
     }
 
     public function test_remove_deletes_only_the_requested_bindings(): void
