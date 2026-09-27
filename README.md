@@ -174,8 +174,9 @@ Laravel's `can` middleware uses the Gate integration described in
 Laravel Authorization also registers two package middleware aliases. They are useful when you want to invoke Sentinel directly,
 including when Gate integration is disabled, and when you need to check roles.
 
-- `authorization.permissions` allows the request only if the current authenticated user can perform at least one of the given permissions.
-- `authorization.roles` allows the request only if the current authenticated user acts as at least one of the given roles.
+- `authorization.permissions` allows the request only if the resolved authorization subject can perform at least one of the given
+  permissions.
+- `authorization.roles` allows the request only if the resolved authorization subject acts as at least one of the given roles.
 
 ```php
 Route::middleware('authorization.permissions:posts.edit')->group(function () {
@@ -393,9 +394,9 @@ This package provides the Laravel-side infrastructure for [PHP Sentinel](https:/
 - middleware integration
 - service provider wiring
 
-It also includes default models for roles and permissions. Your application user is the authorization subject: implement the `Authorizable`
-contract and use the `Authorize` trait. Use `Abilities` only when you need the package's additional role and permission checks on a model
-that does not already expose Laravel's authorization methods.
+It also includes default models for roles and permissions. Your application user, or a membership representing that user in an organization,
+is the authorization subject: implement the `Authorizable` contract and use the `Authorize` trait. Use `Abilities` only when you need the
+package's additional role and permission checks on a model that does not already expose Laravel's authorization methods.
 
 ## Advanced usage
 
@@ -420,6 +421,11 @@ final class User extends Model implements Subject
     public function id(): int|string|Identifier
     {
         return $this->getKey();
+    }
+
+    public function scope(): Subject|null
+    {
+        return null;
     }
 }
 ```
