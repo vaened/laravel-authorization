@@ -45,6 +45,8 @@ use Vaened\Sentinel\Cache\SentinelCacheFactory;
 use Vaened\Sentinel\Operators\Denier;
 use Vaened\Sentinel\Operators\Granter;
 use Vaened\Sentinel\Operators\Revoker;
+use Vaened\Sentinel\Propagation\ScopePropagationPolicy;
+use Vaened\Sentinel\Propagation\TransitiveScopePropagationPolicy;
 use Vaened\Sentinel\Registry\PermissionRegistry;
 use Vaened\Sentinel\Registry\RoleRegistry;
 use Vaened\Sentinel\Repositories\PermissionRepository;
@@ -52,6 +54,8 @@ use Vaened\Sentinel\Repositories\RolePermissionRepository;
 use Vaened\Sentinel\Repositories\RoleRepository;
 use Vaened\Sentinel\Repositories\SubjectPermissionRepository;
 use Vaened\Sentinel\Repositories\SubjectRoleRepository;
+
+use function config;
 
 final class LaravelAuthorizationServiceProvider extends ServiceProvider
 {
@@ -77,6 +81,13 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
 
         $this->app->singleton(LaravelAuthorizationCacheStore::class,
             fn() => new LaravelAuthorizationCacheStore($this->resolveLaravelCacheStore()),
+        );
+
+        $this->app->singleton(ScopePropagationPolicy::class,
+            fn($app) => $app->make(config(
+                'authorization.propagation',
+                TransitiveScopePropagationPolicy::class,
+            )),
         );
 
         $this->app->scoped(AuthorizationCacheStore::class,

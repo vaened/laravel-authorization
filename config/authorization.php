@@ -29,6 +29,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Scope Propagation
+    |--------------------------------------------------------------------------
+    |
+    | Configure how authorization checks traverse a subject's scopes. The
+    | default transitive policy evaluates the direct scope and all of its
+    | ancestors. Use the direct policy to evaluate only the immediate scope.
+    |
+    */
+
+    'propagation' => \Vaened\Sentinel\Propagation\TransitiveScopePropagationPolicy::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Laravel Gate Integration
     |--------------------------------------------------------------------------
     |

@@ -32,6 +32,9 @@ use Vaened\Sentinel\Cache\CachedSubjectRoleRepository;
 use Vaened\Sentinel\Operators\Denier;
 use Vaened\Sentinel\Operators\Granter;
 use Vaened\Sentinel\Operators\Revoker;
+use Vaened\Sentinel\Propagation\DirectScopePropagationPolicy;
+use Vaened\Sentinel\Propagation\ScopePropagationPolicy;
+use Vaened\Sentinel\Propagation\TransitiveScopePropagationPolicy;
 use Vaened\Sentinel\Registry\PermissionRegistry;
 use Vaened\Sentinel\Registry\RoleRegistry;
 use Vaened\Sentinel\Repositories\PermissionRepository;
@@ -55,6 +58,7 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
     {
         self::assertInstanceOf(PermissionEntryProvider::class, $this->app->make(PermissionEntryProvider::class));
         self::assertInstanceOf(RoleEntryProvider::class, $this->app->make(RoleEntryProvider::class));
+        self::assertInstanceOf(TransitiveScopePropagationPolicy::class, $this->app->make(ScopePropagationPolicy::class));
         self::assertInstanceOf(Authorizer::class, $this->app->make(Authorizer::class));
         self::assertInstanceOf(Granter::class, $this->app->make(Granter::class));
         self::assertInstanceOf(Denier::class, $this->app->make(Denier::class));
@@ -63,6 +67,26 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         self::assertInstanceOf(PermissionRegistry::class, $this->app->make(PermissionRegistry::class));
         self::assertInstanceOf(AuthorizationSubjectProvider::class, $this->app->make(AuthorizationSubjectProvider::class));
         self::assertInstanceOf(AuthorizationSubjectResolver::class, $this->app->make(AuthorizationSubjectResolver::class));
+    }
+
+    public function test_the_scope_propagation_policy_is_configurable(): void
+    {
+        config(['authorization.propagation' => DirectScopePropagationPolicy::class]);
+        $this->app->forgetScopedInstances();
+
+        self::assertInstanceOf(
+            DirectScopePropagationPolicy::class,
+            $this->app->make(ScopePropagationPolicy::class),
+        );
+    }
+
+    public function test_the_scope_propagation_policy_is_a_singleton(): void
+    {
+        $first = $this->app->make(ScopePropagationPolicy::class);
+
+        $this->app->forgetScopedInstances();
+
+        self::assertSame($first, $this->app->make(ScopePropagationPolicy::class));
     }
 
     public function test_the_in_memory_cache_store_is_scoped_to_the_application_lifecycle(): void
@@ -102,6 +126,10 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
         self::assertSame(
             AuthenticatedUserSubjectResolver::class,
             config('authorization.subject.resolver'),
+        );
+        self::assertSame(
+            TransitiveScopePropagationPolicy::class,
+            config('authorization.propagation'),
         );
         self::assertSame('authorizations', config('authorization.synchronization.config'));
         self::assertNull(config('authorization.cache.store'));
