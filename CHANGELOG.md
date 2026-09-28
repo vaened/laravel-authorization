@@ -2,6 +2,16 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V6.0.1 - 2026-09-28
+
+### Fixed
+
+- Authorization projections built inside a database transaction are no longer
+  published to the shared cache. They remain available in scoped memory for
+  subsequent checks, while rolled-back transactions flush those projections,
+  preventing authorization data from surviving a rollback or triggering
+  repeated repository queries within the same transaction.
+
 ## V6.0.0 - 2026-09-27
 
 ### Upgrade notes
