@@ -691,6 +691,17 @@ The organization does not participate directly in the user's evaluation.
 
 Use it when permissions should only be inherited from the immediate tenant or scope.
 
+#### No propagation
+
+This policy ignores scopes entirely:
+
+```php
+'propagation' => \Vaened\Sentinel\Propagation\NoPropagationPolicy::class,
+```
+
+Use it only when the application intentionally does not want scope
+propagation or scope validation for authorization checks and grants.
+
 Propagation affects permission checks through `can()` and `cannot()`. `actsAs()` and `actsNotAs()` check whether the subject has the role;
 they do not automatically traverse the scope hierarchy to find roles.
 

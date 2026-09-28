@@ -33,6 +33,7 @@ use Vaened\Sentinel\Operators\Denier;
 use Vaened\Sentinel\Operators\Granter;
 use Vaened\Sentinel\Operators\Revoker;
 use Vaened\Sentinel\Propagation\DirectScopePropagationPolicy;
+use Vaened\Sentinel\Propagation\NoPropagationPolicy;
 use Vaened\Sentinel\Propagation\ScopePropagationPolicy;
 use Vaened\Sentinel\Propagation\TransitiveScopePropagationPolicy;
 use Vaened\Sentinel\Registry\PermissionRegistry;
@@ -76,6 +77,17 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
 
         self::assertInstanceOf(
             DirectScopePropagationPolicy::class,
+            $this->app->make(ScopePropagationPolicy::class),
+        );
+    }
+
+    public function test_the_no_propagation_policy_is_configurable(): void
+    {
+        config(['authorization.propagation' => NoPropagationPolicy::class]);
+        $this->app->forgetScopedInstances();
+
+        self::assertInstanceOf(
+            NoPropagationPolicy::class,
             $this->app->make(ScopePropagationPolicy::class),
         );
     }

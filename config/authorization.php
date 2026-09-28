@@ -34,7 +34,8 @@ return [
     |
     | Configure how authorization checks traverse a subject's scopes. The
     | default transitive policy evaluates the direct scope and all of its
-    | ancestors. Use the direct policy to evaluate only the immediate scope.
+    | ancestors. Use the direct policy to evaluate only the immediate scope,
+    | or the no-propagation policy to ignore scopes entirely.
     |
     */
 

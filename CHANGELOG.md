@@ -48,13 +48,16 @@ All notable changes to `laravel-authorization` will be documented in this file
 - Added the `authorization.propagation` configuration.
   `TransitiveScopePropagationPolicy` (default) evaluates the direct scope and
   all of its ancestors; `DirectScopePropagationPolicy` evaluates only the
-  immediate scope.
+  immediate scope; `NoPropagationPolicy` ignores scopes entirely.
 - Added the `authorization.subject.resolver` configuration and the
   `AuthorizationSubjectResolver` contract, so the Gate integration and route
   middleware can authorize a subject other than the authenticated user, such
   as an organization membership. The default `AuthenticatedUserSubjectResolver`
   keeps the `V5` behavior. Resolutions are cached per user for the current
   request or job.
+- Added `SubjectResolution` with `found`, `notFound`, and `unavailable`
+  states. Unavailable resolutions are not cached until the request context
+  is ready.
 - Added `AuthorizationSubjectProvider::current()` to retrieve the resolved
   subject of the current request, and the `AuthorizationSubjectNotFound` error.
 - Added the `InvalidAuthorizationSubject` error.
@@ -72,7 +75,9 @@ All notable changes to `laravel-authorization` will be documented in this file
 
 ### Changed
 
-- Updated PHP Sentinel to `^0.10`.
+- Updated PHP Sentinel to `^0.11`. Custom `ScopePropagationPolicy`
+  implementations must change `scopes(Subject $subject)` to
+  `scopes(Scopeable $owner)`.
 - Roles now store an optional `scope_type` and `scope_id`. Role codes are
   unique per scope instead of globally.
 - Global and scoped roles share one code namespace: creating a scoped role with
