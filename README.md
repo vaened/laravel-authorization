@@ -494,7 +494,8 @@ such as a route parameter, route model binding, a request header, a subdomain,
 or a dedicated tenancy service.
 
 This example accepts either a route value or an `X-Organization-Id` header. Use
-the source that matches your application's tenancy model:
+the source that matches your application's tenancy model. The organization
+identifier must use the same format as the `organizations.id` column.
 
 The resolver returns a `SubjectResolution` with one of these states:
 
@@ -549,6 +550,16 @@ final class MembershipSubjectResolver implements AuthorizationSubjectResolver
 
 Gate, middleware, and package authorization services then evaluate the
 resolved membership rather than the authenticated user.
+
+Application code that needs the subject resolved for the current request can
+retrieve it through `AuthorizationSubjectProvider`. It throws
+`AuthorizationSubjectNotFound` when no subject is available:
+
+```php
+use Vaened\Authorization\AuthorizationSubjectProvider;
+
+$subject = app(AuthorizationSubjectProvider::class)->current();
+```
 
 ### Roles and scopes
 
