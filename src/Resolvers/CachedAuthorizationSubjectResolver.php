@@ -13,18 +13,17 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Resolvers;
 
 use Illuminate\Http\Request;
-use Vaened\Sentinel\Subject;
 
 final class CachedAuthorizationSubjectResolver implements AuthorizationSubjectResolver
 {
-    /** @var array<string, Subject|null> */
+    /** @var array<string, SubjectResolution> */
     private array $resolved = [];
 
     public function __construct(private readonly AuthorizationSubjectResolver $resolver)
     {
     }
 
-    public function resolve(object|null $user, Request $request): Subject|null
+    public function resolve(object|null $user, Request $request): SubjectResolution
     {
         $key = null === $user ? 'guest' : (string)spl_object_id($user);
 
@@ -32,6 +31,12 @@ final class CachedAuthorizationSubjectResolver implements AuthorizationSubjectRe
             return $this->resolved[$key];
         }
 
-        return $this->resolved[$key] = $this->resolver->resolve($user, $request);
+        $resolution = $this->resolver->resolve($user, $request);
+
+        if ($resolution->isCacheable()) {
+            $this->resolved[$key] = $resolution;
+        }
+
+        return $resolution;
     }
 }

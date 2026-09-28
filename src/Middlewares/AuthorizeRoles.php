@@ -19,9 +19,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Vaened\Authorization\Facades\Authorizer;
 use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
 
-final class AuthorizeRoles
+final readonly class AuthorizeRoles
 {
-    public function __construct(private readonly AuthorizationSubjectResolver $resolver)
+    public function __construct(private AuthorizationSubjectResolver $resolver)
     {
     }
 
@@ -32,7 +32,7 @@ final class AuthorizeRoles
     {
         $user    = $request->user();
         $user    = is_object($user) ? $user : null;
-        $subject = $this->resolver->resolve($user, $request);
+        $subject = $this->resolver->resolve($user, $request)->subject();
 
         if (null === $subject || !Authorizer::is($subject, $roles)) {
             throw new AuthorizationException();

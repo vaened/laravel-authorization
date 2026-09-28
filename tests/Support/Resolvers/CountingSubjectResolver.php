@@ -14,6 +14,7 @@ namespace Vaened\Authorization\Tests\Support\Resolvers;
 
 use Illuminate\Http\Request;
 use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
+use Vaened\Authorization\Resolvers\SubjectResolution;
 use Vaened\Sentinel\Subject;
 
 final class CountingSubjectResolver implements AuthorizationSubjectResolver
@@ -25,10 +26,10 @@ final class CountingSubjectResolver implements AuthorizationSubjectResolver
         self::$calls = 0;
     }
 
-    public function resolve(object|null $user, Request $request): Subject|null
+    public function resolve(object|null $user, Request $request): SubjectResolution
     {
         self::$calls++;
 
-        return $user instanceof Subject ? $user : null;
+        return $user instanceof Subject ? SubjectResolution::found($user) : SubjectResolution::notFound();
     }
 }

@@ -13,9 +13,8 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Resolvers;
 
 use Illuminate\Http\Request;
-use Vaened\Sentinel\Subject;
 
 interface AuthorizationSubjectResolver
 {
-    public function resolve(object|null $user, Request $request): Subject|null;
+    public function resolve(object|null $user, Request $request): SubjectResolution;
 }

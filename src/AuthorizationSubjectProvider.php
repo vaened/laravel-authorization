@@ -31,7 +31,9 @@ final readonly class AuthorizationSubjectProvider
         $user = $this->request->user();
         $user = is_object($user) ? $user : null;
 
-        return $this->resolver->resolve($user, $this->request)
+        $resolution = $this->resolver->resolve($user, $this->request);
+
+        return $resolution->subject()
             ?? throw new AuthorizationSubjectNotFound();
     }
 }

@@ -17,6 +17,7 @@ use stdClass;
 use Vaened\Authorization\Facades\Granter;
 use Vaened\Authorization\LaravelAuthorizationServiceProvider;
 use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
+use Vaened\Authorization\Resolvers\SubjectResolution;
 use Vaened\Authorization\Tests\DatabaseTestCase;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
 use Vaened\Authorization\Tests\Support\Resolvers\CountingSubjectResolver;
@@ -64,7 +65,7 @@ final class LaravelGateIntegrationTest extends DatabaseTestCase
 
         $resolver->expects(self::once())
                  ->method('resolve')
-                 ->willReturn($subject);
+                 ->willReturn(SubjectResolution::found($subject));
 
         $this->app->instance(AuthorizationSubjectResolver::class, $resolver);
         Granter::grant($subject, $permission);

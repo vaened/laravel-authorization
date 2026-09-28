@@ -19,6 +19,7 @@ use Vaened\Authorization\Errors\InvalidAuthorizationSubject;
 use Vaened\Authorization\Facades\Granter;
 use Vaened\Authorization\Middlewares\AuthorizePermissions;
 use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
+use Vaened\Authorization\Resolvers\SubjectResolution;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
 
 final class AuthorizePermissionsTest extends AuthorizeMiddlewareTestCase
@@ -62,7 +63,7 @@ final class AuthorizePermissionsTest extends AuthorizeMiddlewareTestCase
 
         $resolver->expects(self::once())
                  ->method('resolve')
-                 ->willReturn($subject);
+                 ->willReturn(SubjectResolution::found($subject));
 
         $this->app->instance(AuthorizationSubjectResolver::class, $resolver);
         Granter::grant($subject, $this->permission('users.read', 'Read Users'));

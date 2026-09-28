@@ -18,16 +18,16 @@ use Vaened\Sentinel\Subject;
 
 final class AuthenticatedUserSubjectResolver implements AuthorizationSubjectResolver
 {
-    public function resolve(object|null $user, Request $request): Subject|null
+    public function resolve(object|null $user, Request $request): SubjectResolution
     {
         if (null === $user) {
-            return null;
+            return SubjectResolution::notFound();
         }
 
         if (!$user instanceof Subject) {
             throw InvalidAuthorizationSubject::forUser($user);
         }
 
-        return $user;
+        return SubjectResolution::found($user);
     }
 }

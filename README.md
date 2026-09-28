@@ -491,18 +491,26 @@ or a dedicated tenancy service.
 This example accepts either a route value or an `X-Organization-Id` header. Use
 the source that matches your application's tenancy model:
 
+The resolver returns a `SubjectResolution` with one of these states:
+
+- `found`: the subject was found and can be evaluated.
+- `notFound`: the context is available, but no subject exists.
+- `unavailable`: there is not enough context to resolve the subject yet; this
+  result is not cached.
+
 ```php
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
+use Vaened\Authorization\Resolvers\SubjectResolution;
 use Vaened\Sentinel\Subject;
 
 final class MembershipSubjectResolver implements AuthorizationSubjectResolver
 {
-    public function resolve(object|null $user, Request $request): Subject|null
+    public function resolve(object|null $user, Request $request): SubjectResolution
     {
         if (!$user instanceof User) {
-            return null;
+            return SubjectResolution::notFound();
         }
 
         $organization = $request->route('organization')
@@ -513,12 +521,16 @@ final class MembershipSubjectResolver implements AuthorizationSubjectResolver
             : $organization;
 
         if ($organizationId === null) {
-            return null;
+            return SubjectResolution::unavailable();
         }
 
-        return $user->memberships()
+        $membership = $user->memberships()
             ->where('organization_id', $organizationId)
             ->first();
+
+        return $membership === null
+            ? SubjectResolution::notFound()
+            : SubjectResolution::found($membership);
     }
 }
 ```

@@ -195,13 +195,15 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
         $gateUser = is_object($user) ? $user : null;
 
         try {
-            $subject = $this->app->make(AuthorizationSubjectResolver::class)->resolve(
+            $resolution = $this->app->make(AuthorizationSubjectResolver::class)->resolve(
                 $gateUser,
                 $this->app->make(Request::class),
             );
         } catch (InvalidAuthorizationSubject) {
             return null;
         }
+
+        $subject = $resolution->subject();
 
         if (null === $subject) {
             return null;
