@@ -120,13 +120,13 @@ same model.
 
 ## Authorization management
 
-Use PHP Sentinel's `RoleRegistry` and `PermissionRegistry` to manage the role
-and permission catalogs. Both registries expose the same API; their only
-difference is the authorization type they manage.
+Use PHP Sentinel's `RoleRegistry` and `PermissionRegistry` to manage the role and permission catalogs.
+The registries share the main catalog operations, but `RoleRegistry` also supports scoped roles through its `scope` argument.
 
 ```php
 use Vaened\Sentinel\Registry\PermissionRegistry;
 use Vaened\Sentinel\Registry\RoleRegistry;
+use Vaened\Sentinel\Subject;
 
 final readonly class AuthorizationCatalog
 {
@@ -138,13 +138,15 @@ final readonly class AuthorizationCatalog
 }
 ```
 
-| Method                                                               | Description                                                    | `RoleRegistry` result | `PermissionRegistry` result |
-|----------------------------------------------------------------------|----------------------------------------------------------------|-----------------------|-----------------------------|
-| `create(string $code, string $name, ?string $description = null)`    | Creates a catalog entry.                                       | `Role`                | `Permission`                |
-| `lookup(array $codes)`                                               | Retrieves the entries whose codes were requested.              | `Roles`               | `Permissions`               |
-| `find(string $code)`                                                 | Retrieves one entry by code, or `null` when it does not exist. | `Role\|null`          | `Permission\|null`          |
-| `update(int\|string $id, string $name, ?string $description = null)` | Updates an existing entry.                                     | `void`                | `void`                      |
-| `remove(int\|string $id)`                                            | Removes an existing entry when it is no longer assigned.       | `void`                | `void`                      |
+| Method                                                                                    | Description                                              | `RoleRegistry` result | `PermissionRegistry` result |
+|-------------------------------------------------------------------------------------------|----------------------------------------------------------|-----------------------|-----------------------------|
+| `create(string $code, string $name, ?string $description = null, ?Subject $scope = null)` | Creates a catalog entry.                                 | `Role`                | `Permission`                |
+| `lookup(?Subject $scope, array $codes)`                                                   | Retrieves scoped roles whose codes were requested.       | `Roles`               | —                           |
+| `lookup(array $codes)`                                                                    | Retrieves permissions whose codes were requested.        | —                     | `Permissions`               |
+| `find(?Subject $scope, string $code)`                                                     | Retrieves one scoped role by code, or `null` if absent.  | `Role\|null`          | —                           |
+| `find(string $code)`                                                                      | Retrieves one permission by code, or `null` if absent.   | —                     | `Permission\|null`          |
+| `update(int\|string $id, string $name, ?string $description = null)`                      | Updates an existing entry.                               | `void`                | `void`                      |
+| `remove(int\|string $id)`                                                                 | Removes an existing entry when it is no longer assigned. | `void`                | `void`                      |
 
 ```php
 $cashier = $this->roles->create('cashier', 'Cashier');
@@ -152,6 +154,8 @@ $read = $this->permissions->create('documents.read', 'Read Documents');
 
 $cashier->grant($read);
 
+$roles = $this->roles->lookup(null, ['cashier', 'manager']);
+$role = $this->roles->find(null, 'cashier');
 $permissions = $this->permissions->lookup(['documents.read', 'documents.update']);
 $permission = $this->permissions->find('documents.read');
 ```
@@ -251,7 +255,7 @@ subject's projection:
 ```php
 use Vaened\Sentinel\Cache\AuthorizationCacheStore;
 
-app(AuthorizationCacheStore::class)->forget($user);
+app(AuthorizationCacheStore::class)->forget($subject);
 ```
 
 For a global invalidation, call the store directly:
@@ -395,8 +399,9 @@ This package provides the Laravel-side infrastructure for [PHP Sentinel](https:/
 - service provider wiring
 
 It also includes default models for roles and permissions. Your application user, or a membership representing that user in an organization,
-is the authorization subject: implement the `Authorizable` contract and use the `Authorize` trait. Use `Abilities` only when you need the
-package's additional role and permission checks on a model that does not already expose Laravel's authorization methods.
+is the authorization subject: implement the `Authorizable` contract and use the `Authorize` trait. Add `Abilities` when the model should
+expose
+the package's permission and role checks directly.
 
 ## Multitenancy
 
@@ -499,6 +504,7 @@ The resolver returns a `SubjectResolution` with one of these states:
   result is not cached.
 
 ```php
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
@@ -575,7 +581,7 @@ the resolved subject is evaluated against its direct permissions, inherited
 permissions, and applicable scopes:
 
 ```php
-$user->can('documents.read');
+$membership->can('documents.read');
 ```
 
 Sentinel evaluates:
@@ -721,13 +727,14 @@ The cycle is not silently converted to `false`, because it represents a configur
 
 ### Scope changes and cache
 
-Authorization projections are stored per subject. If the active organization is changed outside Laravel Authorization, invalidate the
-subject's projection:
+Authorization projections are stored per subject. If the subject's active
+scope or organization changes outside Laravel Authorization, invalidate the
+projection of the affected subject:
 
 ```php
 use Vaened\Sentinel\Cache\AuthorizationCacheStore;
 
-app(AuthorizationCacheStore::class)->forget($user);
+app(AuthorizationCacheStore::class)->forget($subject);
 ```
 
 Operations executed through Sentinel manage the corresponding invalidation automatically.
