@@ -22,8 +22,7 @@ composer-require: INTERACTIVE=-ti --interactive
 
 composer composer-install composer-update composer-require composer-require-module:
 	@docker run --rm $(INTERACTIVE) --volume $(project-dir):/app --workdir /app --user $(id -u):$(id -g) \
-		composer:2.5.8 $(CMD) \
-			--ignore-platform-reqs \
+		$(IMAGE) composer $(CMD) \
 			--no-ansi
 
 test: composer-install
