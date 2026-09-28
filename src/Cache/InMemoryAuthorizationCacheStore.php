@@ -61,6 +61,11 @@ final class InMemoryAuthorizationCacheStore implements AuthorizationCacheStore
     public function invalidate(): void
     {
         $this->store->invalidate();
+        $this->flush();
+    }
+
+    public function flush(): void
+    {
         $this->projections = [];
     }
 

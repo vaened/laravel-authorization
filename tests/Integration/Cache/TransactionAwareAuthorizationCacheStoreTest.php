@@ -18,7 +18,6 @@ use Illuminate\Database\SQLiteConnection;
 use LogicException;
 use Mockery;
 use PDO;
-use Vaened\Authorization\Cache\InMemoryAuthorizationCacheStore;
 use Vaened\Authorization\Cache\TransactionAwareAuthorizationCacheStore;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
 use Vaened\Authorization\Tests\Support\Cache\SpyAuthorizationCacheStore;
@@ -87,22 +86,21 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
     public function test_a_transactional_forget_runs_immediately_and_after_commit(): void
     {
         $persistent = new SpyAuthorizationCacheStore();
-        $memory     = new InMemoryAuthorizationCacheStore($persistent);
         $connection = Mockery::mock(Connection::class);
         $callback   = null;
         $subject    = new TestSubject(1);
 
-        $memory->put($subject, self::projection());
+        $persistent->put($subject, self::projection());
         $connection->allows('transactionLevel')->andReturn(1);
         $connection->allows('afterCommit')
                    ->andReturnUsing(static function (callable $afterCommit) use (&$callback): void {
                        $callback = $afterCommit;
                    });
 
-        $store = new TransactionAwareAuthorizationCacheStore($memory, $connection);
+        $store = new TransactionAwareAuthorizationCacheStore($persistent, $connection);
         $store->forget($subject);
 
-        self::assertNull($memory->get($subject));
+        self::assertNull($persistent->get($subject));
         self::assertSame(1, $persistent->forgetCalls);
 
         self::assertNotNull($callback);
@@ -114,22 +112,21 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
     public function test_a_transactional_invalidate_runs_immediately_and_after_commit(): void
     {
         $persistent = new SpyAuthorizationCacheStore();
-        $memory     = new InMemoryAuthorizationCacheStore($persistent);
         $connection = Mockery::mock(Connection::class);
         $callback   = null;
         $subject    = new TestSubject(1);
 
-        $memory->put($subject, self::projection());
+        $persistent->put($subject, self::projection());
         $connection->allows('transactionLevel')->andReturn(1);
         $connection->allows('afterCommit')
                    ->andReturnUsing(static function (callable $afterCommit) use (&$callback): void {
                        $callback = $afterCommit;
                    });
 
-        $store = new TransactionAwareAuthorizationCacheStore($memory, $connection);
+        $store = new TransactionAwareAuthorizationCacheStore($persistent, $connection);
         $store->invalidate();
 
-        self::assertNull($memory->get($subject));
+        self::assertNull($persistent->get($subject));
         self::assertSame(1, $persistent->invalidateCalls);
 
         self::assertNotNull($callback);
@@ -183,7 +180,7 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
     ): TransactionAwareAuthorizationCacheStore
     {
         return new TransactionAwareAuthorizationCacheStore(
-            new InMemoryAuthorizationCacheStore($persistent),
+            $persistent,
             $connection,
         );
     }

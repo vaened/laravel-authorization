@@ -15,6 +15,7 @@ namespace Vaened\Authorization;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Factory;
 use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Database\Events\TransactionRolledBack;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Vaened\Authorization\Cache\InMemoryAuthorizationCacheStore;
@@ -91,14 +92,30 @@ final class LaravelAuthorizationServiceProvider extends ServiceProvider
             )),
         );
 
-        $this->app->scoped(AuthorizationCacheStore::class,
+        $this->app->scoped(TransactionAwareAuthorizationCacheStore::class,
             fn($app) => new TransactionAwareAuthorizationCacheStore(
-                new InMemoryAuthorizationCacheStore(
-                    $app->make(LaravelAuthorizationCacheStore::class),
-                ),
+                $app->make(LaravelAuthorizationCacheStore::class),
                 $app->make('db')->connection(),
             ),
         );
+
+        $this->app->scoped(InMemoryAuthorizationCacheStore::class,
+            fn($app) => new InMemoryAuthorizationCacheStore(
+                $app->make(TransactionAwareAuthorizationCacheStore::class),
+            ),
+        );
+
+        $this->app->scoped(AuthorizationCacheStore::class,
+            fn($app) => $app->make(InMemoryAuthorizationCacheStore::class),
+        );
+
+        $this->app['events']->listen(TransactionRolledBack::class, function (TransactionRolledBack $event): void {
+            if ($event->connection !== $this->app->make('db')->connection()) {
+                return;
+            }
+
+            $this->app->make(InMemoryAuthorizationCacheStore::class)->flush();
+        });
 
         $this->app->scoped(PermissionEntryProvider::class);
         $this->app->scoped(RoleEntryProvider::class);

@@ -15,7 +15,6 @@ namespace Vaened\Authorization\Tests\Unit\Cache;
 use Illuminate\Database\Connection;
 use LogicException;
 use Mockery;
-use Vaened\Authorization\Cache\InMemoryAuthorizationCacheStore;
 use Vaened\Authorization\Cache\TransactionAwareAuthorizationCacheStore;
 use Vaened\Authorization\Tests\Runtime\TestSubject;
 use Vaened\Authorization\Tests\Support\Cache\SpyAuthorizationCacheStore;
@@ -27,14 +26,13 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
     public function test_it_does_not_store_a_projection_inside_a_transaction(): void
     {
         $persistent = new SpyAuthorizationCacheStore();
-        $memory     = new InMemoryAuthorizationCacheStore($persistent);
         $connection = Mockery::mock(Connection::class);
 
         $connection->allows('transactionLevel')->andReturn(1);
         $connection->shouldNotReceive('afterCommit');
 
         $store = new TransactionAwareAuthorizationCacheStore(
-            $memory,
+            $persistent,
             $connection,
         );
 
@@ -43,23 +41,22 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
         $store->put($subject, $projection);
 
         self::assertSame(0, $persistent->putCalls);
-        self::assertNull($memory->get($subject));
+        self::assertNull($store->get($subject));
     }
 
     public function test_a_rolled_back_transaction_does_not_publish_its_projection(): void
     {
         $persistent = new SpyAuthorizationCacheStore();
-        $memory     = new InMemoryAuthorizationCacheStore($persistent);
         $connection = Mockery::mock(Connection::class);
 
         $connection->allows('transactionLevel')->andReturn(1);
         $connection->shouldNotReceive('afterCommit');
 
-        $store = new TransactionAwareAuthorizationCacheStore($memory, $connection);
+        $store = new TransactionAwareAuthorizationCacheStore($persistent, $connection);
         $store->put(new TestSubject(1), self::projection());
 
         self::assertSame(0, $persistent->putCalls);
-        self::assertNull($memory->get(new TestSubject(1)));
+        self::assertNull($store->get(new TestSubject(1)));
     }
 
     public function test_it_delegates_immediately_without_a_transaction(): void
@@ -70,7 +67,7 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
         $connection->shouldNotReceive('afterCommit');
 
         $store = new TransactionAwareAuthorizationCacheStore(
-            new InMemoryAuthorizationCacheStore($persistent),
+            $persistent,
             $connection,
         );
 
@@ -82,13 +79,12 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
     public function test_it_forgets_immediately_and_after_commit(): void
     {
         $persistent = new SpyAuthorizationCacheStore();
-        $memory     = new InMemoryAuthorizationCacheStore($persistent);
         $connection = Mockery::mock(Connection::class);
         $callback   = null;
         $subject    = new TestSubject(1);
         $projection = self::projection();
 
-        $memory->put($subject, $projection);
+        $persistent->put($subject, $projection);
         $connection->allows('transactionLevel')->andReturn(1);
         $connection->expects('afterCommit')
                    ->with(Mockery::type('callable'))
@@ -96,28 +92,27 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
                        $callback = $afterCommit;
                    });
 
-        $store = new TransactionAwareAuthorizationCacheStore($memory, $connection);
+        $store = new TransactionAwareAuthorizationCacheStore($persistent, $connection);
         $store->forget($subject);
 
-        self::assertNull($memory->get($subject));
+        self::assertNull($persistent->get($subject));
         self::assertSame(1, $persistent->forgetCalls);
 
         self::assertNotNull($callback);
         $callback();
 
-        self::assertNull($memory->get($subject));
+        self::assertNull($persistent->get($subject));
         self::assertSame(2, $persistent->forgetCalls);
     }
 
     public function test_it_invalidates_immediately_and_after_commit(): void
     {
         $persistent = new SpyAuthorizationCacheStore();
-        $memory     = new InMemoryAuthorizationCacheStore($persistent);
         $connection = Mockery::mock(Connection::class);
         $callback   = null;
 
-        $memory->put(new TestSubject(1), self::projection());
-        $memory->put(new TestSubject(2), self::projection());
+        $persistent->put(new TestSubject(1), self::projection());
+        $persistent->put(new TestSubject(2), self::projection());
         $connection->allows('transactionLevel')->andReturn(1);
         $connection->expects('afterCommit')
                    ->with(Mockery::type('callable'))
@@ -125,18 +120,18 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
                        $callback = $afterCommit;
                    });
 
-        $store = new TransactionAwareAuthorizationCacheStore($memory, $connection);
+        $store = new TransactionAwareAuthorizationCacheStore($persistent, $connection);
         $store->invalidate();
 
-        self::assertNull($memory->get(new TestSubject(1)));
-        self::assertNull($memory->get(new TestSubject(2)));
+        self::assertNull($persistent->get(new TestSubject(1)));
+        self::assertNull($persistent->get(new TestSubject(2)));
         self::assertSame(1, $persistent->invalidateCalls);
 
         self::assertNotNull($callback);
         $callback();
 
-        self::assertNull($memory->get(new TestSubject(1)));
-        self::assertNull($memory->get(new TestSubject(2)));
+        self::assertNull($persistent->get(new TestSubject(1)));
+        self::assertNull($persistent->get(new TestSubject(2)));
         self::assertSame(2, $persistent->invalidateCalls);
     }
 
@@ -148,7 +143,7 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
         $connection->shouldNotReceive('afterCommit');
 
         $store = new TransactionAwareAuthorizationCacheStore(
-            new InMemoryAuthorizationCacheStore($persistent),
+            $persistent,
             $connection,
         );
 

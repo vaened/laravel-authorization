@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Vaened\Authorization\Tests\Integration;
 
+use Illuminate\Support\Facades\DB;
 use Vaened\Authorization\Facades\Authorizer;
 use Vaened\Authorization\Facades\Denier;
 use Vaened\Authorization\Facades\Granter;
@@ -23,6 +24,51 @@ use Vaened\Sentinel\Repositories\SubjectRoleRepository;
 
 final class AuthorizerFlowTest extends DatabaseTestCase
 {
+    public function test_a_rollback_flushes_a_projection_created_only_in_memory(): void
+    {
+        $subject    = $this->subject();
+        $permission = $this->permission('users.read', 'Read Users');
+
+        DB::beginTransaction();
+
+        try {
+            $subject->grant($permission);
+
+            self::assertTrue($subject->can('users.read'));
+        } finally {
+            DB::rollBack();
+        }
+
+        self::assertFalse($subject->can('users.read'));
+    }
+
+    public function test_repeated_checks_inside_a_transaction_reuse_the_local_projection(): void
+    {
+        $subject    = $this->subject();
+        $permission = $this->permission('users.read', 'Read Users');
+
+        $subject->grant($permission);
+
+        $queries = [];
+        DB::listen(static function ($query) use (&$queries): void {
+            if (str_contains($query->sql, 'subject_roles')
+                || str_contains($query->sql, 'subject_permissions')) {
+                $queries[] = $query->sql;
+            }
+        });
+
+        DB::beginTransaction();
+
+        try {
+            self::assertTrue($subject->can('users.read'));
+            self::assertTrue($subject->can('users.read'));
+        } finally {
+            DB::rollBack();
+        }
+
+        self::assertCount(3, $queries);
+    }
+
     public function test_it_integrates_the_full_laravel_flow_and_keeps_the_subject_projection_in_sync(): void
     {
         $cache      = $this->app->make(AuthorizationCacheStore::class);
@@ -44,7 +90,7 @@ final class AuthorizerFlowTest extends DatabaseTestCase
             'authorizable_id'   => $subject->id(),
         ]);
 
-        self::assertNull($cache->get($subject));
+        self::assertNotNull($cache->get($subject));
 
         $subject->deny($permission);
 
@@ -56,7 +102,7 @@ final class AuthorizerFlowTest extends DatabaseTestCase
             'denied'            => true,
         ]);
 
-        self::assertNull($cache->get($subject));
+        self::assertNotNull($cache->get($subject));
 
         $subject->revoke($permission);
 
@@ -67,7 +113,7 @@ final class AuthorizerFlowTest extends DatabaseTestCase
 
         self::assertTrue($subject->can('users.read'));
 
-        self::assertNull($cache->get($subject));
+        self::assertNotNull($cache->get($subject));
 
         $subject->revoke($role);
 
@@ -85,7 +131,7 @@ final class AuthorizerFlowTest extends DatabaseTestCase
             'authorizable_id'   => $subject->id(),
         ]);
 
-        self::assertNull($cache->get($subject));
+        self::assertNotNull($cache->get($subject));
     }
 
     public function test_it_supports_subjects_that_do_not_extend_eloquent_models(): void

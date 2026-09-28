@@ -14,7 +14,7 @@ namespace Vaened\Authorization\Tests\Unit;
 
 use Illuminate\Support\ServiceProvider;
 use Vaened\Authorization\AuthorizationSubjectProvider;
-use Vaened\Authorization\Cache\TransactionAwareAuthorizationCacheStore;
+use Vaened\Authorization\Cache\InMemoryAuthorizationCacheStore;
 use Vaened\Authorization\LaravelAuthorizationServiceProvider;
 use Vaened\Authorization\Resolvers\AuthenticatedUserSubjectResolver;
 use Vaened\Authorization\Resolvers\AuthorizationSubjectResolver;
@@ -105,7 +105,7 @@ final class LaravelAuthorizationServiceProviderTest extends TestCase
     {
         $first = $this->app->make(AuthorizationCacheStore::class);
 
-        self::assertInstanceOf(TransactionAwareAuthorizationCacheStore::class, $first);
+        self::assertInstanceOf(InMemoryAuthorizationCacheStore::class, $first);
         self::assertSame($first, $this->app->make(AuthorizationCacheStore::class));
 
         $this->app->forgetScopedInstances();
