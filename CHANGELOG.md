@@ -21,12 +21,15 @@ All notable changes to `laravel-authorization` will be documented in this file
 - `RoleRegistry::find()` and `RoleRegistry::lookup()` now require a scope as
   their first argument. Pass `null` for global roles, for example
   `$roles->find(null, 'admin')`.
-- Custom repository implementations must follow the PHP Sentinel `0.10`
+- Custom repository implementations must follow the PHP Sentinel `0.11`
   contracts: `RoleRepository::lookup()` receives the scope first,
   `RoleRepository::create()` accepts an optional scope, `RoleRepository` adds
   `match()`, and `RolePermissionRepository` adds `grants()`. Applications that
   construct Sentinel's `Granter` or `CachedSubjectRoleRepository` manually must
-  follow their new constructor signatures.
+  follow their new constructor signatures. `Granter` now receives a
+  `ScopeBoundary` instead of an `Authorizer`, and custom
+  `ScopePropagationPolicy` implementations receive a `Scopeable` owner.
+  `SubjectAuthorizationProjection::integrate()` and `override()` were removed.
 - Published configuration files are merged only at the top level, so a
   published `cache` section keeps `'ttl' => null` and continues to store
   projections permanently on stores with tag support. Set `'ttl' => 43_200` to
