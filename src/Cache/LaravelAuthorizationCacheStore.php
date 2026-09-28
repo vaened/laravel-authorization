@@ -35,9 +35,9 @@ use Vaened\Sentinel\Subject;
  */
 final readonly class LaravelAuthorizationCacheStore implements AuthorizationCacheStore
 {
-    private const int VERSION_LOCK_TTL = 10;
+    private const VERSION_LOCK_TTL = 10;
 
-    private const int VERSION_LOCK_WAIT = 5;
+    private const VERSION_LOCK_WAIT = 5;
 
     private bool $taggable;
 

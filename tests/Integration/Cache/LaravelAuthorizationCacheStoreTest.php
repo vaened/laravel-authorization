@@ -235,17 +235,17 @@ final class LaravelAuthorizationCacheStoreTest extends DatabaseTestCase
             $initialVersion = $store->currentVersion();
 
             Concurrency::driver('fork')->run([
-                fn() => new LaravelAuthorizationCacheStore(
+                fn() => (new LaravelAuthorizationCacheStore(
                     new Repository(new BlockingFileStore($cachePath, $barrier)),
-                )->invalidate(),
-                fn() => new LaravelAuthorizationCacheStore(
+                ))->invalidate(),
+                fn() => (new LaravelAuthorizationCacheStore(
                     new Repository(new BlockingFileStore($cachePath, $barrier)),
-                )->invalidate(),
+                ))->invalidate(),
             ]);
 
             self::assertSame($initialVersion + 2, $store->currentVersion());
         } finally {
-            new Filesystem()->deleteDirectory($directory);
+            (new Filesystem())->deleteDirectory($directory);
         }
     }
 

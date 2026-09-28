@@ -14,7 +14,7 @@ namespace Vaened\Authorization\Configuration;
 
 final class Caching
 {
-    private const int UNTAGGABLE_TTL = 43_200;
+    private const UNTAGGABLE_TTL = 43_200;
 
     public static function store(): string|null
     {

@@ -18,9 +18,9 @@
     "security"
   ],
   "require": {
-    "php": "^8.4",
+    "php": "^8.2",
     "laravel/framework": "^12.0 || ^13.0",
-    "vaened/php-sentinel": "^0.11",
+    "vaened/php-sentinel": "^0.11.1",
     "psr/simple-cache": "^3.0"
   },
   "require-dev": {

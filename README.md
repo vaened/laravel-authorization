@@ -28,7 +28,7 @@ $user->can('documents.annul');        // false
 
 ## Installation
 
-Laravel Authorization requires PHP 8.4 or higher and can be installed via Composer:
+Laravel Authorization requires PHP 8.2 or higher and can be installed via Composer:
 
 ```bash
 composer require vaened/laravel-authorization

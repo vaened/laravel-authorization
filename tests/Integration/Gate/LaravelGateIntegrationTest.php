@@ -181,6 +181,6 @@ final class LaravelGateIntegrationTest extends DatabaseTestCase
     {
         $this->app['config']->set('authorization.gate', $strategy);
 
-        new LaravelAuthorizationServiceProvider($this->app)->boot();
+        (new LaravelAuthorizationServiceProvider($this->app))->boot();
     }
 }

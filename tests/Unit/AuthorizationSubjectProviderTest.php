@@ -31,7 +31,7 @@ final class AuthorizationSubjectProviderTest extends TestCase
         $request = Request::create('/');
         $request->setUserResolver(static fn() => $subject);
 
-        self::assertSame($subject, new AuthenticatedUserSubjectResolver()->resolve($subject, $request)->subject());
+        self::assertSame($subject, (new AuthenticatedUserSubjectResolver())->resolve($subject, $request)->subject());
     }
 
     public function test_the_default_resolver_returns_null_for_an_unresolvable_user(): void
@@ -39,7 +39,7 @@ final class AuthorizationSubjectProviderTest extends TestCase
         $request = Request::create('/');
         $request->setUserResolver(static fn() => null);
 
-        self::assertTrue(new AuthenticatedUserSubjectResolver()->resolve(null, $request)->isNotFound());
+        self::assertTrue((new AuthenticatedUserSubjectResolver())->resolve(null, $request)->isNotFound());
     }
 
     public function test_the_default_resolver_rejects_a_user_that_is_not_a_subject(): void
@@ -48,7 +48,7 @@ final class AuthorizationSubjectProviderTest extends TestCase
 
         $this->expectException(InvalidAuthorizationSubject::class);
 
-        new AuthenticatedUserSubjectResolver()->resolve(new stdClass(), $request);
+        (new AuthenticatedUserSubjectResolver())->resolve(new stdClass(), $request);
     }
 
     public function test_require_throws_a_package_exception_when_the_resolver_returns_null(): void

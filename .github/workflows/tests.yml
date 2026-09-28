@@ -6,14 +6,25 @@ on:
 
 jobs:
   tests:
-    name: PHP 8.4 / Laravel ${{ matrix.laravel }}
+    name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          - laravel: 12
+          - php: "8.2"
+            laravel: 12
             testbench: "^10.5"
-          - laravel: 13
+          - php: "8.3"
+            laravel: 12
+            testbench: "^10.5"
+          - php: "8.3"
+            laravel: 13
+            testbench: "^11.0"
+          - php: "8.4"
+            laravel: 12
+            testbench: "^10.5"
+          - php: "8.4"
+            laravel: 13
             testbench: "^11.0"
 
     steps:
@@ -23,7 +34,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.4"
+          php-version: ${{ matrix.php }}
           extensions: pcntl, sockets
           tools: composer:v2
           coverage: none

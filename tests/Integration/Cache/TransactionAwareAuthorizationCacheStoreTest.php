@@ -170,7 +170,7 @@ final class TransactionAwareAuthorizationCacheStoreTest extends TestCase
 
     private function connection(): SQLiteConnection
     {
-        return new SQLiteConnection(new PDO('sqlite::memory:'))
+        return (new SQLiteConnection(new PDO('sqlite::memory:')))
             ->setTransactionManager(new DatabaseTransactionsManager());
     }
 

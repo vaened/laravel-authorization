@@ -16,11 +16,11 @@ use Vaened\Sentinel\Subject;
 
 final readonly class SubjectResolution
 {
-    private const string FOUND = 'found';
+    private const FOUND = 'found';
 
-    private const string NOT_FOUND = 'not_found';
+    private const NOT_FOUND = 'not_found';
 
-    private const string UNAVAILABLE = 'unavailable';
+    private const UNAVAILABLE = 'unavailable';
 
     private function __construct(
         private string       $status,
