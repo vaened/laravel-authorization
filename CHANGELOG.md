@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-authorization` will be documented in this file
 
+## V6.0.2 - 2026-09-28
+
+### Added
+
+- Added PHP 8.2 support. PHP 8.3 and PHP 8.4 remain supported.
+
 ## V6.0.1 - 2026-09-28
 
 ### Fixed
