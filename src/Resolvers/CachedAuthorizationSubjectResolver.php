@@ -13,28 +13,42 @@ declare(strict_types=1);
 namespace Vaened\Authorization\Resolvers;
 
 use Illuminate\Http\Request;
+use WeakMap;
 
 final class CachedAuthorizationSubjectResolver implements AuthorizationSubjectResolver
 {
-    /** @var array<string, SubjectResolution> */
-    private array $resolved = [];
+    private WeakMap            $resolved;
+
+    private bool               $guestResolved   = false;
+
+    private ?SubjectResolution $guestResolution = null;
 
     public function __construct(private readonly AuthorizationSubjectResolver $resolver)
     {
+        $this->resolved = new WeakMap();
     }
 
     public function resolve(object|null $user, Request $request): SubjectResolution
     {
-        $key = null === $user ? 'guest' : (string)spl_object_id($user);
+        if (null === $user && $this->guestResolved) {
+            return $this->guestResolution;
+        }
 
-        if (array_key_exists($key, $this->resolved)) {
-            return $this->resolved[$key];
+        if (null !== $user && isset($this->resolved[$user])) {
+            return $this->resolved[$user];
         }
 
         $resolution = $this->resolver->resolve($user, $request);
 
-        if ($resolution->isCacheable()) {
-            $this->resolved[$key] = $resolution;
+        if (!$resolution->isCacheable()) {
+            return $resolution;
+        }
+
+        if (null === $user) {
+            $this->guestResolution = $resolution;
+            $this->guestResolved   = true;
+        } else {
+            $this->resolved[$user] = $resolution;
         }
 
         return $resolution;
