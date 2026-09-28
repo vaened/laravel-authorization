@@ -736,6 +736,21 @@ transitive propagation throws `ScopeCycleDetected`.
 
 The cycle is not silently converted to `false`, because it represents a configuration error that must be fixed.
 
+### Scope changes do not move assignments
+
+Changing a subject's scope does not move, revoke, or delete its persisted
+roles or permissions. It only changes the scope used during authorization
+evaluation.
+
+After the scope changes, Laravel Authorization rebuilds the subject's
+projection and Sentinel applies the configured scope compatibility and
+propagation rules. If assignments from the previous scope must be removed,
+the application must revoke or purge them explicitly.
+
+When a user can belong to multiple organizations, use a membership model as
+the authorization subject instead of changing the scope of the same user.
+Each membership then has its own scope and persisted assignments.
+
 ### Scope changes and cache
 
 Authorization projections are stored per subject. If the subject's active
@@ -747,6 +762,10 @@ use Vaened\Sentinel\Cache\AuthorizationCacheStore;
 
 app(AuthorizationCacheStore::class)->forget($subject);
 ```
+
+Forget the projection after persisting the scope change and before performing
+another authorization check. This only invalidates the cache; it does not
+move, revoke, or delete persisted assignments.
 
 Operations executed through Sentinel manage the corresponding invalidation automatically.
 
